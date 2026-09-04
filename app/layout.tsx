@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: 'Ikyane — Digital Identity',
   description:
-    'Computer science student and developer building thoughtful digital tools in Lyon.',
+    'Étudiant en informatique et développeur, créateur d’outils numériques à Lyon.',
 };
 
 export default function RootLayout({
