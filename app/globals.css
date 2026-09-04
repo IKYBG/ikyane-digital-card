@@ -102,13 +102,11 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
 .contact-tile small { margin-top: 3px; color: var(--text-tertiary); font-size: .62rem; }
 .contact-tile > svg { color: var(--text-tertiary); }
 .github .brand-icon { background: linear-gradient(145deg, #333b49, #121821); }
-.linkedin .brand-icon { background: linear-gradient(145deg, #1389d2, #0764a3); }
 .discord .brand-icon { background: linear-gradient(145deg, #7c83ff, #5865f2); }
+.snapchat .brand-icon { color: #090b0f; background: #fffc00; }
 .instagram .brand-icon { background: radial-gradient(circle at 70% 75%, #ffd45a, #ef405f 42%, #8754de 75%); }
-.spotify .brand-icon { color: #07120b; background: #1ed760; }
 .email .brand-icon { background: linear-gradient(145deg, #e7f5ff, #8dcfff); color: #07182c; }
-.website { grid-column: 1 / -1; }
-.website .brand-icon { background: linear-gradient(145deg, #5e9dff, #2c58cf); }
+.email { grid-column: 1 / -1; }
 .back-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 .back-actions button { height: 44px; border-radius: 14px; border: 1px solid var(--border); color: var(--text-primary); background: rgb(136 194 255 / .07); display: flex; align-items: center; justify-content: center; gap: 7px; cursor: pointer; font-size: .73rem; font-weight: 570; }
 .back-actions button:first-child { color: #07182c; background: linear-gradient(135deg, #eef8ff, #a9dcff); border-color: transparent; }

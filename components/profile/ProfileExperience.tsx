@@ -4,9 +4,8 @@
 import Image from 'next/image';
 import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { SiDiscord, SiGithub, SiInstagram, SiSpotify } from 'react-icons/si';
-import { FaLinkedinIn } from 'react-icons/fa6';
-import { ArrowUpRight, Check, Copy, ExternalLink, Mail, MapPin, RotateCcw, Share2, UserPlus } from 'lucide-react';
+import { SiDiscord, SiGithub, SiInstagram, SiSnapchat } from 'react-icons/si';
+import { ArrowUpRight, Check, Mail, MapPin, RotateCcw, Share2, UserPlus } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { downloadVCard } from '@/lib/vcard';
 
@@ -14,11 +13,10 @@ const spring = { type: 'spring', stiffness: 390, damping: 32, mass: 0.72 } as co
 const flipSpring = { type: 'spring', stiffness: 115, damping: 18, mass: 0.92 } as const;
 
 const contacts = [
-  { label: 'GitHub', value: 'ikyane', href: profile.links[0].href, icon: SiGithub, className: 'github' },
-  { label: 'LinkedIn', value: 'Ikyane', href: profile.links[1].href, icon: FaLinkedinIn, className: 'linkedin' },
-  { label: 'Discord', value: '@ikyane', href: profile.links[2].href, icon: SiDiscord, className: 'discord' },
-  { label: 'Instagram', value: '@ikyane', href: profile.links[3].href, icon: SiInstagram, className: 'instagram' },
-  { label: 'Spotify', value: 'À l’écoute', href: profile.links[4].href, icon: SiSpotify, className: 'spotify' },
+  { label: 'Discord', value: profile.links.discord.username, href: profile.links.discord.webUrl, icon: SiDiscord, className: 'discord', discord: true },
+  { label: 'Snapchat', value: profile.links.snapchat.username, href: profile.links.snapchat.webUrl, icon: SiSnapchat, className: 'snapchat', discord: false },
+  { label: 'Instagram', value: profile.links.instagram.username, href: profile.links.instagram.webUrl, icon: SiInstagram, className: 'instagram', discord: false },
+  { label: 'GitHub', value: profile.links.github.username, href: profile.links.github.webUrl, icon: SiGithub, className: 'github', discord: false },
 ] as const;
 
 function Feedback({ label }: { label: string }) {
@@ -85,7 +83,22 @@ export function ProfileExperience() {
       if ((error as DOMException).name !== 'AbortError') showFeedback('Partage impossible');
     }
   };
-  const copyEmail = async () => { await navigator.clipboard.writeText(profile.email); showFeedback('E-mail copié'); };
+  const openDiscord = async (event: MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+    await navigator.clipboard.writeText(profile.links.discord.username);
+    showFeedback('Pseudo Discord copié');
+
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (!isMobile) {
+      window.open(profile.links.discord.webUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    window.location.href = profile.links.discord.appUrl;
+    window.setTimeout(() => {
+      if (!document.hidden) window.location.href = profile.links.discord.webUrl;
+    }, 900);
+  };
 
   const frontTabIndex = side === 'front' ? 0 : -1;
   const backTabIndex = side === 'back' ? 0 : -1;
@@ -151,13 +164,12 @@ export function ProfileExperience() {
                 <div className="card-face card-back" aria-hidden={side !== 'back'}>
                   <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
                   <div className="contact-matrix">
-                    {contacts.map(({ label, value, href, icon: Icon, className }) => (
-                      <a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`}>
+                    {contacts.map(({ label, value, href, icon: Icon, className, discord }) => (
+                      <a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`} onClick={discord ? openDiscord : undefined}>
                         <span className="brand-icon"><Icon /></span><div><strong>{label}</strong><small>{value}</small></div><ArrowUpRight size={15} />
                       </a>
                     ))}
-                    <button tabIndex={backTabIndex} className="contact-tile email" onClick={copyEmail}><span className="brand-icon"><Mail /></span><div><strong>E-mail</strong><small>{profile.email}</small></div><Copy size={15} /></button>
-                    <a tabIndex={backTabIndex} href={profile.links[5].href} target="_blank" rel="noreferrer" className="contact-tile website"><span className="brand-icon"><ExternalLink /></span><div><strong>Site web</strong><small>ikyane.dev</small></div><ArrowUpRight size={15} /></a>
+                    <a tabIndex={backTabIndex} className="contact-tile email" href={`mailto:${profile.email}`}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></a>
                   </div>
                   <div className="back-actions"><button tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
                   <div className="back-footer"><span>EPITA · LYON</span><span>Touchez pour revenir</span></div>
