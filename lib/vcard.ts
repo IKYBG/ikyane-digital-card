@@ -6,7 +6,7 @@ export function createVCard(profile: Profile) {
   return [
     'BEGIN:VCARD', 'VERSION:3.0', `FN:${escapeValue(profile.name)}`,
     `N:${escapeValue(profile.name)};;;;`,
-    `TITLE:${escapeValue(`${profile.headline} · ${profile.specialty}`)}`,
+    `TITLE:${escapeValue(`${profile.headline} · ${profile.level}`)}`,
     `ORG:${escapeValue(profile.school)}`, `EMAIL;TYPE=INTERNET:${escapeValue(profile.email)}`,
     profile.phone ? `TEL;TYPE=CELL:${escapeValue(profile.phone)}` : null,
     `URL:${escapeValue(profile.url)}`, `ADR;TYPE=WORK:;;;${escapeValue(profile.location)};;;`, 'END:VCARD',

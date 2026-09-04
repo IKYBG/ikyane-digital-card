@@ -1,7 +1,7 @@
 export const profile = {
   name: 'Ikyane', initials: 'IK', username: '@ikyane',
-  headline: 'Étudiant en informatique', specialty: 'Développeur · IA',
-  location: 'Lyon, France', school: 'EPITA',
+  headline: 'Étudiant en informatique', level: 'Bac + 1',
+  location: 'Lyon, France', school: 'EPITA Lyon',
   photo: '',
   availability: 'Ouvert aux collaborations ambitieuses',
   email: 'ikyane.mha@gmail.com', phone: '',
