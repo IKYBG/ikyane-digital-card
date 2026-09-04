@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1600" role="img" aria-labelledby="title desc">
+  <title id="title">Paysage japonais minimaliste bleu nuit</title>
+  <desc id="desc">Mont Fuji, lune, brume, eau et torii dans une palette bleu blanc futuriste.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#071b38"/>
+      <stop offset=".42" stop-color="#082a55"/>
+      <stop offset="1" stop-color="#020711"/>
+    </linearGradient>
+    <radialGradient id="moon-glow" cx="52%" cy="25%" r="24%">
+      <stop offset="0" stop-color="#eef8ff" stop-opacity=".92"/>
+      <stop offset=".34" stop-color="#9ed6ff" stop-opacity=".34"/>
+      <stop offset="1" stop-color="#80c8ff" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fuji" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d7efff" stop-opacity=".9"/>
+      <stop offset=".2" stop-color="#78bdff" stop-opacity=".62"/>
+      <stop offset="1" stop-color="#06152e" stop-opacity=".92"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#123d75" stop-opacity=".52"/>
+      <stop offset="1" stop-color="#020711" stop-opacity=".14"/>
+    </linearGradient>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="10"/>
+    </filter>
+  </defs>
+  <rect width="2400" height="1600" fill="url(#sky)"/>
+  <rect width="2400" height="1600" fill="url(#moon-glow)"/>
+  <circle cx="1260" cy="315" r="132" fill="#f7faff" opacity=".82"/>
+  <circle cx="1308" cy="276" r="132" fill="#08254d" opacity=".93"/>
+  <path d="M0 980c310-100 430-15 690-110 250-94 420-45 655-130 305-108 535-15 1055-150v1010H0Z" fill="#061b39" opacity=".82"/>
+  <path d="M0 1110c310-95 572-15 820-125 262-115 468-60 715-143 313-106 547-20 865-100v858H0Z" fill="#041226" opacity=".88"/>
+  <path d="M475 980 1160 445l685 535Z" fill="url(#fuji)" opacity=".78"/>
+  <path d="m1160 445-156 255 136-45 82 125 91-138 122 63Z" fill="#f7faff" opacity=".9"/>
+  <path d="M475 980 1160 445l685 535Z" fill="none" stroke="#bde5ff" stroke-opacity=".2" stroke-width="2"/>
+  <g opacity=".28" filter="url(#soft)" fill="none" stroke-linecap="round">
+    <path d="M110 875c340-55 665-35 900 15 280 60 560 20 970-50 185-30 320-28 420-15" stroke="#d9f0ff" stroke-width="24"/>
+    <path d="M0 1030c350-60 690-40 1020 15 350 55 750-17 1380-45" stroke="#80c8ff" stroke-width="18"/>
+  </g>
+  <rect y="1030" width="2400" height="570" fill="url(#water)"/>
+  <g opacity=".38" stroke="#8fd1ff" stroke-linecap="round">
+    <path d="M130 1190h490" stroke-width="5"/>
+    <path d="M760 1260h460" stroke-width="4"/>
+    <path d="M1420 1160h790" stroke-width="5"/>
+    <path d="M980 1388h650" stroke-width="3"/>
+  </g>
+  <g transform="translate(1850 775)" opacity=".48" stroke="#c9eaff" stroke-width="20" stroke-linecap="round" fill="none">
+    <path d="M0 0h330"/>
+    <path d="M42 46h246" stroke-width="14"/>
+    <path d="M76 28v295"/>
+    <path d="M254 28v295"/>
+  </g>
+  <g opacity=".5" stroke="#d7efff" stroke-width="12" stroke-linecap="round" fill="none">
+    <path d="M330 880c22-120 78-182 152-255"/>
+    <path d="M482 625c-52 12-92 40-131 83"/>
+    <path d="M482 625c40 32 74 75 103 130"/>
+    <path d="M482 625c10-53 19-89 28-123"/>
+  </g>
+  <rect width="2400" height="1600" fill="#020711" opacity=".18"/>
+</svg>
