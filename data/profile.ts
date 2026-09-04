@@ -1,5 +1,3 @@
-const siteOrigin = (process.env.NEXT_PUBLIC_SITE_URL || 'https://ikyane-digital-card.brown-wand-1699.chatgpt.site').replace(/\/$/, '');
-
 export const profile = {
   name: 'Ikyane', initials: 'IK', username: '@ikyane',
   headline: 'Étudiant en informatique', level: 'Bac + 1',
@@ -7,7 +5,7 @@ export const profile = {
   photo: '',
   availability: 'Ouvert aux collaborations ambitieuses',
   email: 'ikyane.mha@gmail.com', phone: '',
-  url: `${siteOrigin}/card`,
+  url: '/card',
   now: [
     { label: 'Je développe', value: 'StudyOS', detail: 'Une façon plus sereine d’organiser la vie étudiante.' },
     { label: 'J’apprends', value: 'C / Linux', detail: 'Comprendre la machine, une couche après l’autre.' },

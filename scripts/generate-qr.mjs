@@ -1,7 +1,7 @@
 import QRCode from 'qrcode';
 
 const fallbackOrigin = 'https://ikyane-digital-card.brown-wand-1699.chatgpt.site';
-const configuredOrigin = process.env.NEXT_PUBLIC_SITE_URL;
+const configuredOrigin = process.env.SITE_URL;
 const vercelOrigin = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
   : undefined;

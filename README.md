@@ -18,10 +18,10 @@ npx vercel --prod
 3. Vérifier que la version de Node.js est **22.x**.
 4. Déployer.
 
-Le build génère automatiquement `public/ikyane-qr.png` avec le domaine de production Vercel. Si un domaine personnalisé est utilisé, ajouter la variable d’environnement suivante dans Vercel, puis redéployer :
+Le build génère automatiquement `public/ikyane-qr.png` avec le domaine de production Vercel. Si un domaine personnalisé est utilisé, ajouter la variable d’environnement privée suivante dans Vercel, puis redéployer :
 
 ```text
-NEXT_PUBLIC_SITE_URL=https://votre-domaine.fr
+SITE_URL=https://votre-domaine.fr
 ```
 
 Ne pas ajouter de `/` final à cette valeur.
