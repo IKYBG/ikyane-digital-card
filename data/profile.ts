@@ -4,12 +4,18 @@ export const profile = {
   location: 'Lyon, France', school: 'EPITA Lyon',
   photo: '',
   availability: 'Ouvert aux collaborations ambitieuses',
-  email: 'ikyane.mha@gmail.com', phone: '',
+  email: 'ikyane.mha@gmail.com', phone: '0638174716',
   url: '/card',
+  journey: [
+    { label: 'École primaire', value: 'École Croix-Luizet', detail: 'Villeurbanne' },
+    { label: 'Collège', value: 'Collège Jean-Macé', detail: 'Villeurbanne' },
+    { label: 'Lycée', value: 'Lycée Édouard-Herriot', detail: 'Lyon' },
+    { label: 'Enseignement supérieur', value: 'EPITA', detail: 'Lyon · Informatique' },
+  ],
   now: [
-    { label: 'Je développe', value: 'StudyOS', detail: 'Une façon plus sereine d’organiser la vie étudiante.' },
-    { label: 'J’apprends', value: 'C / Linux', detail: 'Comprendre la machine, une couche après l’autre.' },
-    { label: 'J’explore', value: 'IA appliquée', detail: 'Des systèmes utiles et précis, loin des démonstrations bruyantes.' },
+    { label: 'Sport', value: 'Musculation & judo', detail: 'En salle et en club.' },
+    { label: 'Création', value: 'Design & expérimentation', detail: 'Photoshop, motion design et vibe coding.' },
+    { label: 'Langue', value: 'Japonais', detail: 'Une langue que j’apprends progressivement.' },
   ],
   projects: [
     { name: 'StudyOS', index: '01', description: 'Un espace concentré pour les cours, les notes et la progression.', tags: ['Produit', 'TypeScript'], href: '#studyos', tone: 'lime' },
@@ -20,6 +26,7 @@ export const profile = {
     snapchat: { username: 'ikyane.hsb', webUrl: 'https://www.snapchat.com/add/ikyane.hsb' },
     instagram: { username: 'ikyane.hsb', webUrl: 'https://www.instagram.com/ikyane.hsb/' },
     github: { username: 'IKYBGB', webUrl: 'https://github.com/IKYBGB' },
+    tiktok: { username: 'ikyane_prvv', webUrl: 'https://www.tiktok.com/@ikyane_prvv' },
   },
 } as const;
 

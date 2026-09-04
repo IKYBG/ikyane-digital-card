@@ -3,9 +3,9 @@
 
 import Image from 'next/image';
 import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { SiDiscord, SiGithub, SiInstagram, SiSnapchat } from 'react-icons/si';
-import { ArrowUpRight, Check, GraduationCap, Mail, RotateCcw, Share2, UserPlus } from 'lucide-react';
+import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'motion/react';
+import { SiDiscord, SiGithub, SiInstagram, SiSnapchat, SiTiktok } from 'react-icons/si';
+import { ArrowUpRight, Check, GraduationCap, Mail, MoveHorizontal, Phone, RotateCcw, Share2, UserPlus } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { downloadVCard } from '@/lib/vcard';
 
@@ -17,6 +17,7 @@ const contacts = [
   { label: 'Snapchat', value: profile.links.snapchat.username, href: profile.links.snapchat.webUrl, icon: SiSnapchat, className: 'snapchat', discord: false },
   { label: 'Instagram', value: profile.links.instagram.username, href: profile.links.instagram.webUrl, icon: SiInstagram, className: 'instagram', discord: false },
   { label: 'GitHub', value: profile.links.github.username, href: profile.links.github.webUrl, icon: SiGithub, className: 'github', discord: false },
+  { label: 'TikTok', value: `@${profile.links.tiktok.username}`, href: profile.links.tiktok.webUrl, icon: SiTiktok, className: 'tiktok', discord: false },
 ] as const;
 
 function Feedback({ label }: { label: string }) {
@@ -25,6 +26,9 @@ function Feedback({ label }: { label: string }) {
 
 export function ProfileExperience() {
   const cardRef = useRef<HTMLDivElement>(null);
+  const dragFlippedRef = useRef(false);
+  const swipeStartRef = useRef<{ x: number; time: number } | null>(null);
+  const lastSwipeFlipRef = useRef(0);
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -37,6 +41,10 @@ export function ProfileExperience() {
 
   const handleCardClick = (event: MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLElement).closest('a, button')) return;
+    if (dragFlippedRef.current) {
+      dragFlippedRef.current = false;
+      return;
+    }
     flip();
   };
 
@@ -67,6 +75,36 @@ export function ProfileExperience() {
     element.style.setProperty('--ry', '0deg');
     element.style.setProperty('--lx', '50%');
     element.style.setProperty('--ly', '18%');
+  };
+
+  const commitSwipeFlip = (distance: number, speed: number) => {
+    if (distance < 74 && speed < 520) return;
+    const now = Date.now();
+    if (now - lastSwipeFlipRef.current < 320) return;
+
+    lastSwipeFlipRef.current = now;
+    dragFlippedRef.current = true;
+    flip();
+    window.setTimeout(() => {
+      dragFlippedRef.current = false;
+    }, 160);
+  };
+
+  const handleSwipeEnd = (_: unknown, info: PanInfo) => {
+    commitSwipeFlip(Math.abs(info.offset.x), Math.abs(info.velocity.x));
+  };
+
+  const handlePointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    swipeStartRef.current = { x: event.clientX, time: performance.now() };
+  };
+
+  const handlePointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    const start = swipeStartRef.current;
+    swipeStartRef.current = null;
+    if (!start) return;
+    const distance = Math.abs(event.clientX - start.x);
+    const elapsed = Math.max(performance.now() - start.time, 1);
+    commitSwipeFlip(distance, (distance / elapsed) * 1000);
   };
 
   const currentProfileUrl = () => `${window.location.origin}/card`;
@@ -120,79 +158,100 @@ export function ProfileExperience() {
 
         <section id="identity" className="identity-stage" aria-label="Carte d’identité numérique">
           <motion.div className="card-perspective" initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.04 }}>
-            <div
-              className={`identity-card side-${side}`}
-              ref={cardRef}
-              role="button"
-              tabIndex={0}
-              aria-label={side === 'front' ? 'Retourner la carte pour afficher les contacts' : 'Retourner la carte pour afficher le profil'}
-              onClick={handleCardClick}
-              onKeyDown={handleCardKey}
-              onPointerMove={handlePointerMove}
-              onPointerLeave={resetTilt}
+            <motion.div
+              className="card-motion-shell"
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.18}
+              onDragEnd={handleSwipeEnd}
+              onPointerDown={handlePointerDown}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={() => { swipeStartRef.current = null; }}
+              whileDrag={reducedMotion ? undefined : { scale: 0.985, rotateZ: 0.4 }}
+              transition={spring}
             >
-              <div className="card-edge" aria-hidden="true" />
-              <div className="card-glint" aria-hidden="true" />
-              <motion.div
-                className="flip-card"
-                initial={false}
-                animate={reducedMotion ? { rotateY: side === 'back' ? 180 : 0 } : {
-                  rotateY: side === 'back' ? 180 : 0,
-                  y: [0, -9, 0],
-                  scale: [1, 0.965, 1],
-                  rotateZ: side === 'back' ? [0, -0.65, 0] : [0, 0.65, 0],
-                }}
-                transition={{ rotateY: flipSpring, y: { duration: 0.72, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }, scale: { duration: 0.72, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }, rotateZ: { duration: 0.72, times: [0, 0.45, 1] } }}
+              <div
+                className={`identity-card side-${side}`}
+                ref={cardRef}
+                role="button"
+                tabIndex={0}
+                aria-label={side === 'front' ? 'Retourner la carte pour afficher les contacts' : 'Retourner la carte pour afficher le profil'}
+                onClick={handleCardClick}
+                onKeyDown={handleCardKey}
+                onPointerMove={handlePointerMove}
+                onPointerLeave={resetTilt}
               >
-                <div className="card-face card-front" aria-hidden={side !== 'front'}>
-                  <motion.div
-                    className={`portrait-panel ${profile.photo ? 'has-photo' : 'portrait-placeholder'}`}
-                    animate={side === 'front' ? { opacity: 1, scale: 1.015 } : { opacity: 0.72, scale: 1.065 }}
-                    transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}
-                  >
-                    {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
-                    <div className="portrait-scan" aria-hidden="true" />
-                  </motion.div>
-                  <span className="front-glint" aria-hidden="true" />
-                  <motion.span className="identity-stamp" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
+                <div className="card-edge" aria-hidden="true" />
+                <div className="card-glint" aria-hidden="true" />
+                <motion.div
+                  className="flip-card"
+                  initial={false}
+                  animate={reducedMotion ? { rotateY: side === 'back' ? 180 : 0 } : {
+                    rotateY: side === 'back' ? 180 : 0,
+                    y: [0, -9, 0],
+                    scale: [1, 0.965, 1],
+                    rotateZ: side === 'back' ? [0, -0.65, 0] : [0, 0.65, 0],
+                  }}
+                  transition={{ rotateY: flipSpring, y: { duration: 0.72, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }, scale: { duration: 0.72, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }, rotateZ: { duration: 0.72, times: [0, 0.45, 1] } }}
+                >
+                  <div className="card-face card-front" aria-hidden={side !== 'front'}>
+                    <motion.div
+                      className={`portrait-panel ${profile.photo ? 'has-photo' : 'portrait-placeholder'}`}
+                      animate={side === 'front' ? { opacity: 1, scale: 1.015 } : { opacity: 0.72, scale: 1.065 }}
+                      transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
+                      <div className="portrait-scan" aria-hidden="true" />
+                    </motion.div>
+                    <span className="front-glint" aria-hidden="true" />
+                    <motion.span className="identity-stamp" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
+                    <motion.div className="swipe-cue" animate={side === 'front' ? { opacity: [0.46, 0.92, 0.46], x: [-10, 10, -10] } : { opacity: 0, x: 0 }} transition={{ duration: 2.4, repeat: side === 'front' ? Infinity : 0, ease: [0.22, 1, 0.36, 1] }} aria-hidden="true"><MoveHorizontal size={16} /><span>Glisser</span></motion.div>
 
-                  <motion.div className="identity-copy" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }} transition={{ ...spring, delay: side === 'front' ? 0.26 : 0 }}>
-                    <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
-                    <p className="headline">{profile.headline}</p>
-                    <div className="identity-meta"><span><GraduationCap size={15} /> {profile.level}</span><span>{profile.school}</span></div>
-                    <div className="primary-actions">
-                      <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
-                      <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
-                    </div>
-                  </motion.div>
-                </div>
-
-                <div className="card-face card-back" aria-hidden={side !== 'back'}>
-                  <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
-                  <div className="contact-matrix">
-                    {contacts.map(({ label, value, href, icon: Icon, className, discord }, index) => (
-                      <motion.a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`} onClick={discord ? openDiscord : undefined} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.22 + index * 0.05 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}>
-                        <span className="brand-icon"><Icon /></span><div><strong>{label}</strong><small>{value}</small></div><ArrowUpRight size={15} />
-                      </motion.a>
-                    ))}
-                    <motion.a tabIndex={backTabIndex} className="contact-tile email" href={`mailto:${profile.email}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.43 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></motion.a>
+                    <motion.div className="identity-copy" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }} transition={{ ...spring, delay: side === 'front' ? 0.26 : 0 }}>
+                      <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
+                      <p className="headline">{profile.headline}</p>
+                      <div className="identity-meta"><span><GraduationCap size={15} /> {profile.level}</span><span>{profile.school}</span></div>
+                      <div className="primary-actions">
+                        <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
+                        <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
+                      </div>
+                    </motion.div>
                   </div>
-                  <div className="back-actions"><button tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
-                  <div className="back-footer"><span>EPITA · LYON</span><span>Touchez pour revenir</span></div>
-                </div>
-              </motion.div>
-            </div>
+
+                  <div className="card-face card-back" aria-hidden={side !== 'back'}>
+                    <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
+                    <motion.div className="swipe-cue swipe-cue-back" animate={side === 'back' ? { opacity: [0.42, 0.82, 0.42], x: [10, -10, 10] } : { opacity: 0, x: 0 }} transition={{ duration: 2.4, repeat: side === 'back' ? Infinity : 0, ease: [0.22, 1, 0.36, 1] }} aria-hidden="true"><MoveHorizontal size={16} /><span>Glisser</span></motion.div>
+                    <div className="contact-matrix">
+                      {contacts.map(({ label, value, href, icon: Icon, className, discord }, index) => (
+                        <motion.a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`} onClick={discord ? openDiscord : undefined} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.22 + index * 0.05 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}>
+                          <span className="brand-icon"><Icon /></span><div><strong>{label}</strong><small>{value}</small></div><ArrowUpRight size={15} />
+                        </motion.a>
+                      ))}
+                      <motion.a tabIndex={backTabIndex} className="contact-tile email" href={`mailto:${profile.email}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.43 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></motion.a>
+                      <motion.a tabIndex={backTabIndex} className="contact-tile phone" href={`tel:${profile.phone}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.48 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Phone /></span><div><strong>M’appeler</strong><small>06 38 17 47 16</small></div><ArrowUpRight size={15} /></motion.a>
+                    </div>
+                    <div className="back-actions"><button tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
+                    <div className="back-footer"><span>EPITA · LYON</span><span>Glissez pour revenir</span></div>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
           </motion.div>
-          <button className="flip-hint" onClick={flip}><RotateCcw size={14} /> {side === 'front' ? 'Touchez la carte pour voir mes contacts' : 'Touchez la carte pour voir mon profil'}</button>
+          <button className="flip-hint" onClick={flip}><MoveHorizontal size={14} /> {side === 'front' ? 'Glissez ou touchez pour voir mes contacts' : 'Glissez ou touchez pour revenir au profil'}</button>
+        </section>
+
+        <section id="journey" className="content-section">
+          <div className="section-heading"><span>02</span><h2>Mon parcours</h2><p>Les établissements qui ont jalonné mon chemin.</p></div>
+          <div className="now-list journey-list">{profile.journey.map((item, index) => <motion.article key={item.value} className="now-item" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ ...spring, delay: index * 0.04 }}><span className="now-index">0{index + 1}</span><div><small>{item.label}</small><h3>{item.value}</h3><p>{item.detail}</p></div><span className="now-line" /></motion.article>)}</div>
         </section>
 
         <section id="now" className="content-section">
-          <div className="section-heading"><span>02</span><h2>En ce moment</h2><p>Ce qui occupe mon attention.</p></div>
+          <div className="section-heading"><span>03</span><h2>En ce moment</h2><p>Ce qui occupe mon attention.</p></div>
           <div className="now-list">{profile.now.map((item, index) => <motion.article key={item.label} className="now-item" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ ...spring, delay: index * 0.04 }}><span className="now-index">0{index + 1}</span><div><small>{item.label}</small><h3>{item.value}</h3><p>{item.detail}</p></div><span className="now-line" /></motion.article>)}</div>
         </section>
 
         <section className="content-section projects-section">
-          <div className="section-heading"><span>03</span><h2>Projets sélectionnés</h2><p>Des systèmes simples, conçus avec soin.</p></div>
+          <div className="section-heading"><span>04</span><h2>Projets sélectionnés</h2><p>Des systèmes simples, conçus avec soin.</p></div>
           <div className="project-list">{profile.projects.map((project) => <motion.a id={project.name.toLowerCase()} key={project.name} className={`project-card project-${project.tone}`} href={project.href} whileHover={reducedMotion ? undefined : { y: -4 }} whileTap={{ scale: 0.988 }} transition={spring}><div className="project-art" aria-hidden="true"><span>{project.index}</span><i /><b /></div><div className="project-copy"><div><span>{project.index}</span><ArrowUpRight size={18} /></div><h3>{project.name}</h3><p>{project.description}</p><ul>{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></div></motion.a>)}</div>
         </section>
 
