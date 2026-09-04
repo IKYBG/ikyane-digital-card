@@ -69,14 +69,16 @@ export function ProfileExperience() {
     element.style.setProperty('--ly', '18%');
   };
 
-  const handleSave = () => { downloadVCard(profile); showFeedback('Contact enregistré'); };
+  const currentProfileUrl = () => `${window.location.origin}/card`;
+  const handleSave = () => { downloadVCard(profile, currentProfileUrl()); showFeedback('Contact enregistré'); };
   const handleShare = async () => {
+    const url = currentProfileUrl();
     try {
       if (navigator.share) {
-        await navigator.share({ title: `${profile.name} — Identité numérique`, url: profile.url });
+        await navigator.share({ title: `${profile.name} — Identité numérique`, url });
         showFeedback('Profil partagé');
       } else {
-        await navigator.clipboard.writeText(profile.url);
+        await navigator.clipboard.writeText(url);
         showFeedback('Lien copié');
       }
     } catch (error) {

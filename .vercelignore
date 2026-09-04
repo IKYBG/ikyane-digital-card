@@ -1,0 +1,7 @@
+.openai
+.vinext
+.wrangler
+dist
+coverage
+outputs
+work

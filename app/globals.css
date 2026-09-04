@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-@import 'shadcn/tailwind.css';
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -17,6 +16,8 @@
 }
 
 :root {
+  --font-geist-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-geist-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --background: #020711; --surface: rgb(7 20 42 / .78); --surface-raised: rgb(15 37 70 / .7);
   --text-primary: #f7faff; --text-secondary: #aec0db; --text-tertiary: #6e86a8;
   --border: rgb(170 211 255 / .14); --border-bright: rgb(193 225 255 / .28);
