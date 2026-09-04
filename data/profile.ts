@@ -2,10 +2,10 @@ export const profile = {
   name: 'Ikyane', initials: 'IK', username: '@ikyane',
   headline: 'Computer Science Student', specialty: 'Developer / AI',
   location: 'Lyon, France', school: 'EPITA',
+  photo: '',
   availability: 'Open to thoughtful collaborations',
   email: 'hello@ikyane.dev', phone: '',
   url: 'https://ikyane-digital-card.brown-wand-1699.chatgpt.site/card',
-  qrUrl: 'https://ikyane-digital-card.brown-wand-1699.chatgpt.site/q',
   now: [
     { label: 'Building', value: 'StudyOS', detail: 'A calmer way to organize student life.' },
     { label: 'Learning', value: 'C / Linux', detail: 'Closer to the machine, one layer at a time.' },

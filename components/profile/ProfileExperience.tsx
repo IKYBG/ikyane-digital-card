@@ -1,18 +1,30 @@
 'use client';
 
-import { useRef, useState, type PointerEvent } from 'react';
+import Image from 'next/image';
+import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react';
-import { QRCodeSVG } from 'qrcode.react';
-import { ArrowDown, ArrowUpRight, BriefcaseBusiness, Check, ChevronRight, CodeXml, Copy, Download, ExternalLink, Mail, MapPin, MessageCircle, Music2, QrCode, RotateCcw, Share2, Sparkles, UserPlus } from 'lucide-react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { SiDiscord, SiGithub, SiInstagram, SiSpotify } from 'react-icons/si';
+import { FaLinkedinIn } from 'react-icons/fa6';
+import { ArrowUpRight, Check, Copy, ExternalLink, Mail, MapPin, RotateCcw, Share2, UserPlus } from 'lucide-react';
 import { profile } from '@/data/profile';
 import { downloadVCard } from '@/lib/vcard';
 
-const iconFor = { GitHub: CodeXml, LinkedIn: BriefcaseBusiness, Discord: MessageCircle, Instagram: Sparkles, Spotify: Music2, Portfolio: ExternalLink };
-const spring = { type: 'spring', stiffness: 360, damping: 30, mass: 0.7 } as const;
+const spring = { type: 'spring', stiffness: 390, damping: 32, mass: 0.72 } as const;
+
+const contacts = [
+  { label: 'GitHub', value: 'ikyane', href: profile.links[0].href, icon: SiGithub, className: 'github' },
+  { label: 'LinkedIn', value: 'Ikyane', href: profile.links[1].href, icon: FaLinkedinIn, className: 'linkedin' },
+  { label: 'Discord', value: '@ikyane', href: profile.links[2].href, icon: SiDiscord, className: 'discord' },
+  { label: 'Instagram', value: '@ikyane', href: profile.links[3].href, icon: SiInstagram, className: 'instagram' },
+  { label: 'Spotify', value: 'Listening now', href: profile.links[4].href, icon: SiSpotify, className: 'spotify' },
+] as const;
 
 function Feedback({ label }: { label: string }) {
-  return <motion.span initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -5 }} className="action-feedback"><Check size={14} /> {label}</motion.span>;
+  return (
+    <motion.span initial={{ opacity: 0, y: 6, scale: 0.96 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: -5 }} transition={spring} className="action-feedback">
+      <Check size={14} /> {label}
+    </motion.span>
+  );
 }
 
 export function ProfileExperience() {
@@ -20,11 +32,23 @@ export function ProfileExperience() {
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [feedback, setFeedback] = useState<string | null>(null);
-  const [qrOpen, setQrOpen] = useState(false);
 
+  const flip = () => setSide((current) => current === 'front' ? 'back' : 'front');
   const showFeedback = (message: string) => {
     setFeedback(message);
     window.setTimeout(() => setFeedback(null), 1800);
+  };
+
+  const handleCardClick = (event: MouseEvent<HTMLDivElement>) => {
+    if ((event.target as HTMLElement).closest('a, button')) return;
+    flip();
+  };
+
+  const handleCardKey = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      flip();
+    }
   };
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
@@ -34,8 +58,8 @@ export function ProfileExperience() {
     const bounds = el.getBoundingClientRect();
     const x = (event.clientX - bounds.left) / bounds.width - 0.5;
     const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    el.style.setProperty('--rx', `${-y * 4.5}deg`);
-    el.style.setProperty('--ry', `${x * 5}deg`);
+    el.style.setProperty('--rx', `${-y * 3.8}deg`);
+    el.style.setProperty('--ry', `${x * 4.3}deg`);
     el.style.setProperty('--lx', `${(x + 0.5) * 100}%`);
     el.style.setProperty('--ly', `${(y + 0.5) * 100}%`);
   };
@@ -43,72 +67,112 @@ export function ProfileExperience() {
   const resetTilt = () => {
     const el = cardRef.current;
     if (!el) return;
-    ['--rx', '--ry', '--lx', '--ly'].forEach((name, index) => el.style.setProperty(name, ['0deg', '0deg', '50%', '20%'][index]));
+    el.style.setProperty('--rx', '0deg');
+    el.style.setProperty('--ry', '0deg');
+    el.style.setProperty('--lx', '50%');
+    el.style.setProperty('--ly', '18%');
   };
 
   const handleSave = () => { downloadVCard(profile); showFeedback('Contact saved'); };
   const handleShare = async () => {
     try {
-      if (navigator.share) { await navigator.share({ title: `${profile.name} — Digital Identity`, url: profile.url }); showFeedback('Shared'); }
-      else { await navigator.clipboard.writeText(profile.url); showFeedback('Link copied'); }
-    } catch (error) { if ((error as DOMException).name !== 'AbortError') showFeedback('Could not share'); }
+      if (navigator.share) {
+        await navigator.share({ title: `${profile.name} — Digital Identity`, url: profile.url });
+        showFeedback('Shared');
+      } else {
+        await navigator.clipboard.writeText(profile.url);
+        showFeedback('Link copied');
+      }
+    } catch (error) {
+      if ((error as DOMException).name !== 'AbortError') showFeedback('Could not share');
+    }
   };
   const copyEmail = async () => { await navigator.clipboard.writeText(profile.email); showFeedback('Email copied'); };
-  const downloadQR = () => {
-    const svg = document.querySelector('#profile-qr svg');
-    if (!svg) return;
-    const blob = new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml;charset=utf-8' });
-    const href = URL.createObjectURL(blob); const link = document.createElement('a');
-    link.href = href; link.download = 'ikyane-qr.svg'; link.click(); URL.revokeObjectURL(href); showFeedback('QR downloaded');
-  };
 
   return (
     <main className="profile-shell">
+      <div className="aurora aurora-one" aria-hidden="true" />
+      <div className="aurora aurora-two" aria-hidden="true" />
       <div className="ambient-grid" aria-hidden="true" />
+
       <motion.div className="profile-wrap" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.28 }}>
         <header className="topbar">
-          <a href="#identity" className="brand-mark" aria-label="Ikyane, retour à la carte">IKYANE<span className="brand-dot">.</span></a>
-          <div className="top-status"><span /> Lyon · Available</div>
+          <a href="#identity" className="brand-mark" aria-label="Ikyane, retour à la carte">IKYANE<span>.</span></a>
+          <div className="top-status"><i /> Lyon · Available</div>
           <button className="icon-button" onClick={handleShare} aria-label="Partager le profil"><Share2 size={18} /></button>
         </header>
 
         <section id="identity" className="identity-stage" aria-label="Digital identity card">
-          <motion.div className="card-perspective" initial={reducedMotion ? false : { opacity: 0, y: 22, scale: 0.985 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.06 }}>
-            <div className="identity-card" ref={cardRef} onPointerMove={handlePointerMove} onPointerLeave={resetTilt}>
+          <motion.div className="card-perspective" initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.04 }}>
+            <div
+              className="identity-card"
+              ref={cardRef}
+              role="button"
+              tabIndex={0}
+              aria-label={side === 'front' ? 'Retourner la carte pour afficher les contacts' : 'Retourner la carte pour afficher le profil'}
+              onClick={handleCardClick}
+              onKeyDown={handleCardKey}
+              onPointerMove={handlePointerMove}
+              onPointerLeave={resetTilt}
+            >
+              <div className="card-edge" aria-hidden="true" />
               <div className="card-glint" aria-hidden="true" />
               <AnimatePresence mode="wait" initial={false}>
                 {side === 'front' ? (
-                  <motion.div key="front" className="card-face card-front" initial={{ opacity: 0, x: -10, filter: 'blur(5px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: 10, filter: 'blur(5px)' }} transition={{ duration: reducedMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}>
-                    <div className="portrait-panel">
-                      <div className="portrait-noise" aria-hidden="true" /><div className="avatar-orbit" aria-hidden="true"><span /><span /></div>
-                      <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>
-                      <div className="portrait-caption"><span>Digital identity</span><span>04 · 09 · 26</span></div>
+                  <motion.div key="front" className="card-face card-front" initial={{ opacity: 0, scale: 0.975, rotateY: -7, filter: 'blur(7px)' }} animate={{ opacity: 1, scale: 1, rotateY: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, scale: 0.975, rotateY: 7, filter: 'blur(7px)' }} transition={reducedMotion ? { duration: 0 } : spring}>
+                    <div className={`portrait-panel ${profile.photo ? 'has-photo' : 'portrait-placeholder'}`}>
+                      {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
+                      <div className="portrait-scan" aria-hidden="true" />
+                      <div className="portrait-caption"><span>Digital identity</span><span>LYN / 001</span></div>
                     </div>
+
                     <div className="identity-copy">
-                      <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={14} /></span></div>
+                      <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
                       <div className="role-block"><p>{profile.headline}</p><p>{profile.specialty}</p></div>
                       <div className="meta-row"><span><MapPin size={14} /> {profile.location}</span><span>{profile.school}</span></div>
                       <div className="current-status"><span className="pulse-dot" /><div><small>Currently building</small><strong>StudyOS</strong></div><ArrowUpRight size={17} /></div>
                       <div className="primary-actions">
                         <button className="action-primary" onClick={handleSave}><UserPlus size={17} /> Save contact</button>
-                        <a className="action-secondary" href={`mailto:${profile.email}`}><Mail size={18} /><span className="sr-only">Email</span></a>
-                        <button className="action-secondary" onClick={() => setQrOpen(true)}><QrCode size={18} /><span className="sr-only">Ouvrir le QR code</span></button>
+                        <a className="action-secondary" href={`mailto:${profile.email}`} aria-label="Envoyer un email"><Mail size={18} /></a>
+                        <button className="action-secondary" onClick={flip} aria-label="Afficher tous les contacts"><RotateCcw size={18} /></button>
                       </div>
                     </div>
                   </motion.div>
                 ) : (
-                  <motion.div key="back" className="card-face card-back" initial={{ opacity: 0, x: 10, filter: 'blur(5px)' }} animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, x: -10, filter: 'blur(5px)' }} transition={{ duration: reducedMotion ? 0 : 0.24, ease: [0.22, 1, 0.36, 1] }}>
-                    <div className="back-heading"><span>IKYANE / 001</span><span>LYON — FR</span></div>
-                    <div className="qr-lockup"><div className="qr-frame"><QRCodeSVG value={profile.qrUrl} size={178} level="H" bgColor="#f3f4ef" fgColor="#101210" /></div><p>Scan to open<br /><strong>the live profile.</strong></p></div>
-                    <div className="back-contact"><button onClick={copyEmail}><span>Email</span><strong>{profile.email}</strong><Copy size={15} /></button><button onClick={handleShare}><span>Profile</span><strong>ikyane.dev/card</strong><Share2 size={15} /></button></div>
-                    <div className="back-footer"><span>Made with intent.</span><span className="nfc-mark">)))</span></div>
+                  <motion.div key="back" className="card-face card-back" initial={{ opacity: 0, scale: 0.975, rotateY: 7, filter: 'blur(7px)' }} animate={{ opacity: 1, scale: 1, rotateY: 0, filter: 'blur(0px)' }} exit={{ opacity: 0, scale: 0.975, rotateY: -7, filter: 'blur(7px)' }} transition={reducedMotion ? { duration: 0 } : spring}>
+                    <div className="back-heading"><div><span>Contact matrix</span><h2>Find me<br />online.</h2></div><button onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
+
+                    <div className="contact-matrix">
+                      {contacts.map(({ label, value, href, icon: Icon, className }) => (
+                        <a href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`}>
+                          <span className="brand-icon"><Icon /></span>
+                          <div><strong>{label}</strong><small>{value}</small></div>
+                          <ArrowUpRight size={15} />
+                        </a>
+                      ))}
+                      <button className="contact-tile email" onClick={copyEmail}>
+                        <span className="brand-icon"><Mail /></span>
+                        <div><strong>Email</strong><small>{profile.email}</small></div>
+                        <Copy size={15} />
+                      </button>
+                      <a href={profile.links[5].href} target="_blank" rel="noreferrer" className="contact-tile website">
+                        <span className="brand-icon"><ExternalLink /></span>
+                        <div><strong>Website</strong><small>ikyane.dev</small></div>
+                        <ArrowUpRight size={15} />
+                      </a>
+                    </div>
+
+                    <div className="back-actions">
+                      <button onClick={handleSave}><UserPlus size={16} /> Save contact</button>
+                      <button onClick={handleShare}><Share2 size={16} /> Share profile</button>
+                    </div>
+                    <div className="back-footer"><span>EPITA · LYON</span><span>Tap card to return</span></div>
                   </motion.div>
                 )}
               </AnimatePresence>
             </div>
           </motion.div>
-          <button className="flip-button" onClick={() => setSide(side === 'front' ? 'back' : 'front')}><RotateCcw size={15} /> {side === 'front' ? 'Turn card' : 'Show identity'}</button>
-          <a className="explore-cue" href="#now"><span>Explore profile</span><ArrowDown size={14} /></a>
+          <button className="flip-hint" onClick={flip}><RotateCcw size={14} /> {side === 'front' ? 'Tap the card to see contacts' : 'Tap the card to see identity'}</button>
         </section>
 
         <section id="now" className="content-section">
@@ -121,20 +185,9 @@ export function ProfileExperience() {
           <div className="project-list">{profile.projects.map((project) => <motion.a id={project.name.toLowerCase()} key={project.name} className={`project-card project-${project.tone}`} href={project.href} whileHover={reducedMotion ? undefined : { y: -4 }} whileTap={{ scale: 0.988 }} transition={spring}><div className="project-art" aria-hidden="true"><span>{project.index}</span><i /><b /></div><div className="project-copy"><div><span>{project.index}</span><ArrowUpRight size={18} /></div><h3>{project.name}</h3><p>{project.description}</p><ul>{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></div></motion.a>)}</div>
         </section>
 
-        <section className="content-section internet-section">
-          <div className="section-heading"><span>04</span><h2>Internet</h2><p>Elsewhere, selectively.</p></div>
-          <div className="social-list">{profile.links.map((link) => { const Icon = iconFor[link.label as keyof typeof iconFor]; return <a href={link.href} target="_blank" rel="noreferrer" key={link.label} className="social-row"><span className="social-icon"><Icon size={18} /></span><strong>{link.label}</strong><small>{link.handle}</small><ChevronRight size={18} className="social-arrow" /></a>; })}</div>
-        </section>
-
-        <section className="contact-section">
-          <span className="contact-kicker">05 — Contact</span><h2>Let’s make something<br />worth keeping.</h2><p>{profile.availability}</p>
-          <div className="contact-actions"><a href={`mailto:${profile.email}`}><Mail size={17} /> Write to me</a><button onClick={handleShare}><Share2 size={17} /> Share profile</button></div>
-          <div className="contact-footer"><span>© 2026 Ikyane</span><a href="#identity">Back to top <ArrowUpRight size={13} /></a></div>
-        </section>
+        <footer className="site-footer"><span>© 2026 Ikyane</span><button onClick={handleShare}><Share2 size={14} /> Share profile</button></footer>
       </motion.div>
-
       <AnimatePresence>{feedback && <Feedback label={feedback} />}</AnimatePresence>
-      <Dialog open={qrOpen} onOpenChange={setQrOpen}><DialogContent className="qr-dialog" id="profile-qr"><DialogHeader><DialogTitle>Scan the profile</DialogTitle><DialogDescription>This QR always points to the redirect route, so its destination can evolve.</DialogDescription></DialogHeader><div className="modal-qr"><QRCodeSVG value={profile.qrUrl} size={220} level="H" bgColor="#f6f7f2" fgColor="#101210" /></div><div className="modal-actions"><button onClick={downloadQR}><Download size={16} /> Download</button><button onClick={handleShare}><Share2 size={16} /> Share</button></div></DialogContent></Dialog>
     </main>
   );
 }
