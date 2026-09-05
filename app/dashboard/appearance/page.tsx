@@ -1,0 +1,2 @@
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'; import { AppearanceEditor } from '@/components/dashboard/AppearanceEditor'; import { getCurrentQard } from '@/lib/qard/data';
+export default async function AppearancePage() { const data = await getCurrentQard(); return <><DashboardHeader eyebrow="Apparence" title="Une Qard qui te ressemble." description="Chaque thème reste lisible, rapide et accessible." /><AppearanceEditor data={data} /></>; }

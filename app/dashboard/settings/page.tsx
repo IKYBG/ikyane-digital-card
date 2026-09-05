@@ -1,0 +1,2 @@
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'; import { SettingsForm } from '@/components/dashboard/SettingsForm'; import { getCurrentQard, requireUser } from '@/lib/qard/data';
+export default async function SettingsPage() { const { profile } = await getCurrentQard(); const { email } = await requireUser(); return <><DashboardHeader eyebrow="Réglages" title="Ton compte, tes règles." description="Gère ton identité publique et la sécurité de ton accès." /><SettingsForm profile={profile} accountEmail={email ?? ''} /></>; }

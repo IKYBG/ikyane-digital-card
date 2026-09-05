@@ -2,12 +2,7 @@ import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
-  async redirects() {
-    return [
-      { source: '/', destination: '/card', permanent: false },
-      { source: '/q', destination: '/card', permanent: false },
-    ];
-  },
+  images: { remotePatterns: [{ protocol: 'https', hostname: '*.supabase.co' }] },
 };
 
 export default nextConfig;

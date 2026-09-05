@@ -1,0 +1,2 @@
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'; import { ProfileEditor } from '@/components/dashboard/ProfileEditor'; import { getCurrentQard } from '@/lib/qard/data';
+export default async function EditorPage() { const data = await getCurrentQard(); return <><DashboardHeader eyebrow="Ma Qard" title="Façonne ton identité." description="Chaque modification est enregistrée automatiquement." /><ProfileEditor data={data} /></>; }

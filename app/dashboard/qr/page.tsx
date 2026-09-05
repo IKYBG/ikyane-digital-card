@@ -1,0 +1,2 @@
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader'; import { QRManager } from '@/components/dashboard/QRManager'; import { getCurrentQard } from '@/lib/qard/data'; import { getPublicProfileUrl } from '@/lib/qard/url';
+export default async function QRPage() { const { profile } = await getCurrentQard(); return <><DashboardHeader eyebrow="QR code" title="Un scan vers toi." description="Télécharge un QR permanent, optimisé pour le web et l’impression." /><QRManager profile={profile} url={getPublicProfileUrl(profile.slug)} /></>; }
