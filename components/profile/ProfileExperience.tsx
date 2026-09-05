@@ -5,7 +5,8 @@ import Image from 'next/image';
 import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'motion/react';
 import { SiDiscord, SiGithub, SiInstagram, SiSnapchat, SiTiktok } from 'react-icons/si';
-import { ArrowUpRight, Check, GraduationCap, Mail, MoveHorizontal, Phone, RotateCcw, Share2, UserPlus } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronLeft, ChevronRight, GraduationCap, Mail, MoveHorizontal, Phone, RotateCcw, Share2, UserPlus } from 'lucide-react';
+import AnimatedGradient from '@/components/ui/animated-gradient';
 import { profile } from '@/data/profile';
 import { downloadVCard } from '@/lib/vcard';
 
@@ -145,8 +146,13 @@ export function ProfileExperience() {
 
   return (
     <main className="profile-shell">
-      <div className="aurora aurora-one" aria-hidden="true" />
-      <div className="aurora aurora-two" aria-hidden="true" />
+      <AnimatedGradient
+        className="animated-background"
+        config={{ color1: '#01040b', color2: '#06244a', color3: '#0a5d91', speed: 6, scale: 0.46, distortion: 0.68 }}
+        noise={{ opacity: 0.045, scale: 0.7 }}
+        style={{ position: 'fixed', zIndex: 0 }}
+      />
+      <div className="background-veil" aria-hidden="true" />
       <div className="ambient-grid" aria-hidden="true" />
 
       <motion.div className="profile-wrap" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.28 }}>
@@ -158,84 +164,86 @@ export function ProfileExperience() {
 
         <section id="identity" className="identity-stage" aria-label="Carte d’identité numérique">
           <motion.div className="card-perspective" initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.04 }}>
-            <motion.div
-              className="card-motion-shell"
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={0.18}
-              onDragEnd={handleSwipeEnd}
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              onPointerCancel={() => { swipeStartRef.current = null; }}
-              whileDrag={reducedMotion ? undefined : { scale: 0.985, rotateZ: 0.4 }}
-              transition={spring}
-            >
-              <div
-                className={`identity-card side-${side}`}
-                ref={cardRef}
-                role="button"
-                tabIndex={0}
-                aria-label={side === 'front' ? 'Retourner la carte pour afficher les contacts' : 'Retourner la carte pour afficher le profil'}
-                onClick={handleCardClick}
-                onKeyDown={handleCardKey}
-                onPointerMove={handlePointerMove}
-                onPointerLeave={resetTilt}
+            <div className="swipe-orbit swipe-orbit-left" aria-hidden="true"><ChevronLeft size={19} /><i /><i /><i /></div>
+            <div className="swipe-orbit swipe-orbit-right" aria-hidden="true"><i /><i /><i /><ChevronRight size={19} /></div>
+            <div className="card-breath">
+              <motion.div
+                className="card-motion-shell"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={0.16}
+                onDragEnd={handleSwipeEnd}
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
+                onPointerCancel={() => { swipeStartRef.current = null; }}
+                whileDrag={reducedMotion ? undefined : { scale: 0.975, rotateZ: 0.7 }}
+                transition={spring}
               >
-                <div className="card-edge" aria-hidden="true" />
-                <div className="card-glint" aria-hidden="true" />
-                <motion.div
-                  className="flip-card"
-                  initial={false}
-                  animate={reducedMotion ? { rotateY: side === 'back' ? 180 : 0 } : {
-                    rotateY: side === 'back' ? 180 : 0,
-                    y: [0, -9, 0],
-                    scale: [1, 0.965, 1],
-                    rotateZ: side === 'back' ? [0, -0.65, 0] : [0, 0.65, 0],
-                  }}
-                  transition={{ rotateY: flipSpring, y: { duration: 0.72, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }, scale: { duration: 0.72, times: [0, 0.45, 1], ease: [0.22, 1, 0.36, 1] }, rotateZ: { duration: 0.72, times: [0, 0.45, 1] } }}
+                <div
+                  className={`identity-card side-${side}`}
+                  ref={cardRef}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={side === 'front' ? 'Retourner la carte pour afficher les contacts' : 'Retourner la carte pour afficher le profil'}
+                  onClick={handleCardClick}
+                  onKeyDown={handleCardKey}
+                  onPointerMove={handlePointerMove}
+                  onPointerLeave={resetTilt}
                 >
-                  <div className="card-face card-front" aria-hidden={side !== 'front'}>
-                    <motion.div
-                      className={`portrait-panel ${profile.photo ? 'has-photo' : 'portrait-placeholder'}`}
-                      animate={side === 'front' ? { opacity: 1, scale: 1.015 } : { opacity: 0.72, scale: 1.065 }}
-                      transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                      {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
-                      <div className="portrait-scan" aria-hidden="true" />
-                    </motion.div>
-                    <span className="front-glint" aria-hidden="true" />
-                    <motion.span className="identity-stamp" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
-                    <motion.div className="swipe-cue" animate={side === 'front' ? { opacity: [0.46, 0.92, 0.46], x: [-10, 10, -10] } : { opacity: 0, x: 0 }} transition={{ duration: 2.4, repeat: side === 'front' ? Infinity : 0, ease: [0.22, 1, 0.36, 1] }} aria-hidden="true"><MoveHorizontal size={16} /><span>Glisser</span></motion.div>
-
-                    <motion.div className="identity-copy" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }} transition={{ ...spring, delay: side === 'front' ? 0.26 : 0 }}>
-                      <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
-                      <p className="headline">{profile.headline}</p>
-                      <div className="identity-meta"><span><GraduationCap size={15} /> {profile.level}</span><span>{profile.school}</span></div>
-                      <div className="primary-actions">
-                        <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
-                        <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
-                      </div>
-                    </motion.div>
-                  </div>
-
-                  <div className="card-face card-back" aria-hidden={side !== 'back'}>
-                    <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
-                    <motion.div className="swipe-cue swipe-cue-back" animate={side === 'back' ? { opacity: [0.42, 0.82, 0.42], x: [10, -10, 10] } : { opacity: 0, x: 0 }} transition={{ duration: 2.4, repeat: side === 'back' ? Infinity : 0, ease: [0.22, 1, 0.36, 1] }} aria-hidden="true"><MoveHorizontal size={16} /><span>Glisser</span></motion.div>
-                    <div className="contact-matrix">
-                      {contacts.map(({ label, value, href, icon: Icon, className, discord }, index) => (
-                        <motion.a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`} onClick={discord ? openDiscord : undefined} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.22 + index * 0.05 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}>
-                          <span className="brand-icon"><Icon /></span><div><strong>{label}</strong><small>{value}</small></div><ArrowUpRight size={15} />
-                        </motion.a>
-                      ))}
-                      <motion.a tabIndex={backTabIndex} className="contact-tile email" href={`mailto:${profile.email}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.43 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></motion.a>
-                      <motion.a tabIndex={backTabIndex} className="contact-tile phone" href={`tel:${profile.phone}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.48 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Phone /></span><div><strong>M’appeler</strong><small>06 38 17 47 16</small></div><ArrowUpRight size={15} /></motion.a>
+                  <div className="card-depth" aria-hidden="true" />
+                  <div className="card-edge" aria-hidden="true" />
+                  <div className="card-glint" aria-hidden="true" />
+                  <motion.div
+                    className="flip-card"
+                    initial={false}
+                    animate={reducedMotion ? { rotateY: side === 'back' ? 180 : 0 } : {
+                      rotateY: side === 'back' ? 180 : 0,
+                      y: [0, -11, 0],
+                      scale: [1, 0.955, 1],
+                      rotateZ: side === 'back' ? [0, -0.8, 0] : [0, 0.8, 0],
+                    }}
+                    transition={{ rotateY: flipSpring, y: { duration: 0.78, times: [0, 0.46, 1], ease: [0.22, 1, 0.36, 1] }, scale: { duration: 0.78, times: [0, 0.46, 1], ease: [0.22, 1, 0.36, 1] }, rotateZ: { duration: 0.78, times: [0, 0.46, 1] } }}
+                  >
+                    <div className="card-face card-front" aria-hidden={side !== 'front'}>
+                      <motion.div className={`portrait-panel ${profile.photo ? 'has-photo' : 'portrait-placeholder'}`} animate={side === 'front' ? { opacity: 1, scale: 1.015 } : { opacity: 0.72, scale: 1.065 }} transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}>
+                        {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
+                        <div className="portrait-scan" aria-hidden="true" />
+                      </motion.div>
+                      <span className="front-glint" aria-hidden="true" />
+                      <motion.span className="identity-stamp" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
+                      <motion.div className="identity-copy" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }} transition={{ ...spring, delay: side === 'front' ? 0.26 : 0 }}>
+                        <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
+                        <p className="headline">{profile.headline}</p>
+                        <div className="identity-meta"><span><GraduationCap size={15} /> {profile.level}</span><span>{profile.school}</span></div>
+                        <div className="primary-actions">
+                          <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
+                          <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
+                        </div>
+                      </motion.div>
                     </div>
-                    <div className="back-actions"><button tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
-                    <div className="back-footer"><span>EPITA · LYON</span><span>Glissez pour revenir</span></div>
-                  </div>
-                </motion.div>
-              </div>
-            </motion.div>
+
+                    <div className="card-face card-back" aria-hidden={side !== 'back'}>
+                      <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
+                      <div className="contact-groups">
+                        <div className="contact-group"><span className="contact-group-label">Réseaux</span><div className="contact-matrix network-matrix">
+                          {contacts.map(({ label, value, href, icon: Icon, className, discord }, index) => (
+                            <motion.a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`} onClick={discord ? openDiscord : undefined} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.2 + index * 0.045 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}>
+                              <span className="brand-icon"><Icon /></span><div><strong>{label}</strong><small>{value}</small></div><ArrowUpRight size={15} />
+                            </motion.a>
+                          ))}
+                        </div></div>
+                        <div className="contact-group"><span className="contact-group-label">Direct</span><div className="contact-matrix direct-matrix">
+                          <motion.a tabIndex={backTabIndex} className="contact-tile email" href={`mailto:${profile.email}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.43 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></motion.a>
+                          <motion.a tabIndex={backTabIndex} className="contact-tile phone" href={`tel:${profile.phone}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.48 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Phone /></span><div><strong>M’appeler</strong><small>06 38 17 47 16</small></div><ArrowUpRight size={15} /></motion.a>
+                        </div></div>
+                      </div>
+                      <div className="back-actions"><button tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
+                      <div className="back-footer"><span>EPITA · LYON</span><span>Glissez pour revenir</span></div>
+                    </div>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
           <button className="flip-hint" onClick={flip}><MoveHorizontal size={14} /> {side === 'front' ? 'Glissez ou touchez pour voir mes contacts' : 'Glissez ou touchez pour revenir au profil'}</button>
         </section>
