@@ -3,15 +3,20 @@
 
 import Image from 'next/image';
 import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
-import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'motion/react';
+import { AnimatePresence, motion, useReducedMotion, type PanInfo, type Transition } from 'motion/react';
 import { SiDiscord, SiGithub, SiInstagram, SiSnapchat, SiTiktok } from 'react-icons/si';
 import { ArrowUpRight, Check, ChevronLeft, ChevronRight, GraduationCap, Mail, MoveHorizontal, Phone, RotateCcw, Share2, UserPlus } from 'lucide-react';
 import AnimatedGradient from '@/components/ui/animated-gradient';
+import { LiquidGlass } from '@/components/ui/liquid-glass';
 import { profile } from '@/data/profile';
 import { downloadVCard } from '@/lib/vcard';
 
 const spring = { type: 'spring', stiffness: 390, damping: 32, mass: 0.72 } as const;
-const flipSpring = { type: 'spring', stiffness: 115, damping: 18, mass: 0.92 } as const;
+const flipTimeline: Transition = {
+  duration: 0.59,
+  times: [0, 0.08, 0.52, 0.86, 1],
+  ease: [[0.16, 0.84, 0.24, 1], [0.45, 0.02, 0.58, 0.98], [0.22, 0.76, 0.26, 1], [0.2, 0.8, 0.2, 1]],
+};
 
 const contacts = [
   { label: 'Discord', value: profile.links.discord.username, href: profile.links.discord.webUrl, icon: SiDiscord, className: 'discord', discord: true },
@@ -32,9 +37,14 @@ export function ProfileExperience() {
   const lastSwipeFlipRef = useRef(0);
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
+  const [isFlipping, setIsFlipping] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
 
-  const flip = () => setSide((current) => current === 'front' ? 'back' : 'front');
+  const flip = () => {
+    if (isFlipping) return;
+    setIsFlipping(true);
+    setSide((current) => current === 'front' ? 'back' : 'front');
+  };
   const showFeedback = (message: string) => {
     setFeedback(message);
     window.setTimeout(() => setFeedback(null), 1800);
@@ -143,6 +153,16 @@ export function ProfileExperience() {
 
   const frontTabIndex = side === 'front' ? 0 : -1;
   const backTabIndex = side === 'back' ? 0 : -1;
+  const turningToBack = side === 'back';
+  const flipMotion = reducedMotion ? { rotateY: turningToBack ? 180 : 0 } : {
+    rotateY: turningToBack ? [0, -5, 92, 183, 180] : [180, 185, 88, -3, 0],
+    rotateX: turningToBack ? [0, 0.35, -1.1, 0.2, 0] : [0, -0.35, 1.1, -0.2, 0],
+    rotateZ: turningToBack ? [0, -0.12, -0.32, 0.08, 0] : [0, 0.12, 0.32, -0.08, 0],
+    z: [0, -2, 42, 10, 0],
+    y: [0, 1, -8, -2, 0],
+    scale: [1, 0.996, 1.008, 1.002, 1],
+  };
+  const flipTransition = reducedMotion ? { duration: 0.01 } : flipTimeline;
 
   return (
     <main className="profile-shell">
@@ -163,18 +183,18 @@ export function ProfileExperience() {
       <motion.div className="profile-wrap" initial={reducedMotion ? false : { opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.28 }}>
         <header className="topbar">
           <a href="#identity" className="brand-mark" aria-label="Ikyane, retour à la carte">IKYANE<span>.</span></a>
-          <div className="top-status"><i /> Lyon · Disponible</div>
-          <button className="icon-button" onClick={handleShare} aria-label="Partager le profil"><Share2 size={18} /></button>
+          <LiquidGlass className="top-status"><i /> Lyon · Disponible</LiquidGlass>
+          <button className="icon-button liquid-glass" onClick={handleShare} aria-label="Partager le profil"><Share2 size={18} /></button>
         </header>
 
         <section id="identity" className="identity-stage" aria-label="Carte d’identité numérique">
           <motion.div className="card-perspective" initial={reducedMotion ? false : { opacity: 0, y: 24, scale: 0.975 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ ...spring, delay: 0.04 }}>
             <div className="swipe-orbit swipe-orbit-left" aria-hidden="true"><ChevronLeft size={19} /><i /><i /><i /></div>
             <div className="swipe-orbit swipe-orbit-right" aria-hidden="true"><i /><i /><i /><ChevronRight size={19} /></div>
-            <div className="card-breath">
+            <div className={`card-breath${isFlipping ? ' is-flipping' : ''}`}>
               <motion.div
                 className="card-motion-shell"
-                drag="x"
+                drag={isFlipping ? false : 'x'}
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.16}
                 onDragEnd={handleSwipeEnd}
@@ -195,54 +215,52 @@ export function ProfileExperience() {
                   onPointerMove={handlePointerMove}
                   onPointerLeave={resetTilt}
                 >
-                  <div className="card-depth" aria-hidden="true" />
-                  <div className="card-edge" aria-hidden="true" />
-                  <div className="card-glint" aria-hidden="true" />
+                  <motion.div className="flip-shadow" aria-hidden="true" initial={false} animate={reducedMotion ? { opacity: 0.42 } : { opacity: turningToBack ? [0.42, 0.46, 0.68, 0.5, 0.42] : [0.42, 0.5, 0.68, 0.46, 0.42], scaleX: turningToBack ? [1, 0.96, 0.22, 0.91, 1] : [1, 0.91, 0.22, 0.96, 1], scaleY: [1, 0.99, 1.04, 1.01, 1], y: [0, 1, 19, 5, 0] }} transition={flipTransition} />
+                  <motion.div className="card-depth" aria-hidden="true" initial={false} animate={reducedMotion ? { opacity: 1 } : { opacity: turningToBack ? [1, 0.82, 0.04, 0.76, 1] : [1, 0.76, 0.04, 0.82, 1] }} transition={flipTransition} />
+                  <motion.div className="card-edge" aria-hidden="true" initial={false} animate={reducedMotion ? { opacity: 1 } : { opacity: turningToBack ? [1, 0.76, 0.05, 0.7, 1] : [1, 0.7, 0.05, 0.76, 1] }} transition={flipTransition} />
+                  <motion.div className="card-glint" aria-hidden="true" initial={false} animate={reducedMotion ? { opacity: 1 } : { opacity: turningToBack ? [1, 0.62, 0.02, 0.52, 1] : [1, 0.52, 0.02, 0.62, 1] }} transition={flipTransition} />
                   <motion.div
                     className="flip-card"
                     initial={false}
-                    animate={reducedMotion ? { rotateY: side === 'back' ? 180 : 0 } : {
-                      rotateY: side === 'back' ? 180 : 0,
-                      y: [0, -11, 0],
-                      scale: [1, 0.955, 1],
-                      rotateZ: side === 'back' ? [0, -0.8, 0] : [0, 0.8, 0],
-                    }}
-                    transition={{ rotateY: flipSpring, y: { duration: 0.78, times: [0, 0.46, 1], ease: [0.22, 1, 0.36, 1] }, scale: { duration: 0.78, times: [0, 0.46, 1], ease: [0.22, 1, 0.36, 1] }, rotateZ: { duration: 0.78, times: [0, 0.46, 1] } }}
+                    animate={flipMotion}
+                    transition={flipTransition}
+                    onAnimationComplete={() => setIsFlipping(false)}
                   >
-                    <div className="card-face card-front" aria-hidden={side !== 'front'}>
+                    <div className="card-thickness" aria-hidden="true" />
+                    <div className="card-face card-front liquid-glass" aria-hidden={side !== 'front'}>
                       <motion.div className={`portrait-panel ${profile.photo ? 'has-photo' : 'portrait-placeholder'}`} animate={side === 'front' ? { opacity: 1, scale: 1.015 } : { opacity: 0.72, scale: 1.065 }} transition={{ duration: 0.82, ease: [0.22, 1, 0.36, 1] }}>
                         {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
                         <div className="portrait-scan" aria-hidden="true" />
                       </motion.div>
                       <span className="front-glint" aria-hidden="true" />
-                      <motion.span className="identity-stamp" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
+                      <motion.span className="identity-stamp liquid-glass" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
                       <motion.div className="identity-copy" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }} transition={{ ...spring, delay: side === 'front' ? 0.26 : 0 }}>
                         <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
                         <p className="headline">{profile.headline}</p>
                         <div className="identity-meta"><span><GraduationCap size={15} /> {profile.level}</span><span>{profile.school}</span></div>
                         <div className="primary-actions">
-                          <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
-                          <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
+                          <motion.button tabIndex={frontTabIndex} className="action-primary liquid-glass liquid-glass-bright" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
+                          <motion.button tabIndex={frontTabIndex} className="action-secondary liquid-glass" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
                         </div>
                       </motion.div>
                     </div>
 
-                    <div className="card-face card-back" aria-hidden={side !== 'back'}>
-                      <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
+                    <div className="card-face card-back liquid-glass" aria-hidden={side !== 'back'}>
+                      <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button className="liquid-glass" tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
                       <div className="contact-groups">
                         <div className="contact-group"><span className="contact-group-label">Réseaux</span><div className="contact-matrix network-matrix">
                           {contacts.map(({ label, value, href, icon: Icon, className, discord }, index) => (
-                            <motion.a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile ${className}`} onClick={discord ? openDiscord : undefined} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.2 + index * 0.045 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}>
+                            <motion.a tabIndex={backTabIndex} href={href} target="_blank" rel="noreferrer" key={label} className={`contact-tile liquid-glass ${className}`} onClick={discord ? openDiscord : undefined} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.2 + index * 0.045 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}>
                               <span className="brand-icon"><Icon /></span><div><strong>{label}</strong><small>{value}</small></div><ArrowUpRight size={15} />
                             </motion.a>
                           ))}
                         </div></div>
                         <div className="contact-group"><span className="contact-group-label">Direct</span><div className="contact-matrix direct-matrix">
-                          <motion.a tabIndex={backTabIndex} className="contact-tile email" href={`mailto:${profile.email}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.43 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></motion.a>
-                          <motion.a tabIndex={backTabIndex} className="contact-tile phone" href={`tel:${profile.phone}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.48 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Phone /></span><div><strong>M’appeler</strong><small>06 38 17 47 16</small></div><ArrowUpRight size={15} /></motion.a>
+                          <motion.a tabIndex={backTabIndex} className="contact-tile liquid-glass email" href={`mailto:${profile.email}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.43 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Mail /></span><div><strong>M’écrire</strong><small>{profile.email}</small></div><ArrowUpRight size={15} /></motion.a>
+                          <motion.a tabIndex={backTabIndex} className="contact-tile liquid-glass phone" href={`tel:${profile.phone}`} animate={side === 'back' ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 13, scale: 0.975 }} transition={{ ...spring, delay: side === 'back' ? 0.48 : 0 }} whileHover={{ y: -3, scale: 1.012 }} whileTap={{ scale: 0.97 }}><span className="brand-icon"><Phone /></span><div><strong>M’appeler</strong><small>06 38 17 47 16</small></div><ArrowUpRight size={15} /></motion.a>
                         </div></div>
                       </div>
-                      <div className="back-actions"><button tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
+                      <div className="back-actions"><button className="liquid-glass liquid-glass-bright" tabIndex={backTabIndex} onClick={handleSave}><UserPlus size={16} /> Enregistrer</button><button className="liquid-glass" tabIndex={backTabIndex} onClick={handleShare}><Share2 size={16} /> Partager</button></div>
                       <div className="back-footer"><span>EPITA · LYON</span><span>Glissez pour revenir</span></div>
                     </div>
                   </motion.div>
@@ -250,25 +268,25 @@ export function ProfileExperience() {
               </motion.div>
             </div>
           </motion.div>
-          <button className="flip-hint" onClick={flip}><MoveHorizontal size={14} /> {side === 'front' ? 'Glissez ou touchez pour voir mes contacts' : 'Glissez ou touchez pour revenir au profil'}</button>
+          <button className="flip-hint liquid-glass" onClick={flip}><MoveHorizontal size={14} /> {side === 'front' ? 'Glissez ou touchez pour voir mes contacts' : 'Glissez ou touchez pour revenir au profil'}</button>
         </section>
 
         <section id="journey" className="content-section">
           <div className="section-heading"><span>02</span><h2>Mon parcours</h2><p>Les établissements qui ont jalonné mon chemin.</p></div>
-          <div className="now-list journey-list">{profile.journey.map((item, index) => <motion.article key={item.value} className="now-item" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ ...spring, delay: index * 0.04 }}><span className="now-index">0{index + 1}</span><div><small>{item.label}</small><h3>{item.value}</h3><p>{item.detail}</p></div><span className="now-line" /></motion.article>)}</div>
+          <div className="now-list journey-list liquid-glass">{profile.journey.map((item, index) => <motion.article key={item.value} className="now-item" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ ...spring, delay: index * 0.04 }}><span className="now-index">0{index + 1}</span><div><small>{item.label}</small><h3>{item.value}</h3><p>{item.detail}</p></div><span className="now-line" /></motion.article>)}</div>
         </section>
 
         <section id="now" className="content-section">
           <div className="section-heading"><span>03</span><h2>En ce moment</h2><p>Ce qui occupe mon attention.</p></div>
-          <div className="now-list">{profile.now.map((item, index) => <motion.article key={item.label} className="now-item" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ ...spring, delay: index * 0.04 }}><span className="now-index">0{index + 1}</span><div><small>{item.label}</small><h3>{item.value}</h3><p>{item.detail}</p></div><span className="now-line" /></motion.article>)}</div>
+          <div className="now-list liquid-glass">{profile.now.map((item, index) => <motion.article key={item.label} className="now-item" initial={reducedMotion ? false : { opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.35 }} transition={{ ...spring, delay: index * 0.04 }}><span className="now-index">0{index + 1}</span><div><small>{item.label}</small><h3>{item.value}</h3><p>{item.detail}</p></div><span className="now-line" /></motion.article>)}</div>
         </section>
 
         <section className="content-section projects-section">
           <div className="section-heading"><span>04</span><h2>Projets sélectionnés</h2><p>Des systèmes simples, conçus avec soin.</p></div>
-          <div className="project-list">{profile.projects.map((project) => <motion.a id={project.name.toLowerCase()} key={project.name} className={`project-card project-${project.tone}`} href={project.href} whileHover={reducedMotion ? undefined : { y: -4 }} whileTap={{ scale: 0.988 }} transition={spring}><div className="project-art" aria-hidden="true"><span>{project.index}</span><i /><b /></div><div className="project-copy"><div><span>{project.index}</span><ArrowUpRight size={18} /></div><h3>{project.name}</h3><p>{project.description}</p><ul>{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></div></motion.a>)}</div>
+          <div className="project-list">{profile.projects.map((project) => <motion.a id={project.name.toLowerCase()} key={project.name} className={`project-card liquid-glass project-${project.tone}`} href={project.href} whileHover={reducedMotion ? undefined : { y: -4 }} whileTap={{ scale: 0.988 }} transition={spring}><div className="project-art" aria-hidden="true"><span>{project.index}</span><i /><b /></div><div className="project-copy"><div><span>{project.index}</span><ArrowUpRight size={18} /></div><h3>{project.name}</h3><p>{project.description}</p><ul>{project.tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></div></motion.a>)}</div>
         </section>
 
-        <footer className="site-footer"><span>© 2026 Ikyane</span><button onClick={handleShare}><Share2 size={14} /> Partager le profil</button></footer>
+        <footer className="site-footer liquid-glass"><span>© 2026 Ikyane</span><button onClick={handleShare}><Share2 size={14} /> Partager le profil</button></footer>
       </motion.div>
       <AnimatePresence>{feedback && <Feedback label={feedback} />}</AnimatePresence>
     </main>
