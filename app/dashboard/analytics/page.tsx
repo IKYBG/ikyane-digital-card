@@ -28,7 +28,7 @@ export default async function AnalyticsPage({
   const since = new Date();
   since.setUTCDate(since.getUTCDate() - period);
   const { data } = await supabase
-    .from("analytics_events")
+    .from("qard_analytics_events")
     .select("id,event_type,social_link_id,created_at")
     .eq("profile_id", profile.id)
     .gte("created_at", since.toISOString())

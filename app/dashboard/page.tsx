@@ -24,13 +24,13 @@ export default async function DashboardPage() {
   const since = sinceDate.toISOString();
   const [{ count: views }, { count: clicks }] = await Promise.all([
     supabase
-      .from("analytics_events")
+      .from("qard_analytics_events")
       .select("*", { count: "exact", head: true })
       .eq("profile_id", profile.id)
       .eq("event_type", "profile_view")
       .gte("created_at", since),
     supabase
-      .from("analytics_events")
+      .from("qard_analytics_events")
       .select("*", { count: "exact", head: true })
       .eq("profile_id", profile.id)
       .eq("event_type", "link_click")

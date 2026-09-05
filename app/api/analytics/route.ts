@@ -24,7 +24,7 @@ export async function POST(request: Request) {
   try {
     const admin = createAdminClient();
     const { data: profile } = await admin
-      .from("profiles")
+      .from("qard_profiles")
       .select("id,published")
       .eq("slug", parsed.data.slug)
       .eq("published", true)
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     let socialLinkId: string | null = null;
     if (parsed.data.socialLinkId) {
       const { data: link } = await admin
-        .from("social_links")
+        .from("qard_social_links")
         .select("id")
         .eq("id", parsed.data.socialLinkId)
         .eq("profile_id", profile.id)
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
             ? "Safari"
             : "Autre";
     await admin
-      .from("analytics_events")
+      .from("qard_analytics_events")
       .insert({
         profile_id: profile.id,
         social_link_id: socialLinkId,

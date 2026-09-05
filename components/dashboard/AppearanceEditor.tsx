@@ -76,7 +76,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
     void created_at;
     void updated_at;
     const { error } = await createClient()
-      .from("appearance")
+      .from("qard_appearance")
       .update(payload)
       .eq("id", appearance.id);
     setStatus(error ? "Erreur" : "Enregistré");

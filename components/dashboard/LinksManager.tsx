@@ -117,8 +117,8 @@ export function LinksManager({
       enabled: true,
     };
     const query = editingId
-      ? createClient().from("social_links").update(payload).eq("id", editingId)
-      : createClient().from("social_links").insert(payload);
+      ? createClient().from("qard_social_links").update(payload).eq("id", editingId)
+      : createClient().from("qard_social_links").insert(payload);
     const { data, error } = await query.select().single();
     if (!error && data) {
       setLinks(
@@ -144,7 +144,7 @@ export function LinksManager({
   }
   async function remove(id: string) {
     const { error } = await createClient()
-      .from("social_links")
+      .from("qard_social_links")
       .delete()
       .eq("id", id);
     if (!error) {
@@ -155,7 +155,7 @@ export function LinksManager({
   async function toggle(link: SocialLink) {
     const enabled = !link.enabled;
     const { error } = await createClient()
-      .from("social_links")
+      .from("qard_social_links")
       .update({ enabled })
       .eq("id", link.id);
     if (!error)
@@ -178,7 +178,7 @@ export function LinksManager({
     const results = await Promise.all(
       reordered.map((item) =>
         supabase
-          .from("social_links")
+          .from("qard_social_links")
           .update({ position: item.position })
           .eq("id", item.id),
       ),

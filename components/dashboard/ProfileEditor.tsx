@@ -54,7 +54,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
       if (!parsed.success) return;
       setStatus("saving");
       const { error } = await createClient()
-        .from("profiles")
+        .from("qard_profiles")
         .update({ ...parsed.data, avatar_url: avatar, banner_url: banner })
         .eq("id", data.profile.id);
       setStatus(error ? "error" : "saved");

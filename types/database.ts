@@ -13,11 +13,11 @@ export type QardData = { profile: Profile; links: SocialLink[]; appearance: Appe
 export type Database = {
   public: {
     Tables: {
-      profiles: { Row: Profile; Insert: Partial<Profile> & Pick<Profile, 'user_id' | 'slug' | 'display_name'>; Update: Partial<Profile>; Relationships: [] };
-      social_links: { Row: SocialLink; Insert: Omit<SocialLink, 'id' | 'created_at' | 'updated_at'> & { id?: string }; Update: Partial<SocialLink>; Relationships: [] };
-      appearance: { Row: Appearance; Insert: Partial<Appearance> & Pick<Appearance, 'profile_id'>; Update: Partial<Appearance>; Relationships: [] };
-      analytics_events: { Row: { id: number; profile_id: string; social_link_id: string | null; event_type: string; referrer: string | null; device_type: string | null; browser: string | null; country: string | null; created_at: string }; Insert: { profile_id: string; social_link_id?: string | null; event_type: string; referrer?: string | null; device_type?: string | null; browser?: string | null; country?: string | null }; Update: never; Relationships: [] };
-      subscriptions: { Row: { id: string; user_id: string; plan: 'free' | 'pro'; status: string; provider: string; provider_customer_id: string | null; provider_subscription_id: string | null; current_period_end: string | null; created_at: string; updated_at: string }; Insert: never; Update: never; Relationships: [] };
+      qard_profiles: { Row: Profile; Insert: Partial<Profile> & Pick<Profile, 'user_id' | 'slug' | 'display_name'>; Update: Partial<Profile>; Relationships: [] };
+      qard_social_links: { Row: SocialLink; Insert: Omit<SocialLink, 'id' | 'created_at' | 'updated_at'> & { id?: string }; Update: Partial<SocialLink>; Relationships: [] };
+      qard_appearance: { Row: Appearance; Insert: Partial<Appearance> & Pick<Appearance, 'profile_id'>; Update: Partial<Appearance>; Relationships: [] };
+      qard_analytics_events: { Row: { id: number; profile_id: string; social_link_id: string | null; event_type: string; referrer: string | null; device_type: string | null; browser: string | null; country: string | null; created_at: string }; Insert: { profile_id: string; social_link_id?: string | null; event_type: string; referrer?: string | null; device_type?: string | null; browser?: string | null; country?: string | null }; Update: never; Relationships: [] };
+      qard_subscriptions: { Row: { id: string; user_id: string; plan: 'free' | 'pro'; status: string; provider: string; provider_customer_id: string | null; provider_subscription_id: string | null; current_period_end: string | null; created_at: string; updated_at: string }; Insert: never; Update: never; Relationships: [] };
     };
     Views: Record<string, never>; Functions: Record<string, never>; Enums: { qard_plan: 'free' | 'pro'; analytics_event_type: 'profile_view' | 'link_click' | 'contact_download' | 'qr_download'; subscription_status: 'inactive' | 'trialing' | 'active' | 'past_due' | 'canceled' }; CompositeTypes: Record<string, never>;
   };

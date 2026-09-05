@@ -30,10 +30,10 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
     const supabase = createClient();
     await Promise.all([
       supabase
-        .from("analytics_events")
+        .from("qard_analytics_events")
         .insert({ profile_id: profile.id, event_type: "qr_download" }),
       supabase
-        .from("profiles")
+        .from("qard_profiles")
         .update({ qr_downloaded_at: new Date().toISOString() })
         .eq("id", profile.id),
     ]);

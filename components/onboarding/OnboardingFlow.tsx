@@ -94,7 +94,7 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
         if (!response.ok) throw new Error((await response.json()).error);
       }
       const { error } = await supabase
-        .from("profiles")
+        .from("qard_profiles")
         .update({
           display_name: name.trim(),
           avatar_url: avatarUrl,
@@ -104,7 +104,7 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
       if (error) throw error;
       if (contact.trim()) {
         const { error: linkError } = await supabase
-          .from("social_links")
+          .from("qard_social_links")
           .insert({
             profile_id: profile.id,
             platform: contactType,
