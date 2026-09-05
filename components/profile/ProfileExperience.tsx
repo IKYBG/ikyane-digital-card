@@ -148,8 +148,13 @@ export function ProfileExperience() {
     <main className="profile-shell">
       <AnimatedGradient
         className="animated-background"
-        config={{ color1: '#01040b', color2: '#06244a', color3: '#0a5d91', speed: 6, scale: 0.46, distortion: 0.68 }}
-        noise={{ opacity: 0.045, scale: 0.7 }}
+        config={{
+          color1: '#01030a', color2: '#062753', color3: '#0b75ad',
+          rotation: -18, proportion: 47, scale: .46, speed: 13,
+          distortion: 7, swirl: 28, swirlIterations: 3,
+          softness: 88, offset: -180, shape: 'Edge', shapeSize: 58,
+        }}
+        noise={{ opacity: 0.035, scale: 0.7 }}
         style={{ position: 'fixed', zIndex: 0 }}
       />
       <div className="background-veil" aria-hidden="true" />
