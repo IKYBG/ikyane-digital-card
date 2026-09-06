@@ -1,4 +1,5 @@
 "use client";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2, Trash2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
@@ -72,6 +73,13 @@ export function MediaUploader({
   }
   return (
     <div className="media-uploader">
+      <div className={`media-uploader-preview ${bucket === "banners" ? "banner" : "avatar"}`}>
+        {value ? (
+          <Image src={value} alt={`Aperçu — ${label}`} fill sizes="72px" unoptimized />
+        ) : (
+          <ImagePlus size={20} aria-hidden="true" />
+        )}
+      </div>
       <div>
         <span>{label}</span>
         <small>JPG, PNG ou WebP</small>

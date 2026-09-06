@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, ChevronRight, Eye, EyeOff, Save, Sparkles, X } from "lucide-react";
+import { Check, ChevronRight, Eye, EyeOff, Save, SlidersHorizontal, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { profileSchema } from "@/lib/qard/validation";
 import type { QardData, SocialLink } from "@/types/database";
@@ -150,7 +150,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
     <div className="editor-layout">
       <section className="editor-editing-column">
       <div className="mobile-card-controls">
-        <button type="button" className="button mobile-configure-button" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><Sparkles size={17} /> Configurer ma Qard</button>
+        <button type="button" className="button mobile-configure-button" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><SlidersHorizontal size={17} /> Configurer ma Qard</button>
         <button type="button" className="mobile-preview-visibility" onClick={() => setPreviewVisible((current) => !current)}>
           {previewVisible ? <EyeOff size={16} /> : <Eye size={16} />}{previewVisible ? "Masquer l’aperçu" : "Afficher l’aperçu"}
         </button>
@@ -301,7 +301,6 @@ export function ProfileEditor({ data }: { data: QardData }) {
       >
         <div className="phone-frame">
           <QardPreview data={preview} compact />
-          <button type="button" className="mobile-preview-edit" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><Sparkles size={16} /> Modifier cette Qard</button>
         </div>
       </aside>
       {guideOpen && <dialog open className="mobile-guide" aria-labelledby="mobile-guide-title" onCancel={() => setGuideOpen(false)}>

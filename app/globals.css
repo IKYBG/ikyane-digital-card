@@ -1572,25 +1572,6 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
 }
 .editor-live-card:not(.mobile-preview-open) { display: none; }
 .editor-live-card .phone-frame { position: relative; }
-.mobile-preview-edit {
-  position: absolute;
-  z-index: 20;
-  left: 50%;
-  bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 40px;
-  padding: 0 15px;
-  border: 1px solid rgb(202 224 249 / .17);
-  border-radius: 999px;
-  color: #e9f3fe;
-  background: rgb(9 14 21 / .88);
-  box-shadow: 0 10px 30px rgb(0 0 0 / .32);
-  backdrop-filter: blur(14px);
-  transform: translateX(-50%);
-  white-space: nowrap;
-}
 .mobile-guide {
   position: fixed;
   z-index: 1000;
@@ -1638,6 +1619,7 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
   .auth-form-card { padding: 27px 20px; border-radius: 22px; }
 
   .editor-layout { display: flex; flex-direction: column; gap: 14px; }
+  .editor-editing-column { display: contents; }
   .mobile-card-controls {
     order: -3;
     display: grid;
@@ -1679,25 +1661,6 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
   .editor-live-card.mobile-preview-open { display: block; }
   .editor-live-card .phone-frame { position: relative; }
   .editor-live-card .qard-premium.compact .card-motion-shell { height: min(560px, 68svh); min-height: 455px; }
-  .mobile-preview-edit {
-    position: absolute;
-    z-index: 20;
-    left: 50%;
-    bottom: 18px;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    min-height: 40px;
-    padding: 0 15px;
-    border: 1px solid rgb(202 224 249 / .17);
-    border-radius: 999px;
-    color: #e9f3fe;
-    background: rgb(9 14 21 / .88);
-    box-shadow: 0 10px 30px rgb(0 0 0 / .32);
-    backdrop-filter: blur(14px);
-    transform: translateX(-50%);
-    white-space: nowrap;
-  }
   .editor-form { order: -1; }
   .mobile-guide {
     position: fixed;
@@ -1758,4 +1721,47 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
 @media (prefers-reduced-motion: reduce) {
   .auth-card-frame::before,
   .mobile-guide-sheet { animation: none; }
+}
+
+/* Clear media feedback and a focused QR download flow */
+.media-uploader {
+  grid-template-columns: 56px minmax(0, 1fr) auto auto;
+}
+.media-uploader-preview {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  border: 1px solid rgb(190 216 246 / .12);
+  color: #7f8b99;
+  background: rgb(255 255 255 / .035);
+}
+.media-uploader-preview.avatar { border-radius: 50%; }
+.media-uploader-preview.banner { border-radius: 10px; }
+.media-uploader-preview img { object-fit: cover; }
+.qr-single-action { grid-template-columns: 1fr; }
+.qr-single-action button { width: 100%; min-height: 50px; }
+.qr-single-action button:last-child { grid-column: auto; }
+
+@media (max-width: 640px) {
+  .qr-layout { gap: 12px; }
+  .qr-display,
+  .qr-controls { padding: 16px; border-radius: 18px; }
+  .qr-display { order: 0; }
+  .qr-controls { order: 1; gap: 14px; }
+  .qr-canvas { width: min(78vw, 286px); padding: 13px; border-radius: 18px; }
+  .qr-display p { margin-bottom: 0; }
+  .qr-controls > p { margin-block: 0; line-height: 1.5; }
+  .copy-field { grid-template-columns: minmax(0, 1fr) 42px 42px; }
+  .copy-field input { min-width: 0; padding-inline: 10px; font-size: .72rem; }
+  .qr-warning { font-size: .72rem; }
+  .media-uploader {
+    grid-template-columns: 52px minmax(0, 1fr) auto auto;
+    padding: 9px;
+  }
+  .media-uploader-preview { width: 52px; height: 52px; }
+  .media-uploader > .field-error { grid-column: 1 / -1; }
+  .media-uploader button { padding-inline: 9px; }
 }
