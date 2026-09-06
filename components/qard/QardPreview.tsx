@@ -35,10 +35,14 @@ export function QardPreview({
   data,
   compact = false,
   analyticsAttributes = false,
+  contactHref,
+  contactLabel = "Enregistrer",
 }: {
   data: QardData;
   compact?: boolean;
   analyticsAttributes?: boolean;
+  contactHref?: string;
+  contactLabel?: string;
 }) {
   const { profile, appearance } = data;
   const cardRef = useRef<HTMLDivElement>(null);
@@ -129,6 +133,7 @@ export function QardPreview({
 
   const frontTabIndex = side === "front" ? 0 : -1;
   const backTabIndex = side === "back" ? 0 : -1;
+  const vcardHref = contactHref ?? `/api/vcard/${profile.slug}`;
   const renderLink = (link: DisplayLink, index: number) => (
     <motion.a
       tabIndex={backTabIndex}
@@ -226,7 +231,7 @@ export function QardPreview({
                     {profile.location && <span><MapPin size={14} /> {profile.location}</span>}
                   </div>
                   <div className="primary-actions">
-                    <motion.a tabIndex={frontTabIndex} className="action-primary" href={`/api/vcard/${profile.slug}`} data-qard-contact={analyticsAttributes ? "true" : undefined} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.a>
+                    <motion.a tabIndex={frontTabIndex} className="action-primary" href={vcardHref} data-qard-contact={analyticsAttributes ? "true" : undefined} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> {contactLabel}</motion.a>
                     <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
                   </div>
                 </div>
@@ -243,7 +248,7 @@ export function QardPreview({
                   {networkLinks.length === 0 && directLinks.length === 0 && <p className="qard-empty-contact">Les coordonnées apparaîtront ici.</p>}
                 </div>
                 <div className="back-actions">
-                  <a tabIndex={backTabIndex} href={`/api/vcard/${profile.slug}`} data-qard-contact={analyticsAttributes ? "true" : undefined}><UserPlus size={16} /> Enregistrer</a>
+                  <a tabIndex={backTabIndex} href={vcardHref} data-qard-contact={analyticsAttributes ? "true" : undefined}><UserPlus size={16} /> {contactLabel}</a>
                   <button tabIndex={backTabIndex} onClick={share}>{shared ? <Check size={16} /> : <Share2 size={16} />} {shared ? "Lien copié" : "Partager"}</button>
                 </div>
                 <div className="back-footer"><span>QARD · {profile.slug}</span><span>Glissez pour revenir</span></div>
