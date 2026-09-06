@@ -148,6 +148,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
 
   return (
     <div className="editor-layout">
+      <section className="editor-editing-column">
       <div className="mobile-card-controls">
         <button type="button" className="button mobile-configure-button" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><Sparkles size={17} /> Configurer ma Qard</button>
         <button type="button" className="mobile-preview-visibility" onClick={() => setPreviewVisible((current) => !current)}>
@@ -294,6 +295,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
           </div>
         </details>
       </form>
+      </section>
       <aside
         className={`editor-preview editor-live-card${previewVisible ? " mobile-preview-open" : ""}`}
       >
@@ -302,7 +304,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
           <button type="button" className="mobile-preview-edit" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><Sparkles size={16} /> Modifier cette Qard</button>
         </div>
       </aside>
-      {guideOpen && <dialog open className="mobile-guide" aria-labelledby="mobile-guide-title">
+      {guideOpen && <dialog open className="mobile-guide" aria-labelledby="mobile-guide-title" onCancel={() => setGuideOpen(false)}>
         <div className="mobile-guide-sheet">
           <header><span>{questionIndex + 1} / {mobileQuestions.length}</span><button type="button" onClick={() => setGuideOpen(false)} aria-label="Arrêter la configuration"><X size={18} /></button></header>
           <div className="mobile-guide-progress"><i style={{ width: `${((questionIndex + 1) / mobileQuestions.length) * 100}%` }} /></div>

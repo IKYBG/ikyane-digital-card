@@ -1546,10 +1546,91 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
 .form-message.info { color: #a7cbed; border-color: rgb(107 164 220 / .24); background: rgb(53 117 181 / .09); }
 @keyframes auth-border-beam { to { transform: rotate(360deg); } }
 
-/* One-screen mobile card editor with live preview */
-.mobile-card-controls,
-.mobile-preview-edit,
-.mobile-guide { display: none; }
+/* Guided card editor, shared across desktop and mobile */
+.editor-editing-column { display: grid; gap: 14px; min-width: 0; }
+.mobile-card-controls {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px;
+  border: 1px solid rgb(190 216 246 / .12);
+  border-radius: 16px;
+  background: rgb(14 18 24 / .76);
+}
+.mobile-configure-button { min-height: 42px; padding-inline: 15px; }
+.mobile-preview-visibility {
+  min-height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 0 13px;
+  border: 1px solid rgb(190 216 246 / .1);
+  border-radius: 11px;
+  color: #a8b4c2;
+  background: rgb(255 255 255 / .025);
+}
+.editor-live-card:not(.mobile-preview-open) { display: none; }
+.editor-live-card .phone-frame { position: relative; }
+.mobile-preview-edit {
+  position: absolute;
+  z-index: 20;
+  left: 50%;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 40px;
+  padding: 0 15px;
+  border: 1px solid rgb(202 224 249 / .17);
+  border-radius: 999px;
+  color: #e9f3fe;
+  background: rgb(9 14 21 / .88);
+  box-shadow: 0 10px 30px rgb(0 0 0 / .32);
+  backdrop-filter: blur(14px);
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.mobile-guide {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 24px;
+  border: 0;
+  display: grid;
+  place-items: center;
+  color: inherit;
+  background: rgb(2 5 9 / .72);
+  backdrop-filter: blur(10px);
+}
+.mobile-guide-sheet {
+  width: min(100%, 500px);
+  max-height: min(760px, calc(100svh - 48px));
+  overflow: auto;
+  padding: 22px;
+  border: 1px solid rgb(202 224 249 / .14);
+  border-radius: 25px;
+  background: linear-gradient(150deg, #171d25, #0e131a);
+  box-shadow: 0 30px 90px rgb(0 0 0 / .55);
+  animation: guide-enter .38s cubic-bezier(.22,1,.36,1) both;
+}
+.mobile-guide-sheet header,
+.mobile-guide-sheet footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.mobile-guide-sheet header span { color: #8592a2; font: 600 .7rem var(--font-geist-mono); letter-spacing: .1em; }
+.mobile-guide-sheet header button { width: 38px; height: 38px; display: grid; place-items: center; border: 0; border-radius: 50%; color: #aab6c4; background: rgb(255 255 255 / .05); }
+.mobile-guide-progress { height: 3px; margin: 14px 0 28px; overflow: hidden; border-radius: 4px; background: rgb(255 255 255 / .06); }
+.mobile-guide-progress i { display: block; height: 100%; border-radius: inherit; background: #b9d8fb; transition: width .35s cubic-bezier(.22,1,.36,1); }
+.mobile-guide-sheet > p { margin: 0 0 9px; color: #8eb8e6; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+.mobile-guide-sheet h2 { margin: 0; color: #f4f7fb; font-size: 1.65rem; letter-spacing: -.04em; }
+.mobile-guide-sheet > small { display: block; margin: 8px 0 22px; color: #8d99a7; line-height: 1.45; }
+.mobile-guide-sheet > input { width: 100%; min-height: 52px; margin-bottom: 24px; padding: 0 14px; border: 1px solid rgb(190 216 246 / .14); border-radius: 13px; color: #f3f7fb; background: rgb(3 7 12 / .5); font-size: 1rem; }
+.mobile-guide-sheet footer > button:first-child { border: 0; color: #96a2b1; background: transparent; }
+.mobile-guide-sheet footer .button { min-width: 132px; }
 
 @media (max-width: 640px) {
   .auth-shell-v2 > section { padding: 12px 12px 40px; align-items: start; }
@@ -1620,7 +1701,7 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
   .editor-form { order: -1; }
   .mobile-guide {
     position: fixed;
-    z-index: 100;
+    z-index: 1000;
     inset: 0;
     width: 100%;
     height: 100%;
@@ -1630,12 +1711,13 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
     border: 0;
     display: grid;
     align-items: end;
-    padding-top: 15vh;
+    padding: 12vh 0 0;
     background: rgb(2 5 9 / .66);
     backdrop-filter: blur(8px);
   }
   .mobile-guide-sheet {
     width: 100%;
+    max-height: 88svh;
     padding: 18px 18px calc(20px + env(safe-area-inset-bottom));
     border: 1px solid rgb(202 224 249 / .14);
     border-bottom: 0;
@@ -1655,7 +1737,21 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
   .mobile-guide-sheet > small { display: block; margin: 8px 0 22px; color: #8d99a7; line-height: 1.45; }
   .mobile-guide-sheet > input { width: 100%; min-height: 52px; margin-bottom: 24px; padding: 0 14px; border: 1px solid rgb(190 216 246 / .14); border-radius: 13px; color: #f3f7fb; background: rgb(3 7 12 / .5); font-size: 1rem; }
   .mobile-guide-sheet footer > button:first-child { border: 0; color: #96a2b1; background: transparent; }
+  .mobile-guide-sheet footer {
+    position: sticky;
+    z-index: 2;
+    bottom: calc(-20px - env(safe-area-inset-bottom));
+    margin: 22px -18px calc(-20px - env(safe-area-inset-bottom));
+    padding: 13px 18px calc(18px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgb(202 224 249 / .09);
+    background: rgb(14 19 26 / .97);
+  }
   .mobile-guide-sheet footer .button { min-width: 132px; }
+  body:has(.mobile-guide[open]) .mobile-dashboard-nav {
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, 120%);
+  }
 }
 @keyframes guide-enter { from { opacity: 0; transform: translate3d(0, 36px, 0); } }
 
