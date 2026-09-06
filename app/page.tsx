@@ -4,6 +4,7 @@ import { ArrowRight, BarChart3, Camera, Check, ContactRound, Link2, Palette, QrC
 import { MarketingNav } from "@/components/qard/MarketingNav";
 import { QardLogo } from "@/components/qard/QardLogo";
 import { QardPreview } from "@/components/qard/QardPreview";
+import { ScrollReveal } from "@/components/qard/ScrollReveal";
 import AnimatedGradient from "@/components/ui/animated-gradient";
 import type { QardData } from "@/types/database";
 
@@ -99,11 +100,14 @@ export default function Home() {
       </section>
 
       <section className="how-section qard-container" id="fonctionnement">
+        <ScrollReveal>
         <header>
           <p className="simple-eyebrow">Comment ça marche</p>
           <h2>De votre profil à leur téléphone.</h2>
         </header>
+        </ScrollReveal>
         <div className="simple-how">
+          <ScrollReveal delay={0} className="reveal-card">
           <article>
             <div className="how-visual how-profile" aria-hidden="true">
               <span className="how-avatar"><UserRound /></span>
@@ -112,12 +116,16 @@ export default function Home() {
             </div>
             <span>01</span><h3>Créez votre profil</h3><p>Ajoutez votre nom, une photo et vos contacts.</p>
           </article>
+          </ScrollReveal>
+          <ScrollReveal delay={90} className="reveal-card">
           <article>
             <div className="how-visual how-share" aria-hidden="true">
               <span><QrCode /></span><i /><span><Share2 /></span>
             </div>
             <span>02</span><h3>Partagez votre Qard</h3><p>Envoyez votre lien ou présentez votre QR code.</p>
           </article>
+          </ScrollReveal>
+          <ScrollReveal delay={180} className="reveal-card">
           <article>
             <div className="how-visual how-update" aria-hidden="true">
               <span><RefreshCw /></span>
@@ -125,51 +133,52 @@ export default function Home() {
             </div>
             <span>03</span><h3>Modifiez-la librement</h3><p>Vos changements sont visibles immédiatement.</p>
           </article>
+          </ScrollReveal>
         </div>
       </section>
 
       <section className="simple-features qard-container">
-        <header>
+        <ScrollReveal><header>
           <p className="simple-eyebrow">L’essentiel, bien fait</p>
           <h2>Moins de bruit.<br />Plus de contact.</h2>
-        </header>
+        </header></ScrollReveal>
         <div className="feature-grid">
-          <article>
+          <ScrollReveal delay={0} className="reveal-card"><article>
             <div className="feature-visual feature-contacts" aria-hidden="true">
               <span><ContactRound /><i><strong>Votre nom</strong><small>Profil Qard</small></i></span>
               <span><Link2 /><i><strong>Vos liens</strong><small>Au même endroit</small></i></span>
             </div>
             <ContactRound size={19} /><h3>Tous vos contacts</h3><p>Un seul endroit pour être retrouvé.</p>
-          </article>
-          <article>
+          </article></ScrollReveal>
+          <ScrollReveal delay={70} className="reveal-card"><article>
             <div className="feature-visual feature-qr" aria-hidden="true">
               <div><Image src="/ikyane-qr.png" width={112} height={112} alt="" /></div>
               <span>qard.me/votre-nom</span>
             </div>
             <QrCode size={19} /><h3>Un QR permanent</h3><p>Votre lien reste le même quand votre profil évolue.</p>
-          </article>
-          <article>
+          </article></ScrollReveal>
+          <ScrollReveal delay={0} className="reveal-card"><article>
             <div className="feature-visual feature-style" aria-hidden="true">
               <div><i /><i /><i /></div>
               <span><b /><b /><b /><b /></span>
             </div>
             <Palette size={19} /><h3>À votre image</h3><p>Des choix utiles, sans réglages inutiles.</p>
-          </article>
-          <article>
+          </article></ScrollReveal>
+          <ScrollReveal delay={70} className="reveal-card"><article>
             <div className="feature-visual feature-stats" aria-hidden="true">
               <span><strong>184</strong><small>interactions</small></span>
               <div><i /><i /><i /><i /><i /><i /><i /></div>
             </div>
             <BarChart3 size={19} /><h3>Des statistiques claires</h3><p>Voyez ce qui intéresse vos visiteurs.</p>
-          </article>
+          </article></ScrollReveal>
         </div>
       </section>
 
-      <section className="simple-final qard-container">
+      <ScrollReveal className="final-reveal"><section className="simple-final qard-container">
         <QardLogo linked={false} />
         <h2>Votre carte peut être prête en quelques minutes.</h2>
         <Link className="button landing-primary" href="/signup">Commencer gratuitement <ArrowRight size={18} /></Link>
-      </section>
+      </section></ScrollReveal>
 
       <footer className="marketing-footer qard-container">
         <QardLogo />

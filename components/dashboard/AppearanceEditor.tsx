@@ -1,6 +1,6 @@
 "use client";
-import { useMemo, useState } from "react";
-import { Check, Lock } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Check, Eye, EyeOff, Lock } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { QardPreview } from "@/components/qard/QardPreview";
 import type { Appearance, QardData } from "@/types/database";
@@ -66,25 +66,46 @@ const themes = [
 export function AppearanceEditor({ data }: { data: QardData }) {
   const [appearance, setAppearance] = useState(data.appearance);
   const [status, setStatus] = useState("");
+  const [showMobilePreview, setShowMobilePreview] = useState(true);
+  const appearanceRef = useRef(data.appearance);
+  const saveSequence = useRef(0);
   const preview = useMemo(() => ({ ...data, appearance }), [data, appearance]);
+
+  function updateDraft(patch: Partial<Appearance>) {
+    const next = { ...appearanceRef.current, ...patch };
+    appearanceRef.current = next;
+    setAppearance(next);
+    return next;
+  }
+
   async function save(next: Appearance) {
+    appearanceRef.current = next;
     setAppearance(next);
     setStatus("Enregistrement…");
+    const sequence = ++saveSequence.current;
     const { id, profile_id, created_at, updated_at, ...payload } = next;
-    void id;
     void profile_id;
     void created_at;
     void updated_at;
-    const { error } = await createClient()
+    const { data: saved, error } = await createClient()
       .from("qard_appearance")
       .update(payload)
-      .eq("id", appearance.id);
-    setStatus(error ? "Erreur" : "Enregistré");
+      .eq("id", id)
+      .select()
+      .single();
+    if (sequence !== saveSequence.current) return;
+    if (error || !saved) {
+      setStatus(error?.message ? `Erreur : ${error.message}` : "Erreur d’enregistrement");
+      return;
+    }
+    appearanceRef.current = saved as Appearance;
+    setAppearance(saved as Appearance);
+    setStatus("Enregistré");
   }
   function pickTheme(theme: (typeof themes)[number]) {
     if (theme.pro && data.profile.plan !== "pro") return;
     void save({
-      ...appearance,
+      ...appearanceRef.current,
       theme: theme.id,
       background_type: theme.bg.startsWith("#") ? "color" : "gradient",
       background_value: theme.bg,
@@ -94,6 +115,14 @@ export function AppearanceEditor({ data }: { data: QardData }) {
   }
   return (
     <div className="appearance-layout">
+      <button
+        type="button"
+        className="mobile-preview-toggle"
+        onClick={() => setShowMobilePreview((current) => !current)}
+      >
+        {showMobilePreview ? <EyeOff size={16} /> : <Eye size={16} />}
+        {showMobilePreview ? "Masquer l’aperçu" : "Voir l’aperçu"}
+      </button>
       <div className="appearance-controls">
         <section className="panel">
           <div className="control-heading">
@@ -125,9 +154,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <input
                 type="color"
                 value={appearance.accent_color}
-                onChange={(e) =>
-                  void save({ ...appearance, accent_color: e.target.value })
-                }
+                onChange={(e) => updateDraft({ accent_color: e.target.value })}
+                onBlur={() => void save(appearanceRef.current)}
               />
             </label>
             <label>
@@ -135,9 +163,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <input
                 type="color"
                 value={appearance.text_color}
-                onChange={(e) =>
-                  void save({ ...appearance, text_color: e.target.value })
-                }
+                onChange={(e) => updateDraft({ text_color: e.target.value })}
+                onBlur={() => void save(appearanceRef.current)}
               />
             </label>
           </div>
@@ -146,12 +173,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               Type d’arrière-plan
               <select
                 value={appearance.background_type}
-                onChange={(e) =>
-                  void save({
-                    ...appearance,
-                    background_type: e.target.value as Appearance["background_type"],
-                  })
-                }
+                onChange={(e) => void save(updateDraft({ background_type: e.target.value as Appearance["background_type"] }))}
               >
                 <option value="color">Couleur</option>
                 <option value="gradient">Dégradé CSS</option>
@@ -162,13 +184,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
             {appearance.background_type === "image" ? "URL de l’image" : "Valeur"}
             <input
               value={appearance.background_value}
-              onChange={(e) =>
-                setAppearance({
-                  ...appearance,
-                  background_value: e.target.value,
-                })
-              }
-              onBlur={() => void save(appearance)}
+              onChange={(e) => updateDraft({ background_value: e.target.value })}
+              onBlur={() => void save(appearanceRef.current)}
             />
           </label>
           </div>
@@ -180,13 +197,9 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               min="35"
               max="100"
               value={appearance.card_opacity * 100}
-              onChange={(e) =>
-                setAppearance({
-                  ...appearance,
-                  card_opacity: Number(e.target.value) / 100,
-                })
-              }
-              onPointerUp={() => void save(appearance)}
+              onChange={(e) => updateDraft({ card_opacity: Number(e.target.value) / 100 })}
+              onPointerUp={() => void save(appearanceRef.current)}
+              onKeyUp={() => void save(appearanceRef.current)}
             />
           </label>
           <label>
@@ -196,13 +209,9 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               min="0"
               max="32"
               value={appearance.card_blur}
-              onChange={(e) =>
-                setAppearance({
-                  ...appearance,
-                  card_blur: Number(e.target.value),
-                })
-              }
-              onPointerUp={() => void save(appearance)}
+              onChange={(e) => updateDraft({ card_blur: Number(e.target.value) })}
+              onPointerUp={() => void save(appearanceRef.current)}
+              onKeyUp={() => void save(appearanceRef.current)}
             />
           </label>
           <label>
@@ -212,13 +221,17 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               min="0"
               max="48"
               value={appearance.card_radius}
-              onChange={(e) =>
-                setAppearance({
-                  ...appearance,
-                  card_radius: Number(e.target.value),
-                })
-              }
-              onPointerUp={() => void save(appearance)}
+              onChange={(e) => updateDraft({ card_radius: Number(e.target.value) })}
+              onPointerUp={() => void save(appearanceRef.current)}
+              onKeyUp={() => void save(appearanceRef.current)}
+            />
+          </label>
+          <label className="toggle-row appearance-photo-toggle">
+            <span>Photo de fond<small>Afficher votre photo sur la face principale.</small></span>
+            <input
+              type="checkbox"
+              checked={appearance.show_banner}
+              onChange={(e) => void save(updateDraft({ show_banner: e.target.checked }))}
             />
           </label>
           <div className="segmented-field">
@@ -227,7 +240,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <button
                 key={item}
                 className={appearance.button_style === item ? "active" : ""}
-                onClick={() => void save({ ...appearance, button_style: item })}
+                onClick={() => void save(updateDraft({ button_style: item }))}
               >
                 {item}
               </button>
@@ -239,7 +252,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <button
                 key={item}
                 className={appearance.avatar_shape === item ? "active" : ""}
-                onClick={() => void save({ ...appearance, avatar_shape: item })}
+                onClick={() => void save(updateDraft({ avatar_shape: item }))}
               >
                 {item}
               </button>
@@ -256,7 +269,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <button
                 key={item}
                 className={appearance.font_family === item ? "active" : ""}
-                onClick={() => void save({ ...appearance, font_family: item })}
+                onClick={() => void save(updateDraft({ font_family: item }))}
               >
                 {label}
               </button>
@@ -269,11 +282,10 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                 key={item}
                 className={appearance.animation_style === item ? "active" : ""}
                 onClick={() =>
-                  void save({
-                    ...appearance,
+                  void save(updateDraft({
                     animation_style: item,
                     animation_enabled: item !== "none",
-                  })
+                  }))
                 }
               >
                 {item}
@@ -283,7 +295,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
           </div>
         </details>
       </div>
-      <aside className="editor-preview">
+      <aside className={`editor-preview appearance-live-preview${showMobilePreview ? " mobile-visible" : ""}`}>
         <div className="phone-frame">
           <QardPreview data={preview} compact />
         </div>

@@ -39,6 +39,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
     ]);
   }
   async function png() {
+    if (!profile.published) return flash("Publiez votre Qard avant de télécharger le QR");
     if (!scannable) return flash("Augmentez le contraste avant de télécharger");
     const link = document.createElement("a");
     link.download = `qard-${profile.slug}-qr.png`;
@@ -48,6 +49,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
     flash("QR PNG téléchargé");
   }
   async function svg() {
+    if (!profile.published) return flash("Publiez votre Qard avant de télécharger le QR");
     if (!scannable) return flash("Augmentez le contraste avant de télécharger");
     const content = await QRCode.toString(url, {
       type: "svg",
@@ -66,6 +68,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
     flash("QR SVG téléchargé");
   }
   async function share() {
+    if (!profile.published) return flash("Publiez votre Qard avant de la partager");
     if (navigator.share)
       await navigator.share({ title: `Qard de ${profile.display_name}`, url });
     else await navigator.clipboard.writeText(url);
@@ -81,6 +84,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
       </section>
       <section className="panel qr-controls">
         <h2>Votre QR permanent</h2>
+        {!profile.published && <div className="qr-publish-warning">Votre Qard est masquée. Publiez-la dans « Modifier ma Qard » avant de partager ce QR code.</div>}
         <p>
           Il contient uniquement votre URL publique. Vous pouvez modifier votre Qard sans
           le remplacer.
@@ -90,6 +94,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
           <div className="copy-field">
             <input value={url} readOnly />
             <button
+              disabled={!profile.published}
               onClick={() => {
                 void navigator.clipboard.writeText(url);
                 flash("Lien copié");
@@ -97,7 +102,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
             >
               <Copy size={17} />
             </button>
-            <a href={url} target="_blank" rel="noreferrer">
+            <a href={profile.published ? url : "/dashboard/editor"} target={profile.published ? "_blank" : undefined} rel="noreferrer">
               <ExternalLink size={17} />
             </a>
           </div>
@@ -130,14 +135,14 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
             onChange={(e) => setMargin(Number(e.target.value))}
           />
         </label>
-        <div className="download-grid">
-          <button className="button" onClick={png} disabled={!scannable}>
+        <div className="download-grid" aria-disabled={!profile.published}>
+          <button className="button" onClick={png} disabled={!scannable || !profile.published}>
             <Download size={17} /> PNG HD
           </button>
-          <button className="button button-ghost" onClick={svg} disabled={!scannable}>
+          <button className="button button-ghost" onClick={svg} disabled={!scannable || !profile.published}>
             <Download size={17} /> SVG
           </button>
-          <button className="button button-ghost" onClick={share}>
+          <button className="button button-ghost" onClick={share} disabled={!profile.published}>
             <Share2 size={17} /> Partager
           </button>
         </div>

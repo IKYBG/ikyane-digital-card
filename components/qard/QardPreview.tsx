@@ -63,7 +63,7 @@ export function QardPreview({
     directLinks.push({ id: "profile-website", platform: "website", label: "Site web", url: profile.website, username: profile.website.replace(/^https?:\/\//, "") });
   }
 
-  const visual = profile.avatar_url || profile.banner_url;
+  const visual = appearance.show_banner ? profile.avatar_url || profile.banner_url : null;
   const background = appearance.background_type === "image"
     ? `linear-gradient(rgb(3 10 23 / .2), rgb(3 12 27 / .82)), url(${JSON.stringify(appearance.background_value)}) center / cover`
     : appearance.background_value;
@@ -157,7 +157,7 @@ export function QardPreview({
 
   return (
     <article
-      className={`qard-premium card-perspective theme-${appearance.theme} buttons-${appearance.button_style} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ""}${compact ? " compact" : ""}`}
+      className={`qard-premium card-perspective theme-${appearance.theme} buttons-${appearance.button_style} avatar-${appearance.avatar_shape} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ""}${compact ? " compact" : ""}`}
       style={vars}
     >
       <div className="swipe-orbit swipe-orbit-left" aria-hidden="true"><ChevronLeft size={19} /><i /><i /><i /></div>

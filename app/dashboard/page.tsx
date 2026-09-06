@@ -69,7 +69,7 @@ export default async function DashboardPage() {
               <p>{url.replace(/^https?:\/\//, "")}</p>
             </div>
           </div>
-          <ShareActions url={url} />
+          <ShareActions url={url} published={profile.published} />
           <Link className="panel-link" href="/dashboard/editor">
             Modifier ma Qard <UserRoundPen size={16} />
           </Link>

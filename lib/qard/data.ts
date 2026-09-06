@@ -24,13 +24,24 @@ export async function getCurrentQard(): Promise<QardData> {
 
 export async function getPublicQard(slug: string): Promise<QardData | null> {
   const supabase = await createClient();
-  const { data: profile } = await supabase.from('qard_profiles').select('id,slug,display_name,first_name,last_name,headline,bio,avatar_url,banner_url,company,job_title,location,email_public,phone_public,website,published,show_branding,created_at,updated_at').eq('slug', slug).eq('published', true).maybeSingle();
+  // RLS is the source of truth here: visitors can only read published cards,
+  // while an authenticated owner can also preview their unpublished card.
+  const { data: profile, error: profileError } = await supabase.from('qard_profiles').select('id,slug,display_name,first_name,last_name,headline,bio,avatar_url,banner_url,company,job_title,location,email_public,phone_public,website,published,show_branding,created_at,updated_at').eq('slug', slug).maybeSingle();
+  if (profileError) throw profileError;
   if (!profile) return null;
-  const publicProfile = profile as Profile;
-  const [{ data: links }, { data: appearance }] = await Promise.all([
+  const publicProfile = {
+    ...profile,
+    user_id: '',
+    plan: 'free',
+    onboarding_completed: true,
+    qr_downloaded_at: null,
+  } satisfies Profile;
+  const [{ data: links, error: linksError }, { data: appearance, error: appearanceError }] = await Promise.all([
     supabase.from('qard_social_links').select('*').eq('profile_id', publicProfile.id).eq('enabled', true).order('position'),
     supabase.from('qard_appearance').select('*').eq('profile_id', publicProfile.id).single(),
   ]);
+  if (linksError) throw linksError;
+  if (appearanceError) throw appearanceError;
   if (!appearance) return null;
   return { profile: publicProfile, links: (links ?? []) as SocialLink[], appearance: appearance as Appearance };
 }
