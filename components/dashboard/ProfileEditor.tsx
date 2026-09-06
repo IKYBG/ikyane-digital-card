@@ -61,6 +61,12 @@ export function ProfileEditor({ data }: { data: QardData }) {
     },
   });
   const values = watch();
+  const hasConfiguredQard = Boolean(
+    values.email_public?.trim() ||
+    values.phone_public?.trim() ||
+    values.website?.trim() ||
+    links.some((link) => link.enabled),
+  );
   const currentQuestion = mobileQuestions[questionIndex];
   useEffect(() => {
     if (!guideOpen) return;
@@ -149,8 +155,8 @@ export function ProfileEditor({ data }: { data: QardData }) {
   return (
     <div className="editor-layout">
       <section className="editor-editing-column">
-      <div className="mobile-card-controls">
-        <button type="button" className="button mobile-configure-button" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><SlidersHorizontal size={17} /> Configurer ma Qard</button>
+      <div className={`mobile-card-controls${hasConfiguredQard ? " configured" : ""}`}>
+        {!hasConfiguredQard && <button type="button" className="button mobile-configure-button" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><SlidersHorizontal size={17} /> Configurer ma Qard</button>}
         <button type="button" className="mobile-preview-visibility" onClick={() => setPreviewVisible((current) => !current)}>
           {previewVisible ? <EyeOff size={16} /> : <Eye size={16} />}{previewVisible ? "Masquer l’aperçu" : "Afficher l’aperçu"}
         </button>

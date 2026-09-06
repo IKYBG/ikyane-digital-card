@@ -1765,3 +1765,187 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
   .media-uploader > .field-error { grid-column: 1 / -1; }
   .media-uploader button { padding-inline: 9px; }
 }
+
+/* Portrait-led Qard composition */
+.qard-premium .card-motion-shell { height: 700px; }
+.qard-premium.compact .card-motion-shell { height: 650px; }
+.qard-premium .card-depth {
+  inset: 9px -6px -14px 6px;
+  border-radius: calc(var(--preview-radius) + 1px);
+  background: linear-gradient(155deg, color-mix(in srgb, var(--preview-accent) 23%, #07172c), #020914 72%);
+  box-shadow: 0 42px 92px rgb(0 3 14 / .68), 0 15px 35px color-mix(in srgb, var(--preview-accent) 16%, transparent);
+}
+.qard-premium .card-face {
+  border-color: color-mix(in srgb, var(--preview-accent) 68%, rgb(225 240 255 / .35));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / .22), inset 0 0 50px color-mix(in srgb, var(--preview-accent) 7%, transparent);
+}
+.qard-premium .portrait-panel::before {
+  opacity: 1;
+  background: linear-gradient(to bottom, rgb(2 8 18 / .04) 0%, transparent 30%, rgb(3 11 25 / .2) 45%, rgb(3 12 27 / .86) 64%, rgb(3 11 25 / .99) 84%, #030a17 100%);
+}
+.qard-premium .portrait-panel::after {
+  background: radial-gradient(circle at 50% 25%, transparent 22%, rgb(1 6 15 / .12) 48%, rgb(1 6 15 / .7) 100%);
+}
+.qard-premium .portrait-panel img {
+  object-position: 50% 14%;
+  filter: saturate(.82) contrast(1.06) brightness(.88);
+}
+.qard-premium .human-note {
+  position: absolute;
+  z-index: 4;
+  left: 25px;
+  top: 170px;
+  margin: 0;
+  color: color-mix(in srgb, var(--preview-text) 70%, transparent);
+  font: italic 500 .78rem/1.45 ui-serif, Georgia, serif;
+  letter-spacing: .03em;
+  transform: rotate(-6deg);
+  text-shadow: 0 2px 12px rgb(0 0 0 / .5);
+}
+.qard-premium .human-note::after {
+  content: '';
+  display: block;
+  width: 30px;
+  margin: 9px 0 0 15px;
+  border-top: 1px solid currentColor;
+  transform: rotate(-8deg);
+}
+.qard-premium .identity-copy {
+  inset: auto 0 70px;
+  padding: 165px 29px 24px;
+  background: linear-gradient(to bottom, transparent, rgb(3 12 27 / .76) 35%, rgb(3 11 25 / .97) 66%, rgb(3 10 23 / .99) 100%);
+}
+.qard-premium .name-row { gap: 11px; align-items: center; }
+.qard-premium .name-row h1 {
+  max-width: 310px;
+  color: #f7f9fc;
+  font-size: clamp(2.05rem, 8.7vw, 2.75rem);
+  line-height: .98;
+  font-weight: 690;
+  letter-spacing: -.055em;
+  text-transform: none;
+}
+.qard-premium .verified {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  border-radius: 7px;
+  color: #061526;
+  background: linear-gradient(145deg, #bce9ff, var(--preview-accent));
+  clip-path: polygon(50% 0, 63% 8%, 78% 7%, 88% 20%, 100% 29%, 96% 45%, 100% 60%, 89% 72%, 83% 88%, 66% 90%, 51% 100%, 37% 91%, 20% 93%, 12% 79%, 0 69%, 5% 52%, 0 37%, 11% 23%, 18% 8%, 35% 9%);
+}
+.qard-premium .headline {
+  max-width: 330px;
+  margin: 10px 0 0;
+  color: color-mix(in srgb, var(--preview-text) 78%, var(--preview-accent));
+  font-size: 1.02rem;
+  line-height: 1.28;
+}
+.qard-premium .identity-role { margin: 5px 0 0; color: var(--preview-muted); font-size: .76rem; }
+.qard-premium .identity-location {
+  margin: 12px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: color-mix(in srgb, var(--preview-text) 70%, var(--preview-accent));
+  font-size: .76rem;
+}
+.qard-premium .identity-location svg { color: var(--preview-accent); }
+.qard-premium .identity-bio {
+  margin: 13px 0 0;
+  padding-top: 13px;
+  border-top: 1px solid color-mix(in srgb, var(--preview-accent) 12%, transparent);
+  color: color-mix(in srgb, var(--preview-text) 74%, transparent);
+  font-size: .78rem;
+  line-height: 1.45;
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.qard-premium .reference-meta {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 7px;
+  max-height: none;
+  margin-top: 15px;
+  overflow: hidden;
+}
+.qard-premium .reference-meta span {
+  min-width: 0;
+  min-height: 34px;
+  flex: 1 1 0;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0 8px;
+  border-color: color-mix(in srgb, var(--preview-accent) 28%, transparent);
+  color: color-mix(in srgb, var(--preview-text) 82%, transparent);
+  background: color-mix(in srgb, var(--preview-accent) 8%, rgb(3 10 23 / .72));
+  font-size: .62rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.qard-premium .reference-meta span svg { flex: 0 0 auto; color: var(--preview-accent); }
+.qard-premium .reference-meta .active-profile i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: #38e7a0;
+  box-shadow: 0 0 10px rgb(56 231 160 / .5);
+}
+.qard-premium .primary-actions { margin-top: 19px; }
+.qard-premium .primary-actions button {
+  height: 54px;
+  border-radius: 15px;
+  font-size: .88rem;
+}
+.qard-premium .front-flip-hint {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  bottom: 18px;
+  width: max-content;
+  min-height: 42px;
+  margin: 0;
+  flex-direction: column;
+  gap: 8px;
+  color: color-mix(in srgb, var(--preview-text) 60%, transparent);
+  transform: translateX(-50%);
+}
+.qard-premium .front-flip-hint > i {
+  width: 46px;
+  height: 5px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--preview-accent) 52%, #31577f), color-mix(in srgb, var(--preview-accent) 25%, #23415f));
+  animation: swipe-bar 2.3s ease-in-out infinite;
+}
+.mobile-card-controls.configured { justify-content: flex-end; }
+@keyframes swipe-bar { 50% { transform: scaleX(.72); opacity: .58; } }
+
+@media (max-width: 640px) {
+  .qard-premium .card-motion-shell,
+  .qard-premium.compact .card-motion-shell { height: min(680px, calc(100svh - 92px)); min-height: 550px; }
+  .qard-premium .identity-copy { bottom: 66px; padding: 145px 22px 20px; }
+  .qard-premium .human-note { left: 21px; top: 145px; }
+  .qard-premium .name-row h1 { font-size: clamp(1.85rem, 9vw, 2.45rem); }
+  .qard-premium .headline { font-size: .92rem; }
+  .qard-premium .identity-bio { font-size: .72rem; }
+  .qard-premium .reference-meta { gap: 5px; }
+  .qard-premium .reference-meta span { min-height: 31px; padding-inline: 6px; font-size: .56rem; }
+  .mobile-card-controls.configured { grid-template-columns: 1fr; }
+  .mobile-card-controls.configured .mobile-preview-visibility { display: flex; font-size: .72rem; }
+}
+
+@media (max-height: 700px) and (max-width: 640px) {
+  .qard-premium .human-note { display: none; }
+  .qard-premium .identity-copy { padding-top: 105px; }
+  .qard-premium .identity-bio { -webkit-line-clamp: 1; }
+  .qard-premium .reference-meta { margin-top: 10px; }
+  .qard-premium .primary-actions { margin-top: 12px; }
+  .qard-premium .primary-actions button { height: 47px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qard-premium .front-flip-hint > i { animation: none; }
+}

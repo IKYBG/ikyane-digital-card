@@ -12,9 +12,13 @@ import {
 import { motion, useReducedMotion, type PanInfo } from "motion/react";
 import {
   ArrowUpRight,
+  BriefcaseBusiness,
   Check,
   ChevronLeft,
   ChevronRight,
+  GraduationCap,
+  MapPin,
+  Monitor,
   RotateCcw,
   Share2,
   UserPlus,
@@ -215,6 +219,7 @@ export function QardPreview({
                   )}
                   <div className="portrait-scan" aria-hidden="true" />
                 </motion.div>
+                <p className="human-note" aria-hidden="true">Créer un web<br />plus humain.</p>
                 <div className="identity-copy">
                   <div className="name-row">
                     <div><h1>{profile.display_name}</h1></div>
@@ -222,10 +227,19 @@ export function QardPreview({
                   </div>
                   {profile.headline && <p className="headline">{profile.headline}</p>}
                   {(profile.job_title || profile.company) && <p className="identity-role">{[profile.job_title, profile.company].filter(Boolean).join(" · ")}</p>}
+                  {profile.location && <p className="identity-location"><MapPin size={16} /> {profile.location}</p>}
+                  {profile.bio && <p className="identity-bio">{profile.bio}</p>}
+                  <div className="identity-meta reference-meta">
+                    <span className="active-profile"><i /> Profil actif</span>
+                    {profile.job_title && <span><Monitor size={15} /> {profile.job_title}</span>}
+                    {profile.company && <span><GraduationCap size={16} /> {profile.company}</span>}
+                    {!profile.job_title && !profile.company && profile.headline && <span><BriefcaseBusiness size={15} /> {profile.headline}</span>}
+                  </div>
                   <div className="primary-actions">
                     <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={flip} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>Voir mes contacts <ArrowUpRight size={17} /></motion.button>
                   </div>
                 </div>
+                <button tabIndex={frontTabIndex} className="flip-hint qard-flip-hint front-flip-hint" onClick={flip}><i aria-hidden="true" /> Glissez pour retourner</button>
               </div>
 
               <div className="card-face card-back" aria-hidden={side !== "back"}>
@@ -248,7 +262,7 @@ export function QardPreview({
           </div>
         </motion.div>
       </div>
-      <button className="flip-hint qard-flip-hint" onClick={flip}><RotateCcw size={14} /> {side === "front" ? "Touchez ou glissez" : "Revenir au profil"}</button>
+      {side === "back" && <button className="flip-hint qard-flip-hint" onClick={flip}><RotateCcw size={14} /> Revenir au profil</button>}
       {profile.show_branding && <a className="qard-branding" href="/">Créé avec <b>Qard</b></a>}
     </article>
   );
