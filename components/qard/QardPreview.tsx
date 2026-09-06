@@ -50,6 +50,7 @@ export function QardPreview({
   const dragFlippedRef = useRef(false);
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<"front" | "back">("front");
+  const [isFlipping, setIsFlipping] = useState(false);
   const [shared, setShared] = useState(false);
   const enabledLinks = data.links.filter((link) => link.enabled);
   const networkLinks = enabledLinks.filter((link) => !directPlatforms.has(link.platform));
@@ -81,7 +82,11 @@ export function QardPreview({
     "--text-primary": appearance.text_color,
   } as React.CSSProperties;
 
-  const flip = () => setSide((current) => current === "front" ? "back" : "front");
+  const flip = () => {
+    if (isFlipping) return;
+    setIsFlipping(true);
+    setSide((current) => current === "front" ? "back" : "front");
+  };
   const handleCardClick = (event: MouseEvent<HTMLDivElement>) => {
     if ((event.target as HTMLElement).closest("a, button")) return;
     if (dragFlippedRef.current) {
@@ -132,8 +137,8 @@ export function QardPreview({
     }
   };
 
-  const frontTabIndex = side === "front" ? 0 : -1;
-  const backTabIndex = side === "back" ? 0 : -1;
+  const frontTabIndex = side === "front" && !isFlipping ? 0 : -1;
+  const backTabIndex = side === "back" && !isFlipping ? 0 : -1;
   const vcardHref = contactHref ?? `/api/vcard/${profile.slug}`;
   const renderLink = (link: DisplayLink, index: number) => (
     <motion.a
@@ -176,7 +181,7 @@ export function QardPreview({
           transition={spring}
         >
           <div
-            className={`identity-card side-${side}`}
+            className={`identity-card side-${side}${isFlipping ? " is-flipping" : ""}`}
             ref={cardRef}
             role="button"
             tabIndex={0}
@@ -192,13 +197,14 @@ export function QardPreview({
               animate={reducedMotion
                 ? { rotateY: side === "back" ? 180 : 0 }
                 : side === "back"
-                  ? { rotateY: [0, -2, 91, 183, 180], y: [0, -2, -9, -3, 0], z: [0, 7, 25, 8, 0], rotateX: [0, -0.4, -1.2, -0.3, 0] }
-                  : { rotateY: [180, 182, 89, -3, 0], y: [0, -2, -9, -3, 0], z: [0, 7, 25, 8, 0], rotateX: [0, 0.4, 1.2, 0.3, 0] }}
+                  ? { rotateY: [0, 90, 181.5, 180], y: [0, -7, -2, 0], z: [0, 18, 5, 0] }
+                  : { rotateY: [180, 90, -1.5, 0], y: [0, -7, -2, 0], z: [0, 18, 5, 0] }}
               transition={reducedMotion ? { duration: 0.01 } : {
-                duration: 0.58,
-                times: [0, 0.08, 0.49, 0.88, 1],
-                ease: [0.22, 0.72, 0.18, 1],
+                duration: 0.62,
+                times: [0, 0.48, 0.9, 1],
+                ease: [0.2, 0.78, 0.18, 1],
               }}
+              onAnimationComplete={() => setIsFlipping(false)}
             >
               <div className="card-depth" aria-hidden="true" />
               <div className="card-edge" aria-hidden="true" />
