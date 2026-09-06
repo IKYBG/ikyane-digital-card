@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BarChart3, Camera, Check, ContactRound, Link2, Palette, QrCode, RefreshCw, Share2, UserRound } from "lucide-react";
+import { ArrowRight, BarChart3, Camera, Check, ContactRound, Link2, Palette, QrCode, Share2, Smartphone, UserRound } from "lucide-react";
 import { MarketingNav } from "@/components/qard/MarketingNav";
 import { QardLogo } from "@/components/qard/QardLogo";
 import { QardPreview } from "@/components/qard/QardPreview";
@@ -127,11 +127,11 @@ export default function Home() {
           </ScrollReveal>
           <ScrollReveal delay={180} className="reveal-card">
           <article>
-            <div className="how-visual how-update" aria-hidden="true">
-              <span><RefreshCw /></span>
-              <div><i /><i /><i /></div>
+            <div className="how-visual how-access" aria-hidden="true">
+              <span><Smartphone /></span>
+              <div><ContactRound /><i><Check /></i></div>
             </div>
-            <span>03</span><h3>Modifiez-la librement</h3><p>Vos changements sont visibles immédiatement.</p>
+            <span>03</span><h3>Ils accèdent à votre Qard</h3><p>Vos contacts ouvrent votre carte et choisissent comment vous joindre.</p>
           </article>
           </ScrollReveal>
         </div>
