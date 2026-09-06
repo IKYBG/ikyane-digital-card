@@ -150,7 +150,7 @@ export function ProfileExperience() {
         className="animated-background"
         config={{
           color1: '#01030a', color2: '#062753', color3: '#0b75ad',
-          rotation: -18, proportion: 47, scale: .46, speed: 13,
+          rotation: -18, proportion: 47, scale: .46, speed: 42,
           distortion: 7, swirl: 28, swirlIterations: 3,
           softness: 88, offset: -180, shape: 'Edge', shapeSize: 58,
         }}

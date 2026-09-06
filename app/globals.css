@@ -1384,7 +1384,7 @@ button { font: inherit; } a { color: inherit; text-decoration: none; }
   border-radius: 46% 54% 64% 36% / 48% 42% 58% 52%;
   background: rgb(73 119 181 / .11);
   filter: blur(70px);
-  animation: ambient-morph 15s ease-in-out infinite alternate;
+  animation: ambient-morph 5.5s ease-in-out infinite alternate;
 }
 .landing-background-shade::before { left: -18vw; top: 12vh; }
 .landing-background-shade::after { right: -22vw; top: 55vh; animation-delay: -7s; animation-direction: alternate-reverse; }

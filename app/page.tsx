@@ -65,7 +65,7 @@ export default function Home() {
     <main className="qard-site landing-simple">
       <AnimatedGradient
         className="landing-animated-bg"
-        config={{ color1: "#080b11", color2: "#10233b", color3: "#315b8d", speed: 6, distortion: 3, swirl: 12, swirlIterations: 2, softness: 94, shape: "Edge", shapeSize: 64 }}
+        config={{ color1: "#080b11", color2: "#10233b", color3: "#315b8d", speed: 42, distortion: 3, swirl: 12, swirlIterations: 2, softness: 94, shape: "Edge", shapeSize: 64 }}
         noise={{ opacity: 0.025, scale: 0.8 }}
         style={{ position: "fixed", zIndex: 0 }}
       />
