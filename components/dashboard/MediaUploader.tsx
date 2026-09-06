@@ -37,12 +37,12 @@ export function MediaUploader({
     setLoading(true);
     setError("");
     try {
+      const prepared = await resizeImage(file, bucket);
       const supabase = createClient();
-      const ext = file.type === "image/jpeg" ? "jpg" : file.type.split("/")[1];
-      const path = `${userId}/${crypto.randomUUID()}.${ext}`;
+      const path = `${userId}/${crypto.randomUUID()}.webp`;
       const { error: uploadError } = await supabase.storage
         .from(bucket)
-        .upload(path, file);
+        .upload(path, prepared, { contentType: "image/webp", cacheControl: "3600" });
       if (uploadError) throw uploadError;
       const nextUrl = supabase.storage.from(bucket).getPublicUrl(path).data.publicUrl;
       const previousPath = value ? objectPath(value) : null;
@@ -82,7 +82,7 @@ export function MediaUploader({
       </div>
       <div>
         <span>{label}</span>
-        <small>JPG, PNG ou WebP</small>
+        <small>{bucket === "avatars" ? "Recadrée et optimisée automatiquement" : "Optimisée automatiquement"}</small>
       </div>
       <input
         ref={input}
@@ -111,4 +111,33 @@ export function MediaUploader({
       {error && <small className="field-error">{error}</small>}
     </div>
   );
+}
+
+async function resizeImage(file: File, bucket: "avatars" | "banners") {
+  const targetWidth = bucket === "avatars" ? 1200 : 1600;
+  const targetHeight = bucket === "avatars" ? 1200 : 900;
+  const bitmap = await createImageBitmap(file, { imageOrientation: "from-image", resizeWidth: targetWidth, resizeQuality: "high" });
+  const sourceRatio = bitmap.width / bitmap.height;
+  const targetRatio = targetWidth / targetHeight;
+  let sourceWidth = bitmap.width;
+  let sourceHeight = bitmap.height;
+  let sourceX = 0;
+  let sourceY = 0;
+  if (sourceRatio > targetRatio) {
+    sourceWidth = bitmap.height * targetRatio;
+    sourceX = (bitmap.width - sourceWidth) / 2;
+  } else {
+    sourceHeight = bitmap.width / targetRatio;
+    sourceY = (bitmap.height - sourceHeight) / 2;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = targetWidth;
+  canvas.height = targetHeight;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Redimensionnement impossible");
+  context.drawImage(bitmap, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, targetWidth, targetHeight);
+  bitmap.close();
+  const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/webp", 0.88));
+  if (!blob) throw new Error("Redimensionnement impossible");
+  return blob;
 }

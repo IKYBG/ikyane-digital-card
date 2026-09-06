@@ -28,7 +28,6 @@ import { platformLabels } from "@/lib/qard/social";
 import { SocialIcon } from "./SocialIcon";
 
 const spring = { type: "spring", stiffness: 390, damping: 32, mass: 0.72 } as const;
-const flipSpring = { type: "spring", stiffness: 118, damping: 19, mass: 0.9 } as const;
 const directPlatforms = new Set(["email", "phone", "website"]);
 
 type DisplayLink = Pick<SocialLink, "id" | "platform" | "label" | "url" | "username">;
@@ -187,25 +186,23 @@ export function QardPreview({
             onPointerMove={handlePointerMove}
             onPointerLeave={resetTilt}
           >
-            <div className="card-depth" aria-hidden="true" />
-            <div className="card-edge" aria-hidden="true" />
-            <div className="card-glint" aria-hidden="true" />
             <motion.div
               className="flip-card"
               initial={false}
-              animate={reducedMotion ? { rotateY: side === "back" ? 180 : 0 } : {
-                rotateY: side === "back" ? 180 : 0,
-                y: [0, -11, 0],
-                scale: [1, 0.955, 1],
-                rotateZ: side === "back" ? [0, -0.8, 0] : [0, 0.8, 0],
-              }}
-              transition={{
-                rotateY: flipSpring,
-                y: { duration: 0.68, times: [0, 0.46, 1], ease: [0.22, 1, 0.36, 1] },
-                scale: { duration: 0.68, times: [0, 0.46, 1], ease: [0.22, 1, 0.36, 1] },
-                rotateZ: { duration: 0.68, times: [0, 0.46, 1] },
+              animate={reducedMotion
+                ? { rotateY: side === "back" ? 180 : 0 }
+                : side === "back"
+                  ? { rotateY: [0, -2, 91, 183, 180], y: [0, -2, -9, -3, 0], z: [0, 7, 25, 8, 0], rotateX: [0, -0.4, -1.2, -0.3, 0] }
+                  : { rotateY: [180, 182, 89, -3, 0], y: [0, -2, -9, -3, 0], z: [0, 7, 25, 8, 0], rotateX: [0, 0.4, 1.2, 0.3, 0] }}
+              transition={reducedMotion ? { duration: 0.01 } : {
+                duration: 0.58,
+                times: [0, 0.08, 0.49, 0.88, 1],
+                ease: [0.22, 0.72, 0.18, 1],
               }}
             >
+              <div className="card-depth" aria-hidden="true" />
+              <div className="card-edge" aria-hidden="true" />
+              <div className="card-glint" aria-hidden="true" />
               <div className="card-face card-front" aria-hidden={side !== "front"}>
                 <motion.div
                   className={`portrait-panel ${visual ? "has-photo" : "portrait-placeholder"}`}

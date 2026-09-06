@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useRef, useState } from "react";
-import { Check, Eye, EyeOff, Lock } from "lucide-react";
+import { Check, Eye, EyeOff, ImageIcon, Lock, MousePointerClick, Palette, Shapes, Type, Waves } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { QardPreview } from "@/components/qard/QardPreview";
 import type { Appearance, QardData } from "@/types/database";
@@ -145,155 +145,63 @@ export function AppearanceEditor({ data }: { data: QardData }) {
             ))}
           </div>
         </section>
-        <details className="panel appearance-fields">
-          <summary>Réglages avancés</summary>
-          <div className="appearance-fields-body">
-          <div className="field-row two">
-            <label>
-              Accent
-              <input
-                type="color"
-                value={appearance.accent_color}
-                onChange={(e) => updateDraft({ accent_color: e.target.value })}
-                onBlur={() => void save(appearanceRef.current)}
-              />
-            </label>
-            <label>
-              Texte
-              <input
-                type="color"
-                value={appearance.text_color}
-                onChange={(e) => updateDraft({ text_color: e.target.value })}
-                onBlur={() => void save(appearanceRef.current)}
-              />
-            </label>
-          </div>
-          <div className="field-row two">
-            <label>
-              Type d’arrière-plan
-              <select
-                value={appearance.background_type}
-                onChange={(e) => void save(updateDraft({ background_type: e.target.value as Appearance["background_type"] }))}
-              >
-                <option value="color">Couleur</option>
-                <option value="gradient">Dégradé CSS</option>
-                <option value="image">URL d’image</option>
-              </select>
-            </label>
-          <label>
-            {appearance.background_type === "image" ? "URL de l’image" : "Valeur"}
-            <input
-              value={appearance.background_value}
-              onChange={(e) => updateDraft({ background_value: e.target.value })}
-              onBlur={() => void save(appearanceRef.current)}
-            />
-          </label>
-          </div>
-          <label>
-            Transparence{" "}
-            <span>{Math.round(appearance.card_opacity * 100)}%</span>
-            <input
-              type="range"
-              min="35"
-              max="100"
-              value={appearance.card_opacity * 100}
-              onChange={(e) => updateDraft({ card_opacity: Number(e.target.value) / 100 })}
-              onPointerUp={() => void save(appearanceRef.current)}
-              onKeyUp={() => void save(appearanceRef.current)}
-            />
-          </label>
-          <label>
-            Flou <span>{appearance.card_blur}px</span>
-            <input
-              type="range"
-              min="0"
-              max="32"
-              value={appearance.card_blur}
-              onChange={(e) => updateDraft({ card_blur: Number(e.target.value) })}
-              onPointerUp={() => void save(appearanceRef.current)}
-              onKeyUp={() => void save(appearanceRef.current)}
-            />
-          </label>
-          <label>
-            Rayon <span>{appearance.card_radius}px</span>
-            <input
-              type="range"
-              min="0"
-              max="48"
-              value={appearance.card_radius}
-              onChange={(e) => updateDraft({ card_radius: Number(e.target.value) })}
-              onPointerUp={() => void save(appearanceRef.current)}
-              onKeyUp={() => void save(appearanceRef.current)}
-            />
-          </label>
-          <label className="toggle-row appearance-photo-toggle">
-            <span>Photo de fond<small>Afficher votre photo sur la face principale.</small></span>
-            <input
-              type="checkbox"
-              checked={appearance.show_banner}
-              onChange={(e) => void save(updateDraft({ show_banner: e.target.checked }))}
-            />
-          </label>
-          <div className="segmented-field">
-            <span>Boutons</span>
-            {["glass", "solid", "outline", "minimal"].map((item) => (
-              <button
-                key={item}
-                className={appearance.button_style === item ? "active" : ""}
-                onClick={() => void save(updateDraft({ button_style: item }))}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          <div className="segmented-field">
-            <span>Avatar</span>
-            {["circle", "rounded", "square"].map((item) => (
-              <button
-                key={item}
-                className={appearance.avatar_shape === item ? "active" : ""}
-                onClick={() => void save(updateDraft({ avatar_shape: item }))}
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          <div className="segmented-field">
-            <span>Typographie</span>
-            {[
-              ["geist", "Geist"],
-              ["inter", "Inter"],
-              ["serif", "Serif"],
-              ["mono", "Mono"],
-            ].map(([item, label]) => (
-              <button
-                key={item}
-                className={appearance.font_family === item ? "active" : ""}
-                onClick={() => void save(updateDraft({ font_family: item }))}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <div className="segmented-field">
-            <span>Animation</span>
-            {["none", "fade", "slide", "subtle-scale"].map((item) => (
-              <button
-                key={item}
-                className={appearance.animation_style === item ? "active" : ""}
-                onClick={() =>
-                  void save(updateDraft({
-                    animation_style: item,
-                    animation_enabled: item !== "none",
-                  }))
-                }
-              >
-                {item}
-              </button>
-            ))}
-          </div>
-          </div>
-        </details>
+        <section className="panel appearance-studio">
+          <div className="control-heading"><div><h2>Personnaliser</h2><p>Choisissez visuellement le rendu.</p></div><span>{status}</span></div>
+
+          <details className="appearance-choice-group" open>
+            <summary><Palette size={18} /><span><b>Couleurs et fond</b><small>L’ambiance générale de votre Qard</small></span></summary>
+            <div className="appearance-choice-body">
+              <div className="appearance-color-grid">
+                <label><input aria-label="Couleur d’accent" type="color" value={appearance.accent_color} onChange={(e) => updateDraft({ accent_color: e.target.value })} onBlur={() => void save(appearanceRef.current)} /><span><b>Accent</b><small>Bordures et détails</small></span></label>
+                <label><input aria-label="Couleur du texte" type="color" value={appearance.text_color} onChange={(e) => updateDraft({ text_color: e.target.value })} onBlur={() => void save(appearanceRef.current)} /><span><b>Texte</b><small>Nom et informations</small></span></label>
+              </div>
+              <div className="visual-option-grid background-options">
+                {[
+                  ["color", "Uni", "Une couleur nette"],
+                  ["gradient", "Dégradé", "Une lumière progressive"],
+                  ["image", "Image", "Votre propre univers"],
+                ].map(([item, label, help]) => <button key={item} className={appearance.background_type === item ? "selected" : ""} onClick={() => void save(updateDraft({ background_type: item as Appearance["background_type"] }))}><i className={`background-demo ${item}`} /><span><b>{label}</b><small>{help}</small></span>{appearance.background_type === item && <Check size={15} />}</button>)}
+              </div>
+              <label className="appearance-value-field"><span>{appearance.background_type === "image" ? "Adresse de l’image" : "Couleur ou dégradé"}</span><input value={appearance.background_value} onChange={(e) => updateDraft({ background_value: e.target.value })} onBlur={() => void save(appearanceRef.current)} /></label>
+              <label className="visual-toggle"><span className="photo-demo"><ImageIcon size={19} /></span><span><b>Afficher ma photo</b><small>Utilise votre portrait sur la face avant</small></span><input type="checkbox" checked={appearance.show_banner} onChange={(e) => void save(updateDraft({ show_banner: e.target.checked }))} /></label>
+            </div>
+          </details>
+
+          <details className="appearance-choice-group">
+            <summary><MousePointerClick size={18} /><span><b>Boutons et formes</b><small>Le style des éléments interactifs</small></span></summary>
+            <div className="appearance-choice-body">
+              <div className="visual-option-grid button-options">
+                {[["glass", "Verre"], ["solid", "Plein"], ["outline", "Contour"], ["minimal", "Minimal"]].map(([item, label]) => <button key={item} className={appearance.button_style === item ? "selected" : ""} onClick={() => void save(updateDraft({ button_style: item }))}><i className={`button-demo ${item}`}>Aa</i><span><b>{label}</b></span>{appearance.button_style === item && <Check size={15} />}</button>)}
+              </div>
+              <div className="visual-option-grid shape-options">
+                {[["circle", "Rond"], ["rounded", "Doux"], ["square", "Carré"]].map(([item, label]) => <button key={item} className={appearance.avatar_shape === item ? "selected" : ""} onClick={() => void save(updateDraft({ avatar_shape: item }))}><i className={`shape-demo ${item}`} /><span><b>{label}</b></span>{appearance.avatar_shape === item && <Check size={15} />}</button>)}
+              </div>
+            </div>
+          </details>
+
+          <details className="appearance-choice-group">
+            <summary><Type size={18} /><span><b>Typographie</b><small>La personnalité du texte</small></span></summary>
+            <div className="appearance-choice-body visual-option-grid font-options">
+              {[["geist", "Moderne"], ["inter", "Neutre"], ["serif", "Éditorial"], ["mono", "Technique"]].map(([item, label]) => <button key={item} className={`${item}${appearance.font_family === item ? " selected" : ""}`} onClick={() => void save(updateDraft({ font_family: item }))}><i>Aa</i><span><b>{label}</b></span>{appearance.font_family === item && <Check size={15} />}</button>)}
+            </div>
+          </details>
+
+          <details className="appearance-choice-group">
+            <summary><Waves size={18} /><span><b>Mouvement</b><small>L’entrée de la carte à l’écran</small></span></summary>
+            <div className="appearance-choice-body visual-option-grid motion-options">
+              {[["none", "Fixe"], ["fade", "Fondu"], ["slide", "Glissement"], ["subtle-scale", "Approche"]].map(([item, label]) => <button key={item} className={appearance.animation_style === item ? "selected" : ""} onClick={() => void save(updateDraft({ animation_style: item, animation_enabled: item !== "none" }))}><i className={item} /><span><b>{label}</b></span>{appearance.animation_style === item && <Check size={15} />}</button>)}
+            </div>
+          </details>
+
+          <details className="appearance-choice-group material-group">
+            <summary><Shapes size={18} /><span><b>Matière de la carte</b><small>Transparence, flou et arrondi</small></span></summary>
+            <div className="appearance-choice-body material-controls">
+              <label><span><b>Opacité</b><small>{Math.round(appearance.card_opacity * 100)}%</small></span><input aria-label="Opacité de la carte" type="range" min="35" max="100" value={appearance.card_opacity * 100} onChange={(e) => updateDraft({ card_opacity: Number(e.target.value) / 100 })} onPointerUp={() => void save(appearanceRef.current)} onKeyUp={() => void save(appearanceRef.current)} /></label>
+              <label><span><b>Flou</b><small>{appearance.card_blur}px</small></span><input aria-label="Flou de la carte" type="range" min="0" max="32" value={appearance.card_blur} onChange={(e) => updateDraft({ card_blur: Number(e.target.value) })} onPointerUp={() => void save(appearanceRef.current)} onKeyUp={() => void save(appearanceRef.current)} /></label>
+              <label><span><b>Coins</b><small>{appearance.card_radius}px</small></span><input aria-label="Arrondi des coins" type="range" min="0" max="48" value={appearance.card_radius} onChange={(e) => updateDraft({ card_radius: Number(e.target.value) })} onPointerUp={() => void save(appearanceRef.current)} onKeyUp={() => void save(appearanceRef.current)} /></label>
+            </div>
+          </details>
+        </section>
       </div>
       <aside className={`editor-preview appearance-live-preview${showMobilePreview ? " mobile-visible" : ""}`}>
         <div className="phone-frame">
