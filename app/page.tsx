@@ -1,9 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, BarChart3, Check, ContactRound, Palette, QrCode } from "lucide-react";
+import { ArrowRight, BarChart3, Camera, Check, ContactRound, Link2, Palette, QrCode, RefreshCw, Share2, UserRound } from "lucide-react";
 import { MarketingNav } from "@/components/qard/MarketingNav";
 import { QardLogo } from "@/components/qard/QardLogo";
 import { QardPreview } from "@/components/qard/QardPreview";
+import AnimatedGradient from "@/components/ui/animated-gradient";
 import type { QardData } from "@/types/database";
 
 const demoData: QardData = {
@@ -58,16 +59,16 @@ const demoData: QardData = {
   },
 };
 
-const essentials = [
-  { icon: ContactRound, title: "Tous vos contacts", copy: "Un seul endroit pour être retrouvé." },
-  { icon: QrCode, title: "Un QR permanent", copy: "Votre lien reste le même, même si votre profil évolue." },
-  { icon: Palette, title: "À votre image", copy: "Quelques choix utiles, sans réglages inutiles." },
-  { icon: BarChart3, title: "Des statistiques claires", copy: "Voyez ce qui intéresse vraiment vos visiteurs." },
-];
-
 export default function Home() {
   return (
     <main className="qard-site landing-simple">
+      <AnimatedGradient
+        className="landing-animated-bg"
+        config={{ color1: "#080b11", color2: "#10233b", color3: "#315b8d", speed: 6, distortion: 3, swirl: 12, swirlIterations: 2, softness: 94, shape: "Edge", shapeSize: 64 }}
+        noise={{ opacity: 0.025, scale: 0.8 }}
+        style={{ position: "fixed", zIndex: 0 }}
+      />
+      <div className="landing-background-shade" aria-hidden="true" />
       <MarketingNav />
 
       <section className="simple-hero qard-container">
@@ -97,10 +98,34 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="simple-how qard-container" id="fonctionnement">
-        <div><span>01</span><h2>Créez votre profil</h2><p>Ajoutez l’essentiel : votre nom, une photo et vos contacts.</p></div>
-        <div><span>02</span><h2>Partagez votre Qard</h2><p>Envoyez votre lien ou présentez votre QR code.</p></div>
-        <div><span>03</span><h2>Modifiez-la librement</h2><p>Vos changements sont visibles immédiatement.</p></div>
+      <section className="how-section qard-container" id="fonctionnement">
+        <header>
+          <p className="simple-eyebrow">Comment ça marche</p>
+          <h2>De votre profil à leur téléphone.</h2>
+        </header>
+        <div className="simple-how">
+          <article>
+            <div className="how-visual how-profile" aria-hidden="true">
+              <span className="how-avatar"><UserRound /></span>
+              <span className="how-photo"><Camera /></span>
+              <i /><i />
+            </div>
+            <span>01</span><h3>Créez votre profil</h3><p>Ajoutez votre nom, une photo et vos contacts.</p>
+          </article>
+          <article>
+            <div className="how-visual how-share" aria-hidden="true">
+              <span><QrCode /></span><i /><span><Share2 /></span>
+            </div>
+            <span>02</span><h3>Partagez votre Qard</h3><p>Envoyez votre lien ou présentez votre QR code.</p>
+          </article>
+          <article>
+            <div className="how-visual how-update" aria-hidden="true">
+              <span><RefreshCw /></span>
+              <div><i /><i /><i /></div>
+            </div>
+            <span>03</span><h3>Modifiez-la librement</h3><p>Vos changements sont visibles immédiatement.</p>
+          </article>
+        </div>
       </section>
 
       <section className="simple-features qard-container">
@@ -108,10 +133,35 @@ export default function Home() {
           <p className="simple-eyebrow">L’essentiel, bien fait</p>
           <h2>Moins de bruit.<br />Plus de contact.</h2>
         </header>
-        <div>
-          {essentials.map(({ icon: Icon, title, copy }) => (
-            <article key={title}><Icon size={19} /><h3>{title}</h3><p>{copy}</p></article>
-          ))}
+        <div className="feature-grid">
+          <article>
+            <div className="feature-visual feature-contacts" aria-hidden="true">
+              <span><ContactRound /><i><strong>Votre nom</strong><small>Profil Qard</small></i></span>
+              <span><Link2 /><i><strong>Vos liens</strong><small>Au même endroit</small></i></span>
+            </div>
+            <ContactRound size={19} /><h3>Tous vos contacts</h3><p>Un seul endroit pour être retrouvé.</p>
+          </article>
+          <article>
+            <div className="feature-visual feature-qr" aria-hidden="true">
+              <div><Image src="/ikyane-qr.png" width={112} height={112} alt="" /></div>
+              <span>qard.me/votre-nom</span>
+            </div>
+            <QrCode size={19} /><h3>Un QR permanent</h3><p>Votre lien reste le même quand votre profil évolue.</p>
+          </article>
+          <article>
+            <div className="feature-visual feature-style" aria-hidden="true">
+              <div><i /><i /><i /></div>
+              <span><b /><b /><b /><b /></span>
+            </div>
+            <Palette size={19} /><h3>À votre image</h3><p>Des choix utiles, sans réglages inutiles.</p>
+          </article>
+          <article>
+            <div className="feature-visual feature-stats" aria-hidden="true">
+              <span><strong>184</strong><small>interactions</small></span>
+              <div><i /><i /><i /><i /><i /><i /><i /></div>
+            </div>
+            <BarChart3 size={19} /><h3>Des statistiques claires</h3><p>Voyez ce qui intéresse vos visiteurs.</p>
+          </article>
         </div>
       </section>
 
