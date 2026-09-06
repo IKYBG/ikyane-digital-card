@@ -18,6 +18,11 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
   const [contact, setContact] = useState("");
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const canContinue = step === 0
+    ? Boolean(name.trim())
+    : step === 1
+      ? status === "Disponible"
+      : true;
   async function checkSlug() {
     const parsed = slugSchema.safeParse(slug);
     if (!parsed.success) return parsed.error.issues[0].message;
@@ -219,7 +224,7 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
           </label>
         </section>
       )}
-      {status && <p className="form-message error">{status}</p>}
+      {status && <p className={`form-message ${status === "Disponible" ? "success" : status === "Vérification…" ? "info" : "error"}`}>{status === "Disponible" && <Check size={15} />} {status}</p>}
       <footer>
         {step > 0 ? (
           <button
@@ -233,12 +238,12 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
           <span />
         )}
         {step < 3 ? (
-          <button type="button" className="button" onClick={next}>
-            Continuer <ArrowRight size={17} />
+          <button type="button" className="button" onClick={next} disabled={busy || !canContinue}>
+            {step === 2 && !avatarUrl ? "Passer" : "Continuer"} <ArrowRight size={17} />
           </button>
         ) : (
           <button className="button" disabled={busy}>
-            Créer ma Qard <ArrowRight size={17} />
+            {contact.trim() ? "Créer ma Qard" : "Créer sans contact"} <ArrowRight size={17} />
           </button>
         )}
       </footer>

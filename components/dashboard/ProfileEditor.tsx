@@ -2,26 +2,44 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Check, Eye, Save, SlidersHorizontal } from "lucide-react";
+import { Check, ChevronRight, Eye, EyeOff, Save, Sparkles, X } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 import { profileSchema } from "@/lib/qard/validation";
-import type { QardData } from "@/types/database";
+import type { QardData, SocialLink } from "@/types/database";
 import { QardPreview } from "@/components/qard/QardPreview";
+import { normalizeSocialUrl } from "@/lib/qard/social";
 import { MediaUploader } from "./MediaUploader";
 import { z } from "zod";
 
 type Values = z.infer<typeof profileSchema>;
+const mobileQuestions = [
+  { kind: "profile", field: "email_public", label: "Quel est votre email public ?", hint: "Il permettra de vous écrire directement.", placeholder: "vous@exemple.fr", type: "email" },
+  { kind: "profile", field: "phone_public", label: "Quel est votre numéro de téléphone ?", hint: "Vos contacts pourront vous appeler en un geste.", placeholder: "+33 6 00 00 00 00", type: "tel" },
+  { kind: "profile", field: "website", label: "Avez-vous un site web ?", hint: "Portfolio, boutique ou page personnelle.", placeholder: "https://votresite.fr", type: "url" },
+  { kind: "social", field: "instagram", label: "Quel est votre Instagram ?", hint: "Votre identifiant suffit.", placeholder: "@votrecompte", type: "text" },
+  { kind: "social", field: "snapchat", label: "Quel est votre Snapchat ?", hint: "Ajoutez votre nom d’utilisateur.", placeholder: "votrecompte", type: "text" },
+  { kind: "social", field: "tiktok", label: "Quel est votre TikTok ?", hint: "Ajoutez votre nom d’utilisateur.", placeholder: "@votrecompte", type: "text" },
+  { kind: "social", field: "discord", label: "Quel est votre Discord ?", hint: "Ajoutez votre nom d’utilisateur Discord.", placeholder: "votre.pseudo", type: "text" },
+  { kind: "social", field: "github", label: "Quel est votre GitHub ?", hint: "Ajoutez votre nom d’utilisateur.", placeholder: "votrecompte", type: "text" },
+] as const;
+
 export function ProfileEditor({ data }: { data: QardData }) {
   const [avatar, setAvatar] = useState(data.profile.avatar_url);
   const [banner, setBanner] = useState(data.profile.banner_url);
   const [status, setStatus] = useState<
     "idle" | "dirty" | "saving" | "saved" | "error"
   >("idle");
-  const [mobileView, setMobileView] = useState<"edit" | "preview">("edit");
+  const [links, setLinks] = useState(data.links);
+  const [previewVisible, setPreviewVisible] = useState(true);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [questionIndex, setQuestionIndex] = useState(0);
+  const [questionAnswer, setQuestionAnswer] = useState("");
+  const [guideBusy, setGuideBusy] = useState(false);
   const first = useRef(true);
   const {
     register,
     watch,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm<Values>({
@@ -43,6 +61,17 @@ export function ProfileEditor({ data }: { data: QardData }) {
     },
   });
   const values = watch();
+  const currentQuestion = mobileQuestions[questionIndex];
+  useEffect(() => {
+    if (!guideOpen) return;
+    if (currentQuestion.kind === "profile") {
+      setQuestionAnswer(String(getValues(currentQuestion.field as keyof Values) ?? ""));
+      return;
+    }
+    const existing = links.find((link) => link.platform === currentQuestion.field);
+    setQuestionAnswer(existing?.username ?? "");
+  }, [guideOpen, questionIndex, currentQuestion, getValues, links]);
+
   useEffect(() => {
     if (first.current) {
       first.current = false;
@@ -53,17 +82,20 @@ export function ProfileEditor({ data }: { data: QardData }) {
       const parsed = profileSchema.safeParse(values);
       if (!parsed.success) return;
       setStatus("saving");
-      const { error } = await createClient()
+      const { data: saved, error } = await createClient()
         .from("qard_profiles")
         .update({ ...parsed.data, avatar_url: avatar, banner_url: banner })
-        .eq("id", data.profile.id);
-      setStatus(error ? "error" : "saved");
+        .eq("id", data.profile.id)
+        .select("id")
+        .single();
+      setStatus(error || !saved ? "error" : "saved");
     }, 750);
     return () => window.clearTimeout(timer);
   }, [values, avatar, banner, data.profile.id]);
   const preview = useMemo<QardData>(
     () => ({
       ...data,
+      links,
       profile: {
         ...data.profile,
         ...values,
@@ -71,26 +103,59 @@ export function ProfileEditor({ data }: { data: QardData }) {
         banner_url: banner,
       },
     }),
-    [data, values, avatar, banner],
+    [data, values, avatar, banner, links],
   );
+
+  function advanceGuide() {
+    if (questionIndex === mobileQuestions.length - 1) {
+      setGuideOpen(false);
+      setQuestionIndex(0);
+      return;
+    }
+    setQuestionIndex((current) => current + 1);
+  }
+
+  async function saveGuideAnswer() {
+    const answer = questionAnswer.trim();
+    if (!answer) return advanceGuide();
+    if (currentQuestion.kind === "profile") {
+      setValue(currentQuestion.field, answer, { shouldDirty: true, shouldValidate: true });
+      advanceGuide();
+      return;
+    }
+    setGuideBusy(true);
+    const supabase = createClient();
+    const existing = links.find((link) => link.platform === currentQuestion.field);
+    const payload = {
+      platform: currentQuestion.field,
+      label: null,
+      url: normalizeSocialUrl(currentQuestion.field, answer),
+      username: answer.replace(/^@/, ""),
+      enabled: true,
+    };
+    const request = existing
+      ? supabase.from("qard_social_links").update(payload).eq("id", existing.id).select().single()
+      : supabase.from("qard_social_links").insert({ ...payload, profile_id: data.profile.id, position: links.length }).select().single();
+    const { data: saved, error } = await request;
+    setGuideBusy(false);
+    if (error || !saved) {
+      setStatus("error");
+      return;
+    }
+    setLinks((current) => existing ? current.map((link) => link.id === existing.id ? saved as SocialLink : link) : [...current, saved as SocialLink]);
+    advanceGuide();
+  }
+
   return (
     <div className="editor-layout">
-      <div className="mobile-editor-tabs">
-        <button
-          className={mobileView === "edit" ? "active" : ""}
-          onClick={() => setMobileView("edit")}
-        >
-          <SlidersHorizontal size={16} /> Éditer
-        </button>
-        <button
-          className={mobileView === "preview" ? "active" : ""}
-          onClick={() => setMobileView("preview")}
-        >
-          <Eye size={16} /> Aperçu
+      <div className="mobile-card-controls">
+        <button type="button" className="button mobile-configure-button" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><Sparkles size={17} /> Configurer ma Qard</button>
+        <button type="button" className="mobile-preview-visibility" onClick={() => setPreviewVisible((current) => !current)}>
+          {previewVisible ? <EyeOff size={16} /> : <Eye size={16} />}{previewVisible ? "Masquer l’aperçu" : "Afficher l’aperçu"}
         </button>
       </div>
       <form
-        className={`editor-form${mobileView === "preview" ? " mobile-hidden" : ""}`}
+        className="editor-form"
         onSubmit={(e) => e.preventDefault()}
       >
         <div className={`save-state ${status}`}>
@@ -230,12 +295,27 @@ export function ProfileEditor({ data }: { data: QardData }) {
         </details>
       </form>
       <aside
-        className={`editor-preview${mobileView === "edit" ? " mobile-hidden-preview" : ""}`}
+        className={`editor-preview editor-live-card${previewVisible ? " mobile-preview-open" : ""}`}
       >
         <div className="phone-frame">
           <QardPreview data={preview} compact />
+          <button type="button" className="mobile-preview-edit" onClick={() => { setQuestionIndex(0); setGuideOpen(true); }}><Sparkles size={16} /> Modifier cette Qard</button>
         </div>
       </aside>
+      {guideOpen && <dialog open className="mobile-guide" aria-labelledby="mobile-guide-title">
+        <div className="mobile-guide-sheet">
+          <header><span>{questionIndex + 1} / {mobileQuestions.length}</span><button type="button" onClick={() => setGuideOpen(false)} aria-label="Arrêter la configuration"><X size={18} /></button></header>
+          <div className="mobile-guide-progress"><i style={{ width: `${((questionIndex + 1) / mobileQuestions.length) * 100}%` }} /></div>
+          <p>Configuration guidée</p>
+          <h2 id="mobile-guide-title">{currentQuestion.label}</h2>
+          <small>{currentQuestion.hint}</small>
+          <input type={currentQuestion.type} value={questionAnswer} onChange={(event) => setQuestionAnswer(event.target.value)} placeholder={currentQuestion.placeholder} autoFocus />
+          <footer>
+            <button type="button" onClick={advanceGuide}>Passer</button>
+            <button type="button" className="button" onClick={() => void saveGuideAnswer()} disabled={guideBusy}>{questionIndex === mobileQuestions.length - 1 ? "Terminer" : "Continuer"}<ChevronRight size={17} /></button>
+          </footer>
+        </div>
+      </dialog>}
     </div>
   );
 }

@@ -3,7 +3,7 @@
 import { useState, type SyntheticEvent } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, LockKeyhole } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "login" | "signup" | "forgot";
@@ -14,6 +14,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   async function googleSignIn() {
     setLoading(true);
@@ -94,9 +95,10 @@ export function AuthForm({ mode }: { mode: Mode }) {
         ? "Crée ton identité Qard."
         : "Retrouve ton accès.";
   return (
-    <form className="auth-form" onSubmit={submit}>
+    <form className="auth-form auth-form-card" onSubmit={submit}>
       <div>
-        <span className="eyebrow">Qard</span>
+        <span className="auth-lock-mark"><LockKeyhole size={18} /></span>
+        <span className="eyebrow">{mode === "login" ? "Connexion sécurisée" : mode === "signup" ? "Créer un compte" : "Récupération"}</span>
         <h1>{title}</h1>
         <p>
           {mode === "signup"
@@ -131,16 +133,19 @@ export function AuthForm({ mode }: { mode: Mode }) {
       {mode !== "forgot" && (
         <label>
           Mot de passe
-          <input
-            name="password"
-            type="password"
-            autoComplete={
-              mode === "login" ? "current-password" : "new-password"
-            }
-            required
-            minLength={8}
-            placeholder="8 caractères minimum"
-          />
+          <span className="password-field">
+            <input
+              name="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              required
+              minLength={8}
+              placeholder="8 caractères minimum"
+            />
+            <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
+              {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+            </button>
+          </span>
         </label>
       )}
       {error && (
