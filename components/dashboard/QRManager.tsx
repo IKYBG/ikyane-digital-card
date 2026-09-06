@@ -39,7 +39,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
     ]);
   }
   async function png() {
-    if (!scannable) return flash("Augmente le contraste avant de télécharger");
+    if (!scannable) return flash("Augmentez le contraste avant de télécharger");
     const link = document.createElement("a");
     link.download = `qard-${profile.slug}-qr.png`;
     link.href = canvas.current?.toDataURL("image/png") ?? "";
@@ -48,7 +48,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
     flash("QR PNG téléchargé");
   }
   async function svg() {
-    if (!scannable) return flash("Augmente le contraste avant de télécharger");
+    if (!scannable) return flash("Augmentez le contraste avant de télécharger");
     const content = await QRCode.toString(url, {
       type: "svg",
       margin,
@@ -80,9 +80,9 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
         <p>Haute correction d’erreur · prêt pour l’impression</p>
       </section>
       <section className="panel qr-controls">
-        <h2>Ton QR permanent</h2>
+        <h2>Votre QR permanent</h2>
         <p>
-          Il contient uniquement ton URL publique. Tu peux modifier ta Qard sans
+          Il contient uniquement votre URL publique. Vous pouvez modifier votre Qard sans
           le remplacer.
         </p>
         <label>
@@ -144,7 +144,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
         <small className="qr-warning">
           {scannable
             ? "Contraste validé. Le QR conserve une marge sûre d’au moins 2 modules."
-            : "Contraste insuffisant : rapproche le premier plan du noir ou l’arrière-plan du blanc."}
+            : "Contraste insuffisant : rapprochez le premier plan du noir ou l’arrière-plan du blanc."}
         </small>
       </section>
       {toast && (

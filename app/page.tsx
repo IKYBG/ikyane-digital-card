@@ -1,20 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  BarChart3,
-  Check,
-  ContactRound,
-  Fingerprint,
-  Palette,
-  QrCode,
-  ScanLine,
-  Share2,
-  Sparkles,
-  Zap,
-} from "lucide-react";
-import { FaLinkedin } from "react-icons/fa6";
-import { SiGithub, SiInstagram } from "react-icons/si";
+import { ArrowRight, BarChart3, Check, ContactRound, Palette, QrCode } from "lucide-react";
 import { MarketingNav } from "@/components/qard/MarketingNav";
 import { QardLogo } from "@/components/qard/QardLogo";
 import { QardPreview } from "@/components/qard/QardPreview";
@@ -28,16 +14,16 @@ const demoData: QardData = {
     display_name: "Votre nom",
     first_name: "Votre",
     last_name: "Nom",
-    headline: "Votre identité professionnelle, en un geste.",
-    bio: "Présentez votre parcours, vos projets et vos réseaux dans une carte qui vous ressemble.",
+    headline: "Votre activité, simplement.",
+    bio: null,
     avatar_url: null,
     banner_url: null,
-    company: "Votre univers",
-    job_title: "Votre activité",
-    location: "Partout",
+    company: null,
+    job_title: null,
+    location: null,
     email_public: "bonjour@votrenom.fr",
     phone_public: null,
-    website: "https://example.com",
+    website: null,
     published: true,
     show_branding: false,
     plan: "free",
@@ -49,19 +35,18 @@ const demoData: QardData = {
   links: [
     { id: "demo-instagram", profile_id: "landing-demo", platform: "instagram", label: "Instagram", url: "https://instagram.com", username: "@votrenom", position: 0, enabled: true, created_at: "2026-01-01T00:00:00.000Z", updated_at: "2026-01-01T00:00:00.000Z" },
     { id: "demo-linkedin", profile_id: "landing-demo", platform: "linkedin", label: "LinkedIn", url: "https://linkedin.com", username: "Votre profil", position: 1, enabled: true, created_at: "2026-01-01T00:00:00.000Z", updated_at: "2026-01-01T00:00:00.000Z" },
-    { id: "demo-github", profile_id: "landing-demo", platform: "github", label: "GitHub", url: "https://github.com", username: "vos-projets", position: 2, enabled: true, created_at: "2026-01-01T00:00:00.000Z", updated_at: "2026-01-01T00:00:00.000Z" },
   ],
   appearance: {
     id: "landing-appearance",
     profile_id: "landing-demo",
     theme: "midnight-glass",
     background_type: "gradient",
-    background_value: "radial-gradient(circle at 68% 12%, #16345c 0, #0b1729 36%, #05080e 78%)",
+    background_value: "linear-gradient(160deg, #18263a, #0c1420 68%)",
     accent_color: "#a8caff",
     text_color: "#f5f8ff",
-    card_opacity: 0.82,
-    card_blur: 18,
-    card_radius: 36,
+    card_opacity: 0.9,
+    card_blur: 12,
+    card_radius: 30,
     button_style: "glass",
     avatar_shape: "rounded",
     font_family: "geist",
@@ -73,113 +58,66 @@ const demoData: QardData = {
   },
 };
 
-const steps = [
-  { number: "01", title: "Créez votre identité", copy: "Ajoutez votre photo, votre activité et ce qui vous rend unique.", icon: Fingerprint },
-  { number: "02", title: "Composez votre Qard", copy: "Rassemblez vos réseaux et choisissez une présence qui vous ressemble.", icon: Palette },
-  { number: "03", title: "Partagez en un geste", copy: "Un QR permanent et un lien simple, toujours à jour.", icon: Share2 },
+const essentials = [
+  { icon: ContactRound, title: "Tous vos contacts", copy: "Un seul endroit pour être retrouvé." },
+  { icon: QrCode, title: "Un QR permanent", copy: "Votre lien reste le même, même si votre profil évolue." },
+  { icon: Palette, title: "À votre image", copy: "Quelques choix utiles, sans réglages inutiles." },
+  { icon: BarChart3, title: "Des statistiques claires", copy: "Voyez ce qui intéresse vraiment vos visiteurs." },
 ];
 
 export default function Home() {
   return (
-    <main className="qard-site landing-v2">
-      <div className="landing-noise" aria-hidden="true" />
-      <div className="landing-aurora landing-aurora-one" aria-hidden="true" />
-      <div className="landing-aurora landing-aurora-two" aria-hidden="true" />
+    <main className="qard-site landing-simple">
       <MarketingNav />
 
-      <section className="landing-hero qard-container">
-        <div className="landing-hero-copy">
-          <p className="landing-kicker"><Sparkles size={15} /> L’identité numérique, réinventée</p>
-          <h1>Votre présence.<br /><span>En un geste.</span></h1>
-          <p className="landing-lead">Une carte de visite numérique vivante, élégante et toujours à jour. Partagez ce qui compte vraiment, sans application à installer.</p>
+      <section className="simple-hero qard-container">
+        <div className="simple-hero-copy">
+          <p className="simple-eyebrow">Carte de visite numérique</p>
+          <h1>Une carte.<br />Tous vos contacts.</h1>
+          <p>Créez une identité claire, partageable par lien ou QR code. Rien à installer.</p>
           <div className="landing-actions">
             <Link className="button landing-primary" href="/signup">Créer ma Qard <ArrowRight size={18} /></Link>
-            <Link className="button button-ghost" href="/card">Explorer la démo</Link>
+            <Link className="simple-link" href="/card">Voir un exemple</Link>
           </div>
-          <div className="landing-trust" aria-label="Avantages essentiels">
-            <span><Check size={14} /> Gratuit pour commencer</span>
-            <span><Check size={14} /> QR permanent</span>
-            <span><Check size={14} /> Sans application</span>
+          <div className="simple-proof" aria-label="Avantages essentiels">
+            <span><Check size={14} /> Gratuit</span>
+            <span><Check size={14} /> Rapide à créer</span>
+            <span><Check size={14} /> Toujours à jour</span>
           </div>
         </div>
 
-        <div className="landing-product" aria-label="Exemple interactif d’une carte Qard">
-          <div className="landing-product-halo" aria-hidden="true" />
-          <div className="landing-demo-card">
+        <div className="simple-product" aria-label="Aperçu interactif d’une Qard">
+          <div className="simple-demo-card">
             <QardPreview data={demoData} compact contactHref="/card" contactLabel="Voir l’exemple" />
           </div>
-          <div className="landing-qr-float">
-            <div className="landing-qr-head"><span><i /> Profil actif</span><ScanLine size={16} /></div>
-            <Image src="/ikyane-qr.png" width={126} height={126} alt="QR code vers un exemple de Qard" />
-            <p>Scannez l’exemple</p>
+          <div className="simple-qr">
+            <Image src="/ikyane-qr.png" width={74} height={74} alt="QR code vers un exemple de Qard" />
+            <span><strong>Essayez-la</strong><small>Scannez le QR code</small></span>
           </div>
-          <div className="landing-live-pill"><Zap size={14} /> Mise à jour instantanée</div>
         </div>
       </section>
 
-      <section className="landing-signal qard-container" aria-label="Promesse Qard">
-        <p>Un profil. Un QR. Toutes vos rencontres.</p>
+      <section className="simple-how qard-container" id="fonctionnement">
+        <div><span>01</span><h2>Créez votre profil</h2><p>Ajoutez l’essentiel : votre nom, une photo et vos contacts.</p></div>
+        <div><span>02</span><h2>Partagez votre Qard</h2><p>Envoyez votre lien ou présentez votre QR code.</p></div>
+        <div><span>03</span><h2>Modifiez-la librement</h2><p>Vos changements sont visibles immédiatement.</p></div>
+      </section>
+
+      <section className="simple-features qard-container">
+        <header>
+          <p className="simple-eyebrow">L’essentiel, bien fait</p>
+          <h2>Moins de bruit.<br />Plus de contact.</h2>
+        </header>
         <div>
-          <span><SiInstagram /> Instagram</span>
-          <span><FaLinkedin /> LinkedIn</span>
-          <span><SiGithub /> GitHub</span>
-          <span><ContactRound /> Contact</span>
-        </div>
-      </section>
-
-      <section className="landing-section qard-container" id="fonctionnement">
-        <div className="landing-section-heading">
-          <span>Simple par nature</span>
-          <h2>De votre idée à leur téléphone.</h2>
-          <p>Trois étapes, aucune friction.</p>
-        </div>
-        <div className="landing-steps">
-          {steps.map(({ number, title, copy, icon: Icon }) => (
-            <article key={number}>
-              <div><span>{number}</span><Icon size={20} /></div>
-              <h3>{title}</h3>
-              <p>{copy}</p>
-              <i aria-hidden="true" />
-            </article>
+          {essentials.map(({ icon: Icon, title, copy }) => (
+            <article key={title}><Icon size={19} /><h3>{title}</h3><p>{copy}</p></article>
           ))}
         </div>
       </section>
 
-      <section className="landing-section landing-bento-section">
-        <div className="qard-container">
-          <div className="landing-section-heading">
-            <span>Tout ce qu’il faut</span>
-            <h2>Une carte qui travaille pour vous.</h2>
-            <p>Claire pour vos visiteurs. Puissante pour vous.</p>
-          </div>
-          <div className="landing-bento">
-            <article className="bento-card bento-identity">
-              <div className="bento-copy"><ContactRound /><span>Identité</span><h3>Bien plus qu’une liste de liens.</h3><p>Votre histoire, votre image et vos contacts réunis dans une expérience cohérente.</p></div>
-              <div className="identity-stack" aria-hidden="true"><i /><i /><div><b>VN</b><span><strong>Votre nom</strong><small>Votre activité</small></span><ArrowRight size={16} /></div></div>
-            </article>
-            <article className="bento-card bento-qr">
-              <div className="bento-copy"><QrCode /><span>Partage</span><h3>Un QR qui ne change jamais.</h3><p>Actualisez votre profil, pas vos supports.</p></div>
-              <div className="bento-qr-frame" aria-hidden="true"><Image src="/ikyane-qr.png" width={150} height={150} alt="" /></div>
-            </article>
-            <article className="bento-card bento-analytics">
-              <div className="bento-copy"><BarChart3 /><span>Analytics</span><h3>Comprenez ce qui attire l’attention.</h3><p>Des signaux lisibles, sans bruit inutile.</p></div>
-              <div className="mini-chart" aria-hidden="true">
-                <div className="chart-value"><strong>184</strong><span>interactions</span></div>
-                <svg viewBox="0 0 420 130" preserveAspectRatio="none"><path d="M0 104 C54 100 74 62 126 73 S205 116 251 70 S332 30 420 17" /><path className="chart-fill" d="M0 104 C54 100 74 62 126 73 S205 116 251 70 S332 30 420 17 L420 130 L0 130 Z" /></svg>
-              </div>
-            </article>
-            <article className="bento-card bento-style">
-              <div className="bento-copy"><Palette /><span>Personnalisation</span><h3>Votre univers, jusque dans les détails.</h3><p>Couleurs, typographies et ambiance s’accordent à votre identité.</p></div>
-              <div className="theme-orbits" aria-hidden="true"><i /><i /><i /><span /></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="landing-final">
-        <Image src="/qard-logo.png" width={116} height={116} alt="Logo Qard" />
-        <p>Votre prochaine rencontre commence ici.</p>
-        <h2>Créez une présence<br />qu’on retient.</h2>
+      <section className="simple-final qard-container">
+        <QardLogo linked={false} />
+        <h2>Votre carte peut être prête en quelques minutes.</h2>
         <Link className="button landing-primary" href="/signup">Commencer gratuitement <ArrowRight size={18} /></Link>
       </section>
 

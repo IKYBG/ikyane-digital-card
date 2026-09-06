@@ -253,7 +253,7 @@ export function LinksManager({
         <div className="list-heading">
           <div>
             <h2>Mes contacts</h2>
-            <p>Glisse les lignes pour modifier l’ordre public.</p>
+            <p>Glissez les lignes pour modifier l’ordre public.</p>
           </div>
           <span>{links.length}</span>
         </div>
@@ -280,7 +280,7 @@ export function LinksManager({
           <div className="empty-state">
             <SocialIcon platform="custom" size={24} />
             <h3>Aucun lien pour le moment.</h3>
-            <p>Ajoute ton premier contact avec le formulaire.</p>
+            <p>Ajoutez votre premier contact avec le formulaire.</p>
           </div>
         )}
       </section>

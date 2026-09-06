@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
 import { AnimatePresence, motion, useReducedMotion, type PanInfo } from 'motion/react';
 import { SiDiscord, SiGithub, SiInstagram, SiSnapchat, SiTiktok } from 'react-icons/si';
-import { ArrowUpRight, Check, ChevronLeft, ChevronRight, GraduationCap, Mail, MoveHorizontal, Phone, RotateCcw, Share2, UserPlus } from 'lucide-react';
+import { ArrowUpRight, Check, ChevronLeft, ChevronRight, Mail, Phone, RotateCcw, Share2, UserPlus } from 'lucide-react';
 import AnimatedGradient from '@/components/ui/animated-gradient';
 import { profile } from '@/data/profile';
 import { downloadVCard } from '@/lib/vcard';
@@ -214,21 +214,18 @@ export function ProfileExperience() {
                         {profile.photo ? <Image src={profile.photo} alt={`Portrait de ${profile.name}`} fill priority sizes="(max-width: 640px) 94vw, 390px" /> : <div className="monogram" aria-label={`Avatar ${profile.initials}`}>{profile.initials}</div>}
                         <div className="portrait-scan" aria-hidden="true" />
                       </motion.div>
-                      <span className="front-glint" aria-hidden="true" />
-                      <motion.span className="identity-stamp" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: -8 }} transition={{ ...spring, delay: side === 'front' ? 0.22 : 0 }}>IDENTITÉ / 001</motion.span>
                       <motion.div className="identity-copy" animate={side === 'front' ? { opacity: 1, y: 0 } : { opacity: 0, y: 18 }} transition={{ ...spring, delay: side === 'front' ? 0.26 : 0 }}>
-                        <div className="name-row"><div><h1>{profile.name}</h1><p>{profile.username}</p></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
+                        <div className="name-row"><div><h1>{profile.name}</h1></div><span className="verified" aria-label="Profil vérifié"><Check size={13} /></span></div>
                         <p className="headline">{profile.headline}</p>
-                        <div className="identity-meta"><span><GraduationCap size={15} /> {profile.level}</span><span>{profile.school}</span></div>
+                        <p className="identity-role">{profile.level} · {profile.school}</p>
                         <div className="primary-actions">
-                          <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={handleSave} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> Enregistrer</motion.button>
-                          <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
+                          <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={flip} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>Voir mes contacts <ArrowUpRight size={17} /></motion.button>
                         </div>
                       </motion.div>
                     </div>
 
                     <div className="card-face card-back" aria-hidden={side !== 'back'}>
-                      <div className="back-heading"><div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
+                      <div className="back-heading"><div><span>Contact</span><h2>Mes contacts</h2></div><button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button></div>
                       <div className="contact-groups">
                         <div className="contact-group"><span className="contact-group-label">Réseaux</span><div className="contact-matrix network-matrix">
                           {contacts.map(({ label, value, href, icon: Icon, className, discord }, index) => (
@@ -250,7 +247,7 @@ export function ProfileExperience() {
               </motion.div>
             </div>
           </motion.div>
-          <button className="flip-hint" onClick={flip}><MoveHorizontal size={14} /> {side === 'front' ? 'Glissez ou touchez pour voir mes contacts' : 'Glissez ou touchez pour revenir au profil'}</button>
+          <button className="flip-hint" onClick={flip}><RotateCcw size={14} /> {side === 'front' ? 'Touchez ou glissez' : 'Revenir au profil'}</button>
         </section>
 
         <section id="journey" className="content-section">

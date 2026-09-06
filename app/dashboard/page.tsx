@@ -52,7 +52,7 @@ export default async function DashboardPage() {
       <DashboardHeader
         eyebrow="Vue d’ensemble"
         title={`Bonjour, ${profile.display_name.split(" ")[0]}.`}
-        description="Ton identité numérique, toujours à jour."
+        description="Gère ta carte et partage-la quand tu veux."
       />
       <div className="dashboard-grid">
         <article className="panel qard-summary">

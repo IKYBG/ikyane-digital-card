@@ -12,11 +12,9 @@ import {
 import { motion, useReducedMotion, type PanInfo } from "motion/react";
 import {
   ArrowUpRight,
-  BriefcaseBusiness,
   Check,
   ChevronLeft,
   ChevronRight,
-  MapPin,
   RotateCcw,
   Share2,
   UserPlus,
@@ -217,29 +215,22 @@ export function QardPreview({
                   )}
                   <div className="portrait-scan" aria-hidden="true" />
                 </motion.div>
-                <span className="front-glint" aria-hidden="true" />
-                <span className="identity-stamp">QARD / DIGITAL</span>
                 <div className="identity-copy">
                   <div className="name-row">
-                    <div><h1>{profile.display_name}</h1><p>@{profile.slug}</p></div>
+                    <div><h1>{profile.display_name}</h1></div>
                     <span className="verified" aria-label="Profil Qard"><Check size={13} /></span>
                   </div>
                   {profile.headline && <p className="headline">{profile.headline}</p>}
-                  {profile.bio && <p className="qard-card-bio">{profile.bio}</p>}
-                  <div className="identity-meta">
-                    {(profile.job_title || profile.company) && <span><BriefcaseBusiness size={14} /> {[profile.job_title, profile.company].filter(Boolean).join(" · ")}</span>}
-                    {profile.location && <span><MapPin size={14} /> {profile.location}</span>}
-                  </div>
+                  {(profile.job_title || profile.company) && <p className="identity-role">{[profile.job_title, profile.company].filter(Boolean).join(" · ")}</p>}
                   <div className="primary-actions">
-                    <motion.a tabIndex={frontTabIndex} className="action-primary" href={vcardHref} data-qard-contact={analyticsAttributes ? "true" : undefined} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}><UserPlus size={17} /> {contactLabel}</motion.a>
-                    <motion.button tabIndex={frontTabIndex} className="action-secondary" onClick={flip} whileHover={{ y: -2, scale: 1.015 }} whileTap={{ scale: 0.965 }}>Mes contacts <RotateCcw size={16} /></motion.button>
+                    <motion.button tabIndex={frontTabIndex} className="action-primary" onClick={flip} whileHover={{ y: -2 }} whileTap={{ scale: 0.98 }}>Voir mes contacts <ArrowUpRight size={17} /></motion.button>
                   </div>
                 </div>
               </div>
 
               <div className="card-face card-back" aria-hidden={side !== "back"}>
                 <div className="back-heading">
-                  <div><span>Réseaux & contact</span><h2>Retrouvez-moi<br />en ligne.</h2></div>
+                  <div><span>Contact</span><h2>Mes contacts</h2></div>
                   <button tabIndex={backTabIndex} onClick={flip} aria-label="Retourner la carte"><RotateCcw size={17} /></button>
                 </div>
                 <div className="contact-groups qard-contact-groups">
@@ -251,13 +242,13 @@ export function QardPreview({
                   <a tabIndex={backTabIndex} href={vcardHref} data-qard-contact={analyticsAttributes ? "true" : undefined}><UserPlus size={16} /> {contactLabel}</a>
                   <button tabIndex={backTabIndex} onClick={share}>{shared ? <Check size={16} /> : <Share2 size={16} />} {shared ? "Lien copié" : "Partager"}</button>
                 </div>
-                <div className="back-footer"><span>QARD · {profile.slug}</span><span>Glissez pour revenir</span></div>
+                <div className="back-footer"><span>@{profile.slug}</span><span>Glissez pour revenir</span></div>
               </div>
             </motion.div>
           </div>
         </motion.div>
       </div>
-      <button className="flip-hint qard-flip-hint" onClick={flip}><RotateCcw size={14} /> {side === "front" ? "Glissez ou touchez pour voir les contacts" : "Glissez ou touchez pour revenir au profil"}</button>
+      <button className="flip-hint qard-flip-hint" onClick={flip}><RotateCcw size={14} /> {side === "front" ? "Touchez ou glissez" : "Revenir au profil"}</button>
       {profile.show_branding && <a className="qard-branding" href="/">Créé avec <b>Qard</b></a>}
     </article>
   );

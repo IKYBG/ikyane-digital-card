@@ -110,7 +110,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
           )}
         </div>
         <fieldset>
-          <legend>Visuels</legend>
+          <legend>Essentiel</legend>
           <MediaUploader
             bucket="avatars"
             userId={data.profile.user_id}
@@ -118,17 +118,6 @@ export function ProfileEditor({ data }: { data: QardData }) {
             onChange={setAvatar}
             label="Photo de profil"
           />
-          <MediaUploader
-            bucket="banners"
-            userId={data.profile.user_id}
-            value={banner}
-            onChange={setBanner}
-            label="Bannière"
-            maxMb={8}
-          />
-        </fieldset>
-        <fieldset>
-          <legend>Identité</legend>
           <div className="field-row">
             <label>
               Nom affiché
@@ -138,6 +127,25 @@ export function ProfileEditor({ data }: { data: QardData }) {
               )}
             </label>
           </div>
+          <label>
+            Activité ou phrase courte
+            <input
+              {...register("headline")}
+              placeholder="Designer produit indépendant"
+            />
+          </label>
+        </fieldset>
+        <details className="editor-section">
+          <summary>Informations complémentaires</summary>
+          <div className="editor-section-body">
+          <MediaUploader
+            bucket="banners"
+            userId={data.profile.user_id}
+            value={banner}
+            onChange={setBanner}
+            label="Bannière"
+            maxMb={8}
+          />
           <div className="field-row two">
             <label>
               Prénom
@@ -148,13 +156,6 @@ export function ProfileEditor({ data }: { data: QardData }) {
               <input {...register("last_name")} />
             </label>
           </div>
-          <label>
-            Phrase d’accroche
-            <input
-              {...register("headline")}
-              placeholder="Designer produit indépendant"
-            />
-          </label>
           <div className="field-row two">
             <label>
               Métier
@@ -173,7 +174,8 @@ export function ProfileEditor({ data }: { data: QardData }) {
             Bio
             <textarea {...register("bio")} rows={4} />
           </label>
-        </fieldset>
+          </div>
+        </details>
         <fieldset>
           <legend>Contact</legend>
           <label>
@@ -197,12 +199,13 @@ export function ProfileEditor({ data }: { data: QardData }) {
             {errors.website && <small>{errors.website.message}</small>}
           </label>
         </fieldset>
-        <fieldset>
-          <legend>Publication</legend>
+        <details className="editor-section">
+          <summary>Publication</summary>
+          <div className="editor-section-body">
           <label className="toggle-row">
             <span>
               <b>Qard publiée</b>
-              <small>Ton profil est visible depuis son URL.</small>
+              <small>Votre profil est visible depuis son URL.</small>
             </span>
             <input aria-label="Publier la Qard" type="checkbox" {...register("published")} />
           </label>
@@ -223,7 +226,8 @@ export function ProfileEditor({ data }: { data: QardData }) {
               disabled={data.profile.plan === "free"}
             />
           </label>
-        </fieldset>
+          </div>
+        </details>
       </form>
       <aside
         className={`editor-preview${mobileView === "edit" ? " mobile-hidden-preview" : ""}`}

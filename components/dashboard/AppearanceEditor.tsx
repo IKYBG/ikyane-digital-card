@@ -116,8 +116,9 @@ export function AppearanceEditor({ data }: { data: QardData }) {
             ))}
           </div>
         </section>
-        <section className="panel appearance-fields">
-          <h2>Réglages</h2>
+        <details className="panel appearance-fields">
+          <summary>Réglages avancés</summary>
+          <div className="appearance-fields-body">
           <div className="field-row two">
             <label>
               Accent
@@ -279,7 +280,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               </button>
             ))}
           </div>
-        </section>
+          </div>
+        </details>
       </div>
       <aside className="editor-preview">
         <div className="phone-frame">

@@ -73,9 +73,9 @@ export default async function AnalyticsPage({
   return (
     <>
       <DashboardHeader
-        eyebrow="Analytics"
-        title="Ce qui crée le contact."
-        description="Des mesures réelles, sans confondre automatiquement visite et scan QR."
+        eyebrow="Activité"
+        title="Vos statistiques"
+        description="Les vues et les actions sur votre carte."
         action={
           <div className="period-tabs">
             {[7, 30, 90].map((days) => (
@@ -146,8 +146,8 @@ export default async function AnalyticsPage({
         ) : (
           <div className="empty-chart">
             <BarChart3 />
-            <h3>Tes statistiques apparaîtront après tes premières visites.</h3>
-            <p>Partage ta Qard pour commencer à mesurer les interactions.</p>
+            <h3>Vos statistiques apparaîtront après les premières visites.</h3>
+            <p>Partagez votre Qard pour mesurer les interactions.</p>
           </div>
         )}
       </section>
