@@ -26,8 +26,20 @@ export async function getPublicQard(slug: string): Promise<QardData | null> {
   const supabase = await createClient();
   // RLS is the source of truth here: visitors can only read published cards,
   // while an authenticated owner can also preview their unpublished card.
-  const { data: profile, error: profileError } = await supabase.from('qard_profiles').select('id,slug,display_name,first_name,last_name,headline,bio,avatar_url,banner_url,company,job_title,location,email_public,phone_public,website,published,show_branding,created_at,updated_at').eq('slug', slug).maybeSingle();
+  const profileFields = 'id,slug,display_name,first_name,last_name,headline,bio,avatar_url,banner_url,company,job_title,location,email_public,phone_public,website,published,show_branding,created_at,updated_at';
+  const initialProfile = await supabase.from('qard_profiles').select(profileFields).eq('slug', slug).maybeSingle();
+  let profile = initialProfile.data;
+  const profileError = initialProfile.error;
   if (profileError) throw profileError;
+  if (!profile) {
+    const { data: alias, error: aliasError } = await supabase.from('qard_slug_aliases').select('profile_id').eq('slug', slug).maybeSingle();
+    if (aliasError) throw aliasError;
+    if (alias) {
+      const resolved = await supabase.from('qard_profiles').select(profileFields).eq('id', alias.profile_id).maybeSingle();
+      if (resolved.error) throw resolved.error;
+      profile = resolved.data;
+    }
+  }
   if (!profile) return null;
   const publicProfile = {
     ...profile,

@@ -2,14 +2,13 @@
 
 import { useState, type SyntheticEvent } from "react";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { ArrowRight, Eye, EyeOff, Loader2, LockKeyhole } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "login" | "signup" | "forgot";
 
 export function AuthForm({ mode }: { mode: Mode }) {
-  const router = useRouter();
   const search = useSearchParams();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -55,20 +54,21 @@ export function AuthForm({ mode }: { mode: Mode }) {
         });
         if (authError) throw authError;
         if (data.session) {
-          router.push("/onboarding");
-          router.refresh();
+          window.location.assign("/onboarding");
         } else
           setSuccess(
             "Vérifie ton email pour confirmer ton compte, puis reviens sur Qard.",
           );
       } else if (mode === "login") {
-        const { error: authError } = await supabase.auth.signInWithPassword({
+        const { data, error: authError } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (authError) throw authError;
-        router.push(search.get("next") ?? "/dashboard");
-        router.refresh();
+        if (!data.session) throw new Error("La session n’a pas pu être créée. Réessaie.");
+        const requested = search.get("next");
+        const destination = requested?.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
+        window.location.assign(destination);
       } else {
         const { error: authError } = await supabase.auth.resetPasswordForEmail(
           email,
@@ -139,8 +139,8 @@ export function AuthForm({ mode }: { mode: Mode }) {
               type={showPassword ? "text" : "password"}
               autoComplete={mode === "login" ? "current-password" : "new-password"}
               required
-              minLength={8}
-              placeholder="8 caractères minimum"
+              minLength={mode === "signup" ? 8 : undefined}
+              placeholder={mode === "signup" ? "8 caractères minimum" : "Votre mot de passe"}
             />
             <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
               {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
