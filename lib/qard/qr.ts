@@ -13,6 +13,8 @@ export function contrastRatio(first: string, second: string) {
     const blue = channel(value & 255);
     return 0.2126 * red + 0.7152 * green + 0.0722 * blue;
   };
-  const [light, dark] = [luminance(first), luminance(second)].sort((a, b) => b - a);
+  const [light, dark] = [luminance(first), luminance(second)].sort(
+    (a, b) => b - a,
+  );
   return (light + 0.05) / (dark + 0.05);
 }

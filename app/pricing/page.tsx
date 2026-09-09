@@ -1,4 +1,89 @@
-import Link from 'next/link'; import { Check, Minus } from 'lucide-react'; import { MarketingNav } from '@/components/qard/MarketingNav'; import { QardLogo } from '@/components/qard/QardLogo';
+import Link from 'next/link';
+import { Check, Minus } from 'lucide-react';
+import { MarketingNav } from '@/components/qard/MarketingNav';
+import { QardLogo } from '@/components/qard/QardLogo';
 export const metadata = { title: 'Tarifs' };
-const plans = [{ name: 'Free', price: '0 €', description: 'Pour créer et partager ta première identité.', features: ['1 Qard','QR permanent','Réseaux et contacts','Thèmes essentiels','Analytics 7 jours','Branding Qard'], cta: 'Créer ma Qard', href: '/signup', pro: false },{ name: 'Pro', price: '4,99 €', description: 'Pour une identité plus libre et plus mesurable.', features: ['Personnalisation avancée','Thèmes premium','Suppression du branding','Analytics étendues','Domaine personnalisé à venir','Fonctions premium futures'], cta: 'Bientôt disponible', href: '/signup', pro: true }];
-export default function PricingPage() { return <main className="qard-site legal-site"><MarketingNav /><section className="pricing-hero qard-container"><span>Tarifs simples</span><h1>Commence gratuitement.<br />Passe Pro quand Qard devient essentielle.</h1></section><section className="pricing-grid qard-container">{plans.map((plan) => <article key={plan.name} className={plan.pro ? 'featured' : ''}>{plan.pro && <b>Qard Pro</b>}<h2>{plan.name}</h2><div><strong>{plan.price}</strong><span>{plan.price !== '0 €' && '/ mois'}</span></div><p>{plan.description}</p><ul>{plan.features.map((feature) => <li key={feature}><Check size={16} />{feature}</li>)}</ul><Link className={`button${plan.pro ? '' : ' button-ghost'}`} href={plan.href}>{plan.cta}</Link></article>)}</section><p className="pricing-note"><Minus size={14} /> Aucun paiement n’est activé tant que Stripe n’est pas configuré.</p><footer className="marketing-footer qard-container"><QardLogo /><Link href="/privacy">Confidentialité</Link></footer></main>; }
+const plans = [
+  {
+    name: 'Free',
+    price: '0 €',
+    description: 'Pour créer et partager ta première identité.',
+    features: [
+      '1 Qard',
+      'QR permanent',
+      'Réseaux et contacts',
+      'Thèmes essentiels',
+      'Analytics 7 jours',
+      'Branding Qard',
+    ],
+    cta: 'Créer ma Qard',
+    href: '/signup',
+    pro: false,
+  },
+  {
+    name: 'Pro',
+    price: '4,99 €',
+    description: 'Pour une identité plus libre et plus mesurable.',
+    features: [
+      'Personnalisation avancée',
+      'Thèmes premium',
+      'Suppression du branding',
+      'Analytics étendues',
+      'Domaine personnalisé à venir',
+      'Fonctions premium futures',
+    ],
+    cta: 'Bientôt disponible',
+    href: '/signup',
+    pro: true,
+  },
+];
+export default function PricingPage() {
+  return (
+    <main className="qard-site legal-site">
+      <MarketingNav />
+      <section className="pricing-hero qard-container">
+        <span>Tarifs simples</span>
+        <h1>
+          Commence gratuitement.
+          <br />
+          Passe Pro quand Qard devient essentielle.
+        </h1>
+      </section>
+      <section className="pricing-grid qard-container">
+        {plans.map((plan) => (
+          <article key={plan.name} className={plan.pro ? 'featured' : ''}>
+            {plan.pro && <b>Qard Pro</b>}
+            <h2>{plan.name}</h2>
+            <div>
+              <strong>{plan.price}</strong>
+              <span>{plan.price !== '0 €' && '/ mois'}</span>
+            </div>
+            <p>{plan.description}</p>
+            <ul>
+              {plan.features.map((feature) => (
+                <li key={feature}>
+                  <Check size={16} />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+            <Link
+              className={`button${plan.pro ? '' : ' button-ghost'}`}
+              href={plan.href}
+            >
+              {plan.cta}
+            </Link>
+          </article>
+        ))}
+      </section>
+      <p className="pricing-note">
+        <Minus size={14} /> Aucun paiement n’est activé tant que Stripe n’est
+        pas configuré.
+      </p>
+      <footer className="marketing-footer qard-container">
+        <QardLogo />
+        <Link href="/privacy">Confidentialité</Link>
+      </footer>
+    </main>
+  );
+}

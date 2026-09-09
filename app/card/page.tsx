@@ -1,5 +1,5 @@
-import { ProfileExperience } from '@/components/profile/ProfileExperience';
+import { permanentRedirect } from 'next/navigation';
 
-export default function CardPage() {
-  return <ProfileExperience />;
+export default function LegacyCardPage() {
+  permanentRedirect('/u/ikyane');
 }

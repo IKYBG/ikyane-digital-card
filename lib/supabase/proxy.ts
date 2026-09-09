@@ -4,7 +4,9 @@ import type { Database } from '@/types/database';
 
 export async function updateSession(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const key =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return NextResponse.next({ request });
 
   let response = NextResponse.next({ request });
@@ -14,19 +16,45 @@ export async function updateSession(request: NextRequest) {
       setAll(values) {
         values.forEach(({ name, value }) => request.cookies.set(name, value));
         response = NextResponse.next({ request });
-        values.forEach(({ name, value, options }) => response.cookies.set(name, value, options));
+        values.forEach(({ name, value, options }) =>
+          response.cookies.set(name, value, options),
+        );
       },
     },
   });
 
-  const { data } = await supabase.auth.getClaims();
+  let data;
+  try {
+    ({ data } = await supabase.auth.getClaims());
+  } catch (error) {
+    console.error(
+      JSON.stringify({
+        level: 'error',
+        context: 'auth.proxy',
+        message: error instanceof Error ? error.message : String(error),
+      }),
+    );
+    if (
+      request.nextUrl.pathname.startsWith('/dashboard') ||
+      request.nextUrl.pathname.startsWith('/onboarding')
+    ) {
+      const login = new URL('/login', request.url);
+      login.searchParams.set('error', 'auth-service');
+      return NextResponse.redirect(login);
+    }
+    return response;
+  }
   const signedIn = Boolean(data?.claims?.sub);
   const path = request.nextUrl.pathname;
-  if ((path.startsWith('/dashboard') || path.startsWith('/onboarding')) && !signedIn) {
+  if (
+    (path.startsWith('/dashboard') || path.startsWith('/onboarding')) &&
+    !signedIn
+  ) {
     const login = new URL('/login', request.url);
     login.searchParams.set('next', path);
     return NextResponse.redirect(login);
   }
-  if (signedIn && ['/login', '/signup', '/forgot-password'].includes(path)) return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (signedIn && ['/login', '/signup', '/forgot-password'].includes(path))
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   return response;
 }

@@ -1,26 +1,34 @@
-"use client";
+'use client';
 
-import { useState, type SyntheticEvent } from "react";
-import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { ArrowRight, Eye, EyeOff, Loader2, LockKeyhole } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
+import { useState, type SyntheticEvent } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { ArrowRight, Eye, EyeOff, Loader2, LockKeyhole } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
 
-type Mode = "login" | "signup" | "forgot";
+type Mode = 'login' | 'signup' | 'forgot';
 
 export function AuthForm({ mode }: { mode: Mode }) {
   const search = useSearchParams();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [error, setError] = useState(() => {
+    if (search.get('error') === 'callback')
+      return 'La connexion n’a pas pu être finalisée. Réessaie.';
+    if (search.get('error') === 'auth-service')
+      return 'Le service de connexion est temporairement indisponible.';
+    return '';
+  });
+  const [success, setSuccess] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   async function googleSignIn() {
     setLoading(true);
-    setError("");
+    setError('');
     const { error: authError } = await createClient().auth.signInWithOAuth({
-      provider: "google",
-      options: { redirectTo: `${window.location.origin}/auth/callback?next=/onboarding` },
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
+      },
     });
     if (authError) {
       setError(authError.message);
@@ -31,19 +39,19 @@ export function AuthForm({ mode }: { mode: Mode }) {
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    setError("");
-    setSuccess("");
+    setError('');
+    setSuccess('');
     const form = new FormData(event.currentTarget);
     const field = (name: string) => {
       const value = form.get(name);
-      return typeof value === "string" ? value : "";
+      return typeof value === 'string' ? value : '';
     };
-    const email = field("email").trim();
-    const password = field("password");
-    const displayName = field("displayName").trim();
+    const email = field('email').trim();
+    const password = field('password');
+    const displayName = field('displayName').trim();
     try {
       const supabase = createClient();
-      if (mode === "signup") {
+      if (mode === 'signup') {
         const { data, error: authError } = await supabase.auth.signUp({
           email,
           password,
@@ -54,20 +62,25 @@ export function AuthForm({ mode }: { mode: Mode }) {
         });
         if (authError) throw authError;
         if (data.session) {
-          window.location.assign("/onboarding");
+          window.location.assign('/onboarding');
         } else
           setSuccess(
-            "Vérifie ton email pour confirmer ton compte, puis reviens sur Qard.",
+            'Vérifie ton email pour confirmer ton compte, puis reviens sur Qard.',
           );
-      } else if (mode === "login") {
-        const { data, error: authError } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        });
+      } else if (mode === 'login') {
+        const { data, error: authError } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password,
+          });
         if (authError) throw authError;
-        if (!data.session) throw new Error("La session n’a pas pu être créée. Réessaie.");
-        const requested = search.get("next");
-        const destination = requested?.startsWith("/") && !requested.startsWith("//") ? requested : "/dashboard";
+        if (!data.session)
+          throw new Error('La session n’a pas pu être créée. Réessaie.');
+        const requested = search.get('next');
+        const destination =
+          requested?.startsWith('/') && !requested.startsWith('//')
+            ? requested
+            : '/dashboard';
         window.location.assign(destination);
       } else {
         const { error: authError } = await supabase.auth.resetPasswordForEmail(
@@ -77,11 +90,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
           },
         );
         if (authError) throw authError;
-        setSuccess("Un lien de réinitialisation vient de t’être envoyé.");
+        setSuccess('Un lien de réinitialisation vient de t’être envoyé.');
       }
     } catch (caught) {
       setError(
-        caught instanceof Error ? caught.message : "Une erreur est survenue.",
+        caught instanceof Error ? caught.message : 'Une erreur est survenue.',
       );
     } finally {
       setLoading(false);
@@ -89,26 +102,34 @@ export function AuthForm({ mode }: { mode: Mode }) {
   }
 
   const title =
-    mode === "login"
-      ? "Ravi de te revoir."
-      : mode === "signup"
-        ? "Crée ton identité Qard."
-        : "Retrouve ton accès.";
+    mode === 'login'
+      ? 'Ravi de te revoir.'
+      : mode === 'signup'
+        ? 'Crée ton identité Qard.'
+        : 'Retrouve ton accès.';
   return (
     <form className="auth-form auth-form-card" onSubmit={submit}>
       <div>
-        <span className="auth-lock-mark"><LockKeyhole size={18} /></span>
-        <span className="eyebrow">{mode === "login" ? "Connexion sécurisée" : mode === "signup" ? "Créer un compte" : "Récupération"}</span>
+        <span className="auth-lock-mark">
+          <LockKeyhole size={18} />
+        </span>
+        <span className="eyebrow">
+          {mode === 'login'
+            ? 'Connexion sécurisée'
+            : mode === 'signup'
+              ? 'Créer un compte'
+              : 'Récupération'}
+        </span>
         <h1>{title}</h1>
         <p>
-          {mode === "signup"
-            ? "Ta carte, ton QR et tous tes contacts dans un seul profil."
-            : mode === "forgot"
-              ? "Entre ton email et nous t’enverrons un lien sécurisé."
-              : "Continue là où tu t’étais arrêté."}
+          {mode === 'signup'
+            ? 'Ta carte, ton QR et tous tes contacts dans un seul profil.'
+            : mode === 'forgot'
+              ? 'Entre ton email et nous t’enverrons un lien sécurisé.'
+              : 'Continue là où tu t’étais arrêté.'}
         </p>
       </div>
-      {mode === "signup" && (
+      {mode === 'signup' && (
         <label>
           Nom affiché
           <input
@@ -130,19 +151,33 @@ export function AuthForm({ mode }: { mode: Mode }) {
           placeholder="toi@exemple.fr"
         />
       </label>
-      {mode !== "forgot" && (
+      {mode !== 'forgot' && (
         <label>
           Mot de passe
           <span className="password-field">
             <input
               name="password"
-              type={showPassword ? "text" : "password"}
-              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              type={showPassword ? 'text' : 'password'}
+              autoComplete={
+                mode === 'login' ? 'current-password' : 'new-password'
+              }
               required
-              minLength={mode === "signup" ? 8 : undefined}
-              placeholder={mode === "signup" ? "8 caractères minimum" : "Votre mot de passe"}
+              minLength={mode === 'signup' ? 8 : undefined}
+              placeholder={
+                mode === 'signup'
+                  ? '8 caractères minimum'
+                  : 'Votre mot de passe'
+              }
             />
-            <button type="button" onClick={() => setShowPassword((current) => !current)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
+            <button
+              type="button"
+              onClick={() => setShowPassword((current) => !current)}
+              aria-label={
+                showPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
+              }
+            >
               {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
             </button>
           </span>
@@ -154,34 +189,40 @@ export function AuthForm({ mode }: { mode: Mode }) {
         </p>
       )}
       {success && <output className="form-message success">{success}</output>}
-      {mode !== "forgot" && process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === "true" && (
-        <button type="button" className="button button-ghost" onClick={() => void googleSignIn()} disabled={loading}>
-          Continuer avec Google
-        </button>
-      )}
+      {mode !== 'forgot' &&
+        process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true' && (
+          <button
+            type="button"
+            className="button button-ghost"
+            onClick={() => void googleSignIn()}
+            disabled={loading}
+          >
+            Continuer avec Google
+          </button>
+        )}
       <button className="button" disabled={loading}>
         {loading ? (
           <Loader2 className="spin" />
         ) : (
           <>
-            {mode === "login"
-              ? "Se connecter"
-              : mode === "signup"
-                ? "Créer mon compte"
-                : "Envoyer le lien"}{" "}
+            {mode === 'login'
+              ? 'Se connecter'
+              : mode === 'signup'
+                ? 'Créer mon compte'
+                : 'Envoyer le lien'}{' '}
             <ArrowRight size={17} />
           </>
         )}
       </button>
       <footer>
-        {mode === "login" ? (
+        {mode === 'login' ? (
           <>
             <Link href="/forgot-password">Mot de passe oublié ?</Link>
             <span>
               Pas encore de compte ? <Link href="/signup">Créer ma Qard</Link>
             </span>
           </>
-        ) : mode === "signup" ? (
+        ) : mode === 'signup' ? (
           <span>
             Déjà inscrit ? <Link href="/login">Se connecter</Link>
           </span>

@@ -1,12 +1,12 @@
-"use client";
-import { useEffect, useState, type SyntheticEvent } from "react";
-import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, Loader2, Upload } from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { getPublicProfileUrl } from "@/lib/qard/url";
-import { normalizeSocialUrl } from "@/lib/qard/social";
-import { slugSchema } from "@/lib/qard/validation";
-import type { Profile } from "@/types/database";
+'use client';
+import { useEffect, useState, type SyntheticEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { ArrowLeft, ArrowRight, Check, Loader2, Upload } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { getPublicProfileUrl } from '@/lib/qard/url';
+import { normalizeSocialUrl } from '@/lib/qard/social';
+import { slugSchema } from '@/lib/qard/validation';
+import type { Profile } from '@/types/database';
 
 export function OnboardingFlow({ profile }: { profile: Profile }) {
   const router = useRouter();
@@ -14,42 +14,49 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
   const [name, setName] = useState(profile.display_name);
   const [slug, setSlug] = useState(profile.slug);
   const [avatarUrl, setAvatarUrl] = useState(profile.avatar_url);
-  const [contactType, setContactType] = useState("instagram");
-  const [contact, setContact] = useState("");
-  const [status, setStatus] = useState("");
+  const [contactType, setContactType] = useState('instagram');
+  const [contact, setContact] = useState('');
+  const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
-  const canContinue = step === 0
-    ? Boolean(name.trim())
-    : step === 1
-      ? status === "Disponible"
-      : true;
+  const canContinue =
+    step === 0
+      ? Boolean(name.trim())
+      : step === 1
+        ? status === 'Disponible'
+        : true;
   async function checkSlug() {
     const parsed = slugSchema.safeParse(slug);
     if (!parsed.success) return parsed.error.issues[0].message;
-    if (parsed.data === profile.slug) return "";
+    if (parsed.data === profile.slug) return '';
     const response = await fetch(
       `/api/slugs/${encodeURIComponent(parsed.data)}`,
     );
     const result = await response.json();
     return result.available
-      ? ""
-      : (result.error ?? "Cet identifiant est déjà pris.");
+      ? ''
+      : (result.error ?? 'Cet identifiant est déjà pris.');
   }
   useEffect(() => {
     if (step !== 1) return;
     const timer = window.setTimeout(async () => {
       const parsed = slugSchema.safeParse(slug);
       if (!parsed.success) return setStatus(parsed.error.issues[0].message);
-      if (parsed.data === profile.slug) return setStatus("Disponible");
-      const response = await fetch(`/api/slugs/${encodeURIComponent(parsed.data)}`);
+      if (parsed.data === profile.slug) return setStatus('Disponible');
+      const response = await fetch(
+        `/api/slugs/${encodeURIComponent(parsed.data)}`,
+      );
       const result = await response.json();
-      setStatus(result.available ? "Disponible" : result.error ?? "Cet identifiant est déjà pris.");
+      setStatus(
+        result.available
+          ? 'Disponible'
+          : (result.error ?? 'Cet identifiant est déjà pris.'),
+      );
     }, 350);
     return () => window.clearTimeout(timer);
   }, [slug, step, profile.slug]);
   async function next() {
-    setStatus("");
-    if (step === 0 && !name.trim()) return setStatus("Entre ton nom.");
+    setStatus('');
+    if (step === 0 && !name.trim()) return setStatus('Entre ton nom.');
     if (step === 1) {
       const error = await checkSlug();
       if (error) return setStatus(error);
@@ -60,25 +67,25 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
     const file = event.target.files?.[0];
     if (!file) return;
     if (
-      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+      !['image/jpeg', 'image/png', 'image/webp'].includes(file.type) ||
       file.size > 5_242_880
     )
-      return setStatus("Utilise une image JPG, PNG ou WebP de moins de 5 Mo.");
+      return setStatus('Utilise une image JPG, PNG ou WebP de moins de 5 Mo.');
     setBusy(true);
     try {
       const supabase = createClient();
       const { data: user } = await supabase.auth.getUser();
-      if (!user.user) throw new Error("Session expirée");
-      const path = `${user.user.id}/${crypto.randomUUID()}.${file.type.split("/")[1]}`;
+      if (!user.user) throw new Error('Session expirée');
+      const path = `${user.user.id}/${crypto.randomUUID()}.${file.type.split('/')[1]}`;
       const { error } = await supabase.storage
-        .from("avatars")
+        .from('avatars')
         .upload(path, file);
       if (error) throw error;
       setAvatarUrl(
-        supabase.storage.from("avatars").getPublicUrl(path).data.publicUrl,
+        supabase.storage.from('avatars').getPublicUrl(path).data.publicUrl,
       );
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Upload impossible");
+      setStatus(error instanceof Error ? error.message : 'Upload impossible');
     } finally {
       setBusy(false);
     }
@@ -86,45 +93,45 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
   async function finish(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setBusy(true);
-    setStatus("");
+    setStatus('');
     try {
       const supabase = createClient();
       const cleanSlug = slugSchema.parse(slug);
       if (cleanSlug !== profile.slug) {
-        const response = await fetch("/api/profile/slug", {
-          method: "PATCH",
-          headers: { "content-type": "application/json" },
+        const response = await fetch('/api/profile/slug', {
+          method: 'PATCH',
+          headers: { 'content-type': 'application/json' },
           body: JSON.stringify({ slug: cleanSlug }),
         });
         if (!response.ok) throw new Error((await response.json()).error);
       }
       const { error } = await supabase
-        .from("qard_profiles")
+        .from('qard_profiles')
         .update({
           display_name: name.trim(),
           avatar_url: avatarUrl,
           onboarding_completed: true,
         })
-        .eq("id", profile.id);
+        .eq('id', profile.id);
       if (error) throw error;
       if (contact.trim()) {
         const { error: linkError } = await supabase
-          .from("qard_social_links")
+          .from('qard_social_links')
           .insert({
             profile_id: profile.id,
             platform: contactType,
             label: null,
             url: normalizeSocialUrl(contactType, contact),
-            username: contact.replace(/^@/, ""),
+            username: contact.replace(/^@/, ''),
             position: 0,
             enabled: true,
           });
         if (linkError) throw linkError;
       }
-      router.push("/dashboard");
+      router.push('/dashboard');
       router.refresh();
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Création impossible");
+      setStatus(error instanceof Error ? error.message : 'Création impossible');
     } finally {
       setBusy(false);
     }
@@ -164,7 +171,7 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
                 value={slug}
                 onChange={(e) => {
                   setSlug(e.target.value.toLowerCase());
-                  setStatus("Vérification…");
+                  setStatus('Vérification…');
                 }}
               />
             </div>
@@ -191,7 +198,7 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
                 <Upload />
               )}
             </span>
-            <strong>{avatarUrl ? "Photo ajoutée" : "Choisir une image"}</strong>
+            <strong>{avatarUrl ? 'Photo ajoutée' : 'Choisir une image'}</strong>
             <small>JPG, PNG ou WebP · 5 Mo max</small>
           </label>
         </section>
@@ -224,7 +231,13 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
           </label>
         </section>
       )}
-      {status && <p className={`form-message ${status === "Disponible" ? "success" : status === "Vérification…" ? "info" : "error"}`}>{status === "Disponible" && <Check size={15} />} {status}</p>}
+      {status && (
+        <p
+          className={`form-message ${status === 'Disponible' ? 'success' : status === 'Vérification…' ? 'info' : 'error'}`}
+        >
+          {status === 'Disponible' && <Check size={15} />} {status}
+        </p>
+      )}
       <footer>
         {step > 0 ? (
           <button
@@ -238,12 +251,19 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
           <span />
         )}
         {step < 3 ? (
-          <button type="button" className="button" onClick={next} disabled={busy || !canContinue}>
-            {step === 2 && !avatarUrl ? "Passer" : "Continuer"} <ArrowRight size={17} />
+          <button
+            type="button"
+            className="button"
+            onClick={next}
+            disabled={busy || !canContinue}
+          >
+            {step === 2 && !avatarUrl ? 'Passer' : 'Continuer'}{' '}
+            <ArrowRight size={17} />
           </button>
         ) : (
           <button className="button" disabled={busy}>
-            {contact.trim() ? "Créer ma Qard" : "Créer sans contact"} <ArrowRight size={17} />
+            {contact.trim() ? 'Créer ma Qard' : 'Créer sans contact'}{' '}
+            <ArrowRight size={17} />
           </button>
         )}
       </footer>

@@ -1,2 +1,56 @@
-import { MarketingNav } from '@/components/qard/MarketingNav'; export const metadata = { title: 'Confidentialité' };
-export default function PrivacyPage() { return <main className="qard-site legal-site"><MarketingNav /><article className="legal-copy"><span>Confidentialité</span><h1>Ta Qard t’appartient.</h1><p>Dernière mise à jour : 5 septembre 2026.</p><h2>Données traitées</h2><p>Qard traite les informations de compte nécessaires à l’authentification, les informations que tu choisis de publier sur ta Qard, les fichiers que tu téléverses et les événements d’usage utiles aux analytics.</p><h2>Données publiques</h2><p>Une Qard publiée peut afficher ton nom, ta photo, ta bio, tes coordonnées et tes réseaux. Tu contrôles ces informations depuis le dashboard et tu peux dépublier ta Qard à tout moment.</p><h2>Analytics</h2><p>Qard enregistre les vues, clics et téléchargements associés à une Qard. Aucune adresse IP brute n’est conservée dans la base analytics. Le pays, le navigateur et le type d’appareil peuvent être enregistrés sous forme limitée.</p><h2>Finalités et conservation</h2><p>Les données servent à fournir le service, sécuriser les comptes, afficher les profils et produire les statistiques demandées. Elles sont conservées tant que le compte reste actif, puis supprimées avec celui-ci, sous réserve des obligations légales applicables.</p><h2>Tes droits</h2><p>Tu peux consulter, corriger, exporter ou supprimer tes informations. La suppression du compte est disponible dans les réglages. Pour une demande complémentaire, utilise le canal de contact légal renseigné par l’exploitant lors du déploiement.</p><h2>Sous-traitants</h2><p>Le service s’appuie notamment sur Vercel pour l’hébergement applicatif et Supabase pour l’authentification, la base de données et les fichiers. L’exploitant doit compléter ses coordonnées, ses durées définitives et la liste de ses sous-traitants avant ouverture commerciale.</p></article></main>; }
+import { MarketingNav } from '@/components/qard/MarketingNav';
+export const metadata = { title: 'Confidentialité' };
+export default function PrivacyPage() {
+  return (
+    <main className="qard-site legal-site">
+      <MarketingNav />
+      <article className="legal-copy">
+        <span>Confidentialité</span>
+        <h1>Ta Qard t’appartient.</h1>
+        <p>Dernière mise à jour : 5 septembre 2026.</p>
+        <h2>Données traitées</h2>
+        <p>
+          Qard traite les informations de compte nécessaires à
+          l’authentification, les informations que tu choisis de publier sur ta
+          Qard, les fichiers que tu téléverses et les événements d’usage utiles
+          aux analytics.
+        </p>
+        <h2>Données publiques</h2>
+        <p>
+          Une Qard publiée peut afficher ton nom, ta photo, ta bio, tes
+          coordonnées et tes réseaux. Tu contrôles ces informations depuis le
+          dashboard et tu peux dépublier ta Qard à tout moment.
+        </p>
+        <h2>Analytics</h2>
+        <p>
+          Qard enregistre les vues, clics et téléchargements associés à une
+          Qard. Aucune adresse IP brute n’est conservée dans la base analytics.
+          Le pays, le navigateur et le type d’appareil peuvent être enregistrés
+          sous forme limitée.
+        </p>
+        <h2>Finalités et conservation</h2>
+        <p>
+          Les données servent à fournir le service, sécuriser les comptes,
+          afficher les profils et produire les statistiques demandées. Elles
+          sont conservées tant que le compte reste actif, puis supprimées avec
+          celui-ci, sous réserve des obligations légales applicables.
+        </p>
+        <h2>Tes droits</h2>
+        <p>
+          Tu peux consulter, corriger, exporter ou supprimer tes informations.
+          La suppression du compte est disponible dans les réglages. Pour une
+          demande complémentaire, utilise le canal de contact légal renseigné
+          par l’exploitant lors du déploiement.
+        </p>
+        <h2>Sous-traitants</h2>
+        <p>
+          Le service s’appuie notamment sur Vercel pour l’hébergement applicatif
+          et Supabase pour l’authentification, la base de données et les
+          fichiers. L’exploitant doit compléter ses coordonnées, ses durées
+          définitives et la liste de ses sous-traitants avant ouverture
+          commerciale.
+        </p>
+      </article>
+    </main>
+  );
+}

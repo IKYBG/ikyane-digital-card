@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { permanentRedirect } from 'next/navigation';
 
-export default function QRRedirect() {
-  redirect('/card');
+export default function LegacyQrPage() {
+  permanentRedirect('/u/ikyane');
 }

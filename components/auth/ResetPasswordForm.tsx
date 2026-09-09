@@ -1,24 +1,24 @@
-"use client";
-import { useState, type SyntheticEvent } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+'use client';
+import { useState, type SyntheticEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@/lib/supabase/client';
 
 export function ResetPasswordForm() {
   const router = useRouter();
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   async function submit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     setLoading(true);
-    const value = new FormData(event.currentTarget).get("password");
-    const password = typeof value === "string" ? value : "";
+    const value = new FormData(event.currentTarget).get('password');
+    const password = typeof value === 'string' ? value : '';
     try {
       const { error } = await createClient().auth.updateUser({ password });
       if (error) throw error;
-      router.push("/dashboard/settings");
+      router.push('/dashboard/settings');
       router.refresh();
     } catch (error) {
-      setMessage(error instanceof Error ? error.message : "Erreur");
+      setMessage(error instanceof Error ? error.message : 'Erreur');
     } finally {
       setLoading(false);
     }
@@ -42,7 +42,7 @@ export function ResetPasswordForm() {
       </label>
       {message && <p className="form-message error">{message}</p>}
       <button className="button" disabled={loading}>
-        {loading ? "Enregistrement…" : "Mettre à jour"}
+        {loading ? 'Enregistrement…' : 'Mettre à jour'}
       </button>
     </form>
   );

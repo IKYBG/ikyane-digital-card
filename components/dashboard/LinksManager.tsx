@@ -1,13 +1,13 @@
-"use client";
-import { useState } from "react";
-import { DndContext, closestCenter, type DragEndEvent } from "@dnd-kit/core";
+'use client';
+import { useState } from 'react';
+import { DndContext, closestCenter, type DragEndEvent } from '@dnd-kit/core';
 import {
   SortableContext,
   arrayMove,
   verticalListSortingStrategy,
   useSortable,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import {
   Check,
   GripVertical,
@@ -16,11 +16,12 @@ import {
   Plus,
   Save,
   Trash2,
-} from "lucide-react";
-import { createClient } from "@/lib/supabase/client";
-import { normalizeSocialUrl, platformLabels } from "@/lib/qard/social";
-import { SocialIcon } from "@/components/qard/SocialIcon";
-import type { Profile, SocialLink } from "@/types/database";
+} from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { normalizeSocialUrl, platformLabels } from '@/lib/qard/social';
+import { SocialIcon } from '@/components/qard/SocialIcon';
+import { socialLinkSchema } from '@/lib/qard/validation';
+import type { Profile, SocialLink } from '@/types/database';
 
 const platforms = Object.keys(platformLabels);
 function SortableLink({
@@ -59,7 +60,7 @@ function SortableLink({
       </div>
       <label className="mini-switch">
         <input
-          aria-label={`${link.enabled ? "Masquer" : "Afficher"} ${link.label || platformLabels[link.platform]}`}
+          aria-label={`${link.enabled ? 'Masquer' : 'Afficher'} ${link.label || platformLabels[link.platform]}`}
           type="checkbox"
           checked={link.enabled}
           onChange={() => onToggle(link)}
@@ -91,15 +92,15 @@ export function LinksManager({
   initialLinks: SocialLink[];
 }) {
   const [links, setLinks] = useState(initialLinks);
-  const [platform, setPlatform] = useState("instagram");
-  const [label, setLabel] = useState("");
-  const [value, setValue] = useState("");
+  const [platform, setPlatform] = useState('instagram');
+  const [label, setLabel] = useState('');
+  const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [toast, setToast] = useState("");
+  const [toast, setToast] = useState('');
   const flash = (text: string) => {
     setToast(text);
-    setTimeout(() => setToast(""), 1800);
+    setTimeout(() => setToast(''), 1800);
   };
   async function saveLink() {
     if (!value.trim()) return;
@@ -109,16 +110,31 @@ export function LinksManager({
       platform,
       label: label.trim() || null,
       url: normalizeSocialUrl(platform, value),
-      username: value.replace(/^@/, ""),
+      username: value.replace(/^@/, ''),
       position: editingId
         ? (links.find((item) => item.id === editingId)?.position ??
           links.length)
         : links.length,
       enabled: true,
     };
+    const parsed = socialLinkSchema.safeParse(payload);
+    if (!parsed.success) {
+      flash(parsed.error.issues[0]?.message ?? 'Lien invalide');
+      setBusy(false);
+      return;
+    }
     const query = editingId
-      ? createClient().from("qard_social_links").update(payload).eq("id", editingId)
-      : createClient().from("qard_social_links").insert(payload);
+      ? createClient()
+          .from('qard_social_links')
+          .update(parsed.data)
+          .eq('id', editingId)
+      : createClient()
+          .from('qard_social_links')
+          .insert({
+            ...parsed.data,
+            profile_id: profile.id,
+            position: payload.position,
+          });
     const { data, error } = await query.select().single();
     if (!error && data) {
       setLinks(
@@ -128,36 +144,36 @@ export function LinksManager({
             )
           : [...links, data as SocialLink],
       );
-      setValue("");
-      setLabel("");
+      setValue('');
+      setLabel('');
       setEditingId(null);
-      flash(editingId ? "Lien modifié" : "Lien ajouté");
-    } else flash(error?.message ?? "Erreur");
+      flash(editingId ? 'Lien modifié' : 'Lien ajouté');
+    } else flash(error?.message ?? 'Erreur');
     setBusy(false);
   }
   function edit(link: SocialLink) {
     setEditingId(link.id);
     setPlatform(link.platform);
-    setLabel(link.label ?? "");
+    setLabel(link.label ?? '');
     setValue(link.username || link.url);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   async function remove(id: string) {
     const { error } = await createClient()
-      .from("qard_social_links")
+      .from('qard_social_links')
       .delete()
-      .eq("id", id);
+      .eq('id', id);
     if (!error) {
       setLinks(links.filter((item) => item.id !== id));
-      flash("Lien supprimé");
+      flash('Lien supprimé');
     }
   }
   async function toggle(link: SocialLink) {
     const enabled = !link.enabled;
     const { error } = await createClient()
-      .from("qard_social_links")
+      .from('qard_social_links')
       .update({ enabled })
-      .eq("id", link.id);
+      .eq('id', link.id);
     if (!error)
       setLinks(
         links.map((item) =>
@@ -178,29 +194,29 @@ export function LinksManager({
     const results = await Promise.all(
       reordered.map((item) =>
         supabase
-          .from("qard_social_links")
+          .from('qard_social_links')
           .update({ position: item.position })
-          .eq("id", item.id),
+          .eq('id', item.id),
       ),
     );
     flash(
       results.some(({ error }) => error)
-        ? "Ordre non enregistré"
-        : "Ordre enregistré",
+        ? 'Ordre non enregistré'
+        : 'Ordre enregistré',
     );
   }
   return (
     <div className="links-layout">
       <section className="panel add-link-panel">
         <div className="control-heading">
-          <h2>{editingId ? "Modifier le contact" : "Ajouter un contact"}</h2>
+          <h2>{editingId ? 'Modifier le contact' : 'Ajouter un contact'}</h2>
           {editingId && (
             <button
               className="text-button"
               onClick={() => {
                 setEditingId(null);
-                setLabel("");
-                setValue("");
+                setLabel('');
+                setValue('');
               }}
             >
               Annuler
@@ -245,8 +261,8 @@ export function LinksManager({
             <Save size={17} />
           ) : (
             <Plus size={17} />
-          )}{" "}
-          {editingId ? "Enregistrer" : "Ajouter"}
+          )}{' '}
+          {editingId ? 'Enregistrer' : 'Ajouter'}
         </button>
       </section>
       <section>
@@ -285,10 +301,10 @@ export function LinksManager({
         )}
       </section>
       {toast && (
-        <div className="qard-toast">
+        <output className="qard-toast" aria-live="polite">
           <Check size={15} />
           {toast}
-        </div>
+        </output>
       )}
     </div>
   );

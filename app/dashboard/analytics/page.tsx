@@ -1,20 +1,24 @@
-import Link from "next/link";
+import Link from 'next/link';
 import {
   BarChart3,
   Download,
   Eye,
   MousePointerClick,
   TrendingUp,
-} from "lucide-react";
-import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
-import { getCurrentQard, requireUser } from "@/lib/qard/data";
-import { platformLabels } from "@/lib/qard/social";
+} from 'lucide-react';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { getCurrentQard, requireUser } from '@/lib/qard/data';
+import { platformLabels } from '@/lib/qard/social';
 
-type Event = {
-  id: number;
-  event_type: string;
+type Rollup = {
+  event_day: string;
+  event_type:
+    | 'profile_view'
+    | 'link_click'
+    | 'contact_download'
+    | 'qr_download';
   social_link_id: string | null;
-  created_at: string;
+  event_count: number;
 };
 export default async function AnalyticsPage({
   searchParams,
@@ -27,46 +31,53 @@ export default async function AnalyticsPage({
   const { supabase } = await requireUser();
   const since = new Date();
   since.setUTCDate(since.getUTCDate() - period);
-  const { data } = await supabase
-    .from("qard_analytics_events")
-    .select("id,event_type,social_link_id,created_at")
-    .eq("profile_id", profile.id)
-    .gte("created_at", since.toISOString())
-    .order("created_at");
-  const events = (data ?? []) as Event[];
+  const { data, error } = await supabase.rpc('qard_analytics_rollup', {
+    p_profile_id: profile.id,
+    p_since: since.toISOString(),
+  });
+  if (error) throw error;
+  const events = (data ?? []) as Rollup[];
   const count = (type: string) =>
-    events.filter((item) => item.event_type === type).length;
-  const views = count("profile_view");
-  const clicks = count("link_click");
-  const downloads = count("contact_download");
-  const qrDownloads = count("qr_download");
+    events
+      .filter((item) => item.event_type === type)
+      .reduce((total, item) => total + Number(item.event_count), 0);
+  const views = count('profile_view');
+  const clicks = count('link_click');
+  const downloads = count('contact_download');
+  const qrDownloads = count('qr_download');
   const days = Array.from({ length: period }, (_, index) => {
     const date = new Date(since.getTime() + (index + 1) * 86400000);
     const key = date.toISOString().slice(0, 10);
     return {
       key,
-      label: date.toLocaleDateString("fr-FR", {
-        day: "2-digit",
-        month: "short",
+      label: date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: 'short',
       }),
-      views: events.filter(
-        (item) =>
-          item.event_type === "profile_view" && item.created_at.startsWith(key),
-      ).length,
-      clicks: events.filter(
-        (item) =>
-          item.event_type === "link_click" && item.created_at.startsWith(key),
-      ).length,
+      views: events
+        .filter(
+          (item) =>
+            item.event_type === 'profile_view' && item.event_day === key,
+        )
+        .reduce((total, item) => total + Number(item.event_count), 0),
+      clicks: events
+        .filter(
+          (item) => item.event_type === 'link_click' && item.event_day === key,
+        )
+        .reduce((total, item) => total + Number(item.event_count), 0),
     };
   });
   const max = Math.max(1, ...days.map((day) => day.views));
   const popular = links
     .map((link) => ({
       ...link,
-      clicks: events.filter(
-        (event) =>
-          event.event_type === "link_click" && event.social_link_id === link.id,
-      ).length,
+      clicks: events
+        .filter(
+          (event) =>
+            event.event_type === 'link_click' &&
+            event.social_link_id === link.id,
+        )
+        .reduce((total, event) => total + Number(event.event_count), 0),
     }))
     .sort((a, b) => b.clicks - a.clicks)
     .slice(0, 5);
@@ -80,7 +91,7 @@ export default async function AnalyticsPage({
           <div className="period-tabs">
             {[7, 30, 90].map((days) => (
               <Link
-                className={days === period ? "active" : ""}
+                className={days === period ? 'active' : ''}
                 href={`/dashboard/analytics?period=${days}`}
                 key={days}
               >
@@ -158,7 +169,7 @@ export default async function AnalyticsPage({
             <div key={link.id}>
               <span>{platformLabels[link.platform] ?? link.label}</span>
               <strong>
-                {link.clicks} clic{link.clicks === 1 ? "" : "s"}
+                {link.clicks} clic{link.clicks === 1 ? '' : 's'}
               </strong>
             </div>
           ))

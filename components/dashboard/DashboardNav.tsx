@@ -2,23 +2,71 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { BarChart3, ExternalLink, LayoutDashboard, Link2, LogOut, Palette, QrCode, Settings, UserRoundPen } from 'lucide-react';
+import {
+  BarChart3,
+  ExternalLink,
+  LayoutDashboard,
+  Link2,
+  LogOut,
+  Palette,
+  QrCode,
+  Settings,
+  UserRoundPen,
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import { QardLogo } from '@/components/qard/QardLogo';
 
 const items = [
-  { href: '/dashboard', label: 'Vue d’ensemble', shortLabel: 'Accueil', icon: LayoutDashboard },
-  { href: '/dashboard/editor', label: 'Ma Qard', shortLabel: 'Qard', icon: UserRoundPen },
-  { href: '/dashboard/links', label: 'Liens', shortLabel: 'Liens', icon: Link2 },
-  { href: '/dashboard/appearance', label: 'Apparence', shortLabel: 'Style', icon: Palette },
+  {
+    href: '/dashboard',
+    label: 'Vue d’ensemble',
+    shortLabel: 'Accueil',
+    icon: LayoutDashboard,
+  },
+  {
+    href: '/dashboard/editor',
+    label: 'Ma Qard',
+    shortLabel: 'Qard',
+    icon: UserRoundPen,
+  },
+  {
+    href: '/dashboard/links',
+    label: 'Liens',
+    shortLabel: 'Liens',
+    icon: Link2,
+  },
+  {
+    href: '/dashboard/appearance',
+    label: 'Apparence',
+    shortLabel: 'Style',
+    icon: Palette,
+  },
   { href: '/dashboard/qr', label: 'QR code', shortLabel: 'QR', icon: QrCode },
-  { href: '/dashboard/analytics', label: 'Analytics', shortLabel: 'Stats', icon: BarChart3 },
-  { href: '/dashboard/settings', label: 'Réglages', shortLabel: 'Réglages', icon: Settings },
+  {
+    href: '/dashboard/analytics',
+    label: 'Analytics',
+    shortLabel: 'Stats',
+    icon: BarChart3,
+  },
+  {
+    href: '/dashboard/settings',
+    label: 'Réglages',
+    shortLabel: 'Réglages',
+    icon: Settings,
+  },
 ];
 
-const mobileItems = items.filter(({ href }) => !['/dashboard/qr', '/dashboard/analytics'].includes(href));
+const mobileItems = items.filter(
+  ({ href }) => !['/dashboard/qr', '/dashboard/analytics'].includes(href),
+);
 
-export function DashboardNav({ slug, plan }: { slug: string; plan: 'free' | 'pro' }) {
+export function DashboardNav({
+  slug,
+  plan,
+}: {
+  slug: string;
+  plan: 'free' | 'pro';
+}) {
   const path = usePathname();
   const router = useRouter();
 
@@ -38,22 +86,39 @@ export function DashboardNav({ slug, plan }: { slug: string; plan: 'free' | 'pro
         <div className="sidebar-section-label">Espace</div>
         <nav>
           {items.map(({ href, label, icon: Icon }) => (
-            <Link key={href} href={href} className={path === href ? 'active' : ''}>
-              <span className="sidebar-icon"><Icon size={17} /></span>
+            <Link
+              key={href}
+              href={href}
+              className={path === href ? 'active' : ''}
+            >
+              <span className="sidebar-icon">
+                <Icon size={17} />
+              </span>
               <span>{label}</span>
               {path === href && <i aria-hidden="true" />}
             </Link>
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <Link href={`/u/${slug}`} target="_blank"><ExternalLink size={17} /> Voir ma Qard</Link>
-          <button onClick={signOut}><LogOut size={17} /> Se déconnecter</button>
+          <Link href={`/u/${slug}`} target="_blank">
+            <ExternalLink size={17} /> Voir ma Qard
+          </Link>
+          <button onClick={signOut}>
+            <LogOut size={17} /> Se déconnecter
+          </button>
         </div>
       </aside>
       <nav className="mobile-dashboard-nav" aria-label="Navigation dashboard">
         {mobileItems.map(({ href, label, shortLabel, icon: Icon }) => (
-          <Link key={href} href={href} aria-label={label} className={path === href ? 'active' : ''}>
-            <span className="mobile-nav-icon"><Icon size={20} /></span>
+          <Link
+            key={href}
+            href={href}
+            aria-label={label}
+            className={path === href ? 'active' : ''}
+          >
+            <span className="mobile-nav-icon">
+              <Icon size={20} />
+            </span>
             <span>{shortLabel}</span>
           </Link>
         ))}

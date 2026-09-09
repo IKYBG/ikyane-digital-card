@@ -1,6 +1,6 @@
-import type { QardData } from "@/types/database";
-import { PublicAnalytics } from "./PublicAnalytics";
-import { QardPreview } from "./QardPreview";
+import type { QardData } from '@/types/database';
+import { PublicAnalytics } from './PublicAnalytics';
+import { QardPreview } from './QardPreview';
 
 export function PublicQard({ data }: { data: QardData }) {
   return (
