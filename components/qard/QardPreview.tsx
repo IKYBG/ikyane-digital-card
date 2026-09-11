@@ -315,11 +315,11 @@ export function QardPreview({
             >
               <div className="card-depth" aria-hidden="true" />
               <div className="card-edge" aria-hidden="true" />
-              <div className="card-glint" aria-hidden="true" />
               <div
                 className="card-face card-front"
                 aria-hidden={side !== 'front'}
               >
+                <div className="card-glint" aria-hidden="true" />
                 <div
                   className={`portrait-panel ${visual ? 'has-photo' : 'portrait-placeholder'}`}
                 >

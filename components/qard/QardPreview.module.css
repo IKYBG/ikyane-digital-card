@@ -46,14 +46,14 @@
   transform: rotateY(180deg) translateZ(0.75px);
 }
 
-.root :global(.flip-card > .card-depth),
-.root :global(.flip-card > .card-edge),
-.root :global(.flip-card > .card-glint) {
+.root :global(.flip-card > .card-edge) {
   backface-visibility: visible;
   -webkit-backface-visibility: visible;
 }
 
 .root :global(.flip-card > .card-depth) {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   opacity: 0.9;
   transform: translateZ(-6px);
 }
@@ -63,7 +63,7 @@
   transform: translateZ(1.5px);
 }
 
-.root :global(.flip-card > .card-glint) {
+.root :global(.card-front > .card-glint) {
   opacity: 0.25;
   transform: translateZ(1px);
 }
@@ -78,6 +78,13 @@
 
 .root :global(.identity-card.is-flipping .card-glint) {
   animation: flip-light 580ms cubic-bezier(0.4, 0, 0.4, 1) both;
+}
+
+.root :global(.identity-card.side-back .card-glint) {
+  animation: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: none;
 }
 
 .root :global(.contact-tile) {
