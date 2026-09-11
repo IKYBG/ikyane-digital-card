@@ -24,6 +24,7 @@ import { socialLinkSchema } from '@/lib/qard/validation';
 import type { Profile, SocialLink } from '@/types/database';
 
 const platforms = Object.keys(platformLabels);
+const commonPlatforms = ['instagram', 'linkedin', 'tiktok', 'email', 'phone', 'website'];
 function SortableLink({
   link,
   onDelete,
@@ -223,7 +224,31 @@ export function LinksManager({
             </button>
           )}
         </div>
-        <div className="field-row two">
+        <div className="platform-shortcuts" aria-label="Contacts fréquents">
+          {commonPlatforms.map((item) => (
+            <button
+              key={item}
+              type="button"
+              className={platform === item ? 'selected' : ''}
+              onClick={() => setPlatform(item)}
+              aria-pressed={platform === item}
+            >
+              <SocialIcon platform={item} />
+              <span>{platformLabels[item]}</span>
+            </button>
+          ))}
+        </div>
+        <label>
+          {platformLabels[platform]} — identifiant, numéro ou URL
+          <input
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            placeholder="Saisissez votre information"
+          />
+        </label>
+        <details className="link-options">
+          <summary>Autres plateformes et options</summary>
+          <div className="field-row two">
           <label>
             Plateforme
             <select
@@ -245,15 +270,8 @@ export function LinksManager({
               placeholder={platformLabels[platform]}
             />
           </label>
-        </div>
-        <label>
-          Identifiant, numéro ou URL
-          <input
-            value={value}
-            onChange={(e) => setValue(e.target.value)}
-            placeholder="@lucas ou https://…"
-          />
-        </label>
+          </div>
+        </details>
         <button className="button" onClick={saveLink} disabled={busy}>
           {busy ? (
             <Loader2 className="spin" size={17} />

@@ -37,28 +37,23 @@ const items = [
   },
   {
     href: '/dashboard/appearance',
-    label: 'Apparence',
+    label: 'Style',
     shortLabel: 'Style',
     icon: Palette,
   },
-  { href: '/dashboard/qr', label: 'QR code', shortLabel: 'QR', icon: QrCode },
   {
     href: '/dashboard/analytics',
-    label: 'Analytics',
+    label: 'Statistiques',
     shortLabel: 'Stats',
     icon: BarChart3,
   },
-  {
-    href: '/dashboard/settings',
-    label: 'Réglages',
-    shortLabel: 'Réglages',
-    icon: Settings,
-  },
 ];
 
-const mobileItems = items.filter(
-  ({ href }) => !['/dashboard/qr', '/dashboard/analytics'].includes(href),
-);
+const mobileItems = items.filter(({ href }) => href !== '/dashboard/analytics');
+
+function isActive(path: string, href: string) {
+  return href === '/dashboard' ? path === href : path.startsWith(href);
+}
 
 export function DashboardNav({
   slug,
@@ -89,18 +84,25 @@ export function DashboardNav({
             <Link
               key={href}
               href={href}
-              className={path === href ? 'active' : ''}
+              prefetch={false}
+              className={isActive(path, href) ? 'active' : ''}
             >
               <span className="sidebar-icon">
                 <Icon size={17} />
               </span>
               <span>{label}</span>
-              {path === href && <i aria-hidden="true" />}
+              {isActive(path, href) && <i aria-hidden="true" />}
             </Link>
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <Link href={`/u/${slug}`} target="_blank">
+          <Link href="/dashboard/qr" prefetch={false}>
+            <QrCode size={17} /> Mon QR code
+          </Link>
+          <Link href="/dashboard/settings" prefetch={false}>
+            <Settings size={17} /> Réglages
+          </Link>
+          <Link href={`/u/${slug}`} target="_blank" prefetch={false}>
             <ExternalLink size={17} /> Voir ma Qard
           </Link>
           <button onClick={signOut}>
@@ -113,8 +115,9 @@ export function DashboardNav({
           <Link
             key={href}
             href={href}
+            prefetch={false}
             aria-label={label}
-            className={path === href ? 'active' : ''}
+            className={isActive(path, href) ? 'active' : ''}
           >
             <span className="mobile-nav-icon">
               <Icon size={20} />
@@ -122,6 +125,17 @@ export function DashboardNav({
             <span>{shortLabel}</span>
           </Link>
         ))}
+        <Link
+          href="/dashboard/settings"
+          prefetch={false}
+          aria-label="Réglages"
+          className={isActive(path, '/dashboard/settings') ? 'active' : ''}
+        >
+          <span className="mobile-nav-icon">
+            <Settings size={20} />
+          </span>
+          <span>Plus</span>
+        </Link>
       </nav>
     </>
   );

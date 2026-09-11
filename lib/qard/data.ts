@@ -8,7 +8,7 @@ import type {
   SocialLink,
 } from '@/types/database';
 
-export async function requireUser() {
+async function requireUserUncached() {
   const supabase = await createClient();
   const { data } = await supabase.auth.getClaims();
   if (!data?.claims?.sub) redirect('/login');
@@ -19,7 +19,9 @@ export async function requireUser() {
   };
 }
 
-export async function getCurrentQard(): Promise<QardData> {
+export const requireUser = cache(requireUserUncached);
+
+async function getCurrentQardUncached(): Promise<QardData> {
   const { supabase, userId } = await requireUser();
   const { data: profile, error } = await supabase
     .from('qard_profiles')
@@ -50,6 +52,8 @@ export async function getCurrentQard(): Promise<QardData> {
     appearance: appearance as Appearance,
   };
 }
+
+export const getCurrentQard = cache(getCurrentQardUncached);
 
 export async function getPublicQard(slug: string): Promise<QardData | null> {
   const supabase = await createClient();

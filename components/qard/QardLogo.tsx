@@ -11,12 +11,19 @@ export function QardLogo({
 }) {
   const wordmark = (
     <span className={cn('qard-logo', className)}>
-      <Image src="/qard-logo.png" width={42} height={42} alt="" priority />
+      <Image
+        src="/qard-logo.webp"
+        width={42}
+        height={42}
+        alt=""
+        priority
+        unoptimized
+      />
       <span>Qard</span>
     </span>
   );
   return linked ? (
-    <Link href="/" aria-label="Qard, accueil">
+    <Link href="/" aria-label="Qard, accueil" prefetch={false}>
       {wordmark}
     </Link>
   ) : (

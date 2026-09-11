@@ -148,8 +148,13 @@ export function SettingsForm({
           <Save size={17} /> Enregistrer le profil
         </button>
       </section>
-      <section className="panel settings-section">
-        <h2>Compte</h2>
+      <details className="panel settings-section settings-disclosure">
+        <summary aria-label="Ouvrir les réglages du compte et de sécurité">
+          <span>
+            <strong>Compte et sécurité</strong>
+            <small>Email, mot de passe et export des données</small>
+          </span>
+        </summary>
         <label>
           Email de connexion
           <input
@@ -174,9 +179,14 @@ export function SettingsForm({
         <a className="button button-ghost" href="/api/account/export" download>
           <Download size={17} /> Exporter mes données
         </a>
-      </section>
-      <section className="panel settings-section danger-zone">
-        <h2>Supprimer le compte</h2>
+      </details>
+      <details className="panel settings-section danger-zone settings-disclosure">
+        <summary aria-label="Ouvrir les options de suppression du compte">
+          <span>
+            <strong>Supprimer le compte</strong>
+            <small>Action définitive</small>
+          </span>
+        </summary>
         <p>
           Cette action supprime définitivement votre compte, votre Qard, vos
           liens, vos images et vos statistiques.
@@ -195,7 +205,7 @@ export function SettingsForm({
         >
           <Trash2 size={17} /> Supprimer mon compte
         </button>
-      </section>
+      </details>
       {status && (
         <output className="qard-toast" aria-live="polite">
           {status.includes('…') ? (

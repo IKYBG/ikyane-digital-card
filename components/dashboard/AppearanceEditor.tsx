@@ -1,4 +1,5 @@
 'use client';
+import dynamic from 'next/dynamic';
 import { useMemo, useRef, useState } from 'react';
 import {
   Check,
@@ -13,9 +14,16 @@ import {
   Waves,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { QardPreview } from '@/components/qard/QardPreview';
 import { appearanceSchema } from '@/lib/qard/validation';
 import type { Appearance, QardData } from '@/types/database';
+
+const QardPreview = dynamic(
+  () => import('@/components/qard/QardPreview').then((module) => module.QardPreview),
+  {
+    ssr: false,
+    loading: () => <div className="preview-loading">Chargement de l’aperçu…</div>,
+  },
+);
 
 const themes = [
   {

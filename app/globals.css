@@ -213,7 +213,7 @@ a {
 .card-breath {
   width: 100%;
   transform-style: preserve-3d;
-  animation: card-breathe 6.8s cubic-bezier(0.45, 0, 0.55, 1) infinite;
+  animation: card-breathe 6.8s cubic-bezier(0.45, 0, 0.55, 1) 2;
 }
 .card-motion-shell {
   --card-radius: 36px;
@@ -358,11 +358,11 @@ a {
 }
 .swipe-orbit-left {
   left: -58px;
-  animation: swipe-orbit-left 2.6s ease-in-out infinite;
+  animation: swipe-orbit-left 2.6s ease-in-out 3;
 }
 .swipe-orbit-right {
   right: -58px;
-  animation: swipe-orbit-right 2.6s ease-in-out infinite;
+  animation: swipe-orbit-right 2.6s ease-in-out 3;
 }
 
 .portrait-panel {
@@ -437,7 +437,7 @@ a {
     0 0 0 44px rgb(86 164 255 / 0.035),
     0 32px 90px rgb(0 0 0 / 0.38),
     inset 0 1px 0 rgb(255 255 255 / 0.1);
-  animation: monogram-breathe 6s ease-in-out infinite;
+  animation: monogram-breathe 6s ease-in-out 2;
 }
 .portrait-scan {
   position: absolute;
@@ -466,7 +466,7 @@ a {
     transparent
   );
   filter: blur(10px);
-  animation: glass-sweep 7s 1.2s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+  animation: glass-sweep 7s 1.2s cubic-bezier(0.22, 1, 0.36, 1) 2;
   pointer-events: none;
 }
 .identity-stamp {
@@ -578,7 +578,7 @@ a {
   box-shadow:
     0 0 0 5px rgb(100 217 255 / 0.08),
     0 0 15px rgb(100 217 255 / 0.36);
-  animation: pulse 2.5s ease infinite;
+  animation: pulse 2.5s ease 3;
 }
 .primary-actions {
   display: grid;
@@ -2049,7 +2049,7 @@ a {
 .landing-demo-card .qard-premium .portrait-placeholder .monogram {
   color: #edf6ff;
   background:
-    url('/qard-logo.png') center / 78% no-repeat,
+    url('/qard-logo.webp') center / 78% no-repeat,
     linear-gradient(145deg, rgb(136 207 255 / 0.13), rgb(35 94 181 / 0.05));
   font-size: 0;
 }
@@ -2495,7 +2495,7 @@ a {
   width: 72px;
   height: 72px;
   border-radius: 22px;
-  background: url('/qard-logo.png') center / 150% no-repeat;
+  background: url('/qard-logo.webp') center / 150% no-repeat;
   box-shadow: 0 18px 45px rgb(0 0 0 / 0.38);
 }
 
@@ -4813,7 +4813,7 @@ a {
   border: 0;
   border-radius: 34px;
   color: transparent;
-  background: url('/qard-logo.png') center / 88% no-repeat;
+  background: url('/qard-logo.webp') center / 88% no-repeat;
   box-shadow: none;
   animation: none;
 }
@@ -7360,7 +7360,7 @@ a {
     color-mix(in srgb, var(--preview-accent) 52%, #31577f),
     color-mix(in srgb, var(--preview-accent) 25%, #23415f)
   );
-  animation: swipe-bar 2.3s ease-in-out infinite;
+  animation: swipe-bar 2.3s ease-in-out 3;
 }
 .mobile-card-controls.configured {
   justify-content: flex-end;
@@ -7370,6 +7370,67 @@ a {
     transform: scaleX(0.72);
     opacity: 0.58;
   }
+}
+
+.settings-disclosure > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 58px;
+  cursor: pointer;
+  list-style: none;
+}
+.settings-disclosure > summary::-webkit-details-marker { display: none; }
+.settings-disclosure > summary::after {
+  content: '+';
+  color: #9fcfff;
+  font-size: 1.35rem;
+  font-weight: 300;
+  transition: transform 180ms ease;
+}
+.settings-disclosure[open] > summary::after { transform: rotate(45deg); }
+.settings-disclosure > summary span { display: grid; gap: 4px; }
+.settings-disclosure > summary strong { color: #f4f8fd; font-size: 1rem; }
+.settings-disclosure > summary small { color: #8191a5; font-size: .76rem; }
+.settings-disclosure[open] > summary { margin-bottom: 24px; }
+
+.platform-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+  margin: 18px 0;
+}
+.platform-shortcuts button {
+  display: flex;
+  min-width: 0;
+  min-height: 56px;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border: 1px solid rgb(161 198 241 / 12%);
+  border-radius: 14px;
+  color: #aebed0;
+  background: rgb(255 255 255 / 3%);
+  font: inherit;
+  font-size: .76rem;
+  cursor: pointer;
+}
+.platform-shortcuts button svg { flex: none; width: 18px; height: 18px; }
+.platform-shortcuts button.selected {
+  border-color: rgb(143 205 255 / 42%);
+  color: #edf7ff;
+  background: rgb(112 181 242 / 10%);
+}
+.link-options { margin: 12px 0 18px; }
+.link-options > summary {
+  color: #8799ae;
+  font-size: .76rem;
+  cursor: pointer;
+}
+.link-options[open] > summary { margin-bottom: 14px; }
+@media (max-width: 520px) {
+  .platform-shortcuts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {

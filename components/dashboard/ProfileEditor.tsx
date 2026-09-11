@@ -1,5 +1,6 @@
 'use client';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
+import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -14,10 +15,17 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import { profileSchema, socialLinkSchema } from '@/lib/qard/validation';
 import type { QardData, SocialLink } from '@/types/database';
-import { QardPreview } from '@/components/qard/QardPreview';
 import { normalizeSocialUrl } from '@/lib/qard/social';
 import { MediaUploader } from './MediaUploader';
 import { z } from 'zod';
+
+const QardPreview = dynamic(
+  () => import('@/components/qard/QardPreview').then((module) => module.QardPreview),
+  {
+    ssr: false,
+    loading: () => <div className="preview-loading">Chargement de l’aperçu…</div>,
+  },
+);
 
 type Values = z.infer<typeof profileSchema>;
 const mobileQuestions = [
@@ -127,6 +135,8 @@ export function ProfileEditor({ data }: { data: QardData }) {
     },
   });
   const values = watch();
+  const deferredValues = useDeferredValue(values);
+  const deferredLinks = useDeferredValue(links);
   const hasConfiguredQard = Boolean(
     values.email_public?.trim() ||
     values.phone_public?.trim() ||
@@ -183,15 +193,15 @@ export function ProfileEditor({ data }: { data: QardData }) {
   const preview = useMemo<QardData>(
     () => ({
       ...data,
-      links,
+      links: deferredLinks,
       profile: {
         ...data.profile,
-        ...values,
+        ...deferredValues,
         avatar_url: avatar,
         banner_url: banner,
       },
     }),
-    [data, values, avatar, banner, links],
+    [data, deferredValues, avatar, banner, deferredLinks],
   );
 
   function advanceGuide() {

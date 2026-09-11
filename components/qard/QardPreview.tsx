@@ -49,6 +49,7 @@ export function QardPreview({
 }) {
   const { profile, appearance } = data;
   const cardRef = useRef<HTMLDivElement>(null);
+  const tiltFrameRef = useRef<number | null>(null);
   const dragFlippedRef = useRef(false);
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
@@ -161,15 +162,25 @@ export function QardPreview({
     if (reducedMotion || event.pointerType === 'touch') return;
     const element = cardRef.current;
     if (!element) return;
-    const bounds = element.getBoundingClientRect();
-    const x = (event.clientX - bounds.left) / bounds.width - 0.5;
-    const y = (event.clientY - bounds.top) / bounds.height - 0.5;
-    element.style.setProperty('--rx', `${-y * 3.4}deg`);
-    element.style.setProperty('--ry', `${x * 3.8}deg`);
-    element.style.setProperty('--lx', `${(x + 0.5) * 100}%`);
-    element.style.setProperty('--ly', `${(y + 0.5) * 100}%`);
+    const clientX = event.clientX;
+    const clientY = event.clientY;
+    if (tiltFrameRef.current !== null) return;
+    tiltFrameRef.current = window.requestAnimationFrame(() => {
+      tiltFrameRef.current = null;
+      const bounds = element.getBoundingClientRect();
+      const x = (clientX - bounds.left) / bounds.width - 0.5;
+      const y = (clientY - bounds.top) / bounds.height - 0.5;
+      element.style.setProperty('--rx', `${-y * 3.4}deg`);
+      element.style.setProperty('--ry', `${x * 3.8}deg`);
+      element.style.setProperty('--lx', `${(x + 0.5) * 100}%`);
+      element.style.setProperty('--ly', `${(y + 0.5) * 100}%`);
+    });
   };
   const resetTilt = () => {
+    if (tiltFrameRef.current !== null) {
+      window.cancelAnimationFrame(tiltFrameRef.current);
+      tiltFrameRef.current = null;
+    }
     cardRef.current?.style.setProperty('--rx', '0deg');
     cardRef.current?.style.setProperty('--ry', '0deg');
     cardRef.current?.style.setProperty('--lx', '50%');
