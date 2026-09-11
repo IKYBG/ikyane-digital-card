@@ -3,7 +3,8 @@
 /* oxlint-disable jsx-a11y/prefer-tag-over-role, next/no-html-link-for-pages -- the card contains nested controls and the vCard endpoint is a download */
 import Image from 'next/image';
 import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
-import { motion, useReducedMotion, type PanInfo } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
+import styles from './QardPreview.module.css';
 import {
   ArrowUpRight,
   BriefcaseBusiness,
@@ -21,11 +22,11 @@ import type { QardData, SocialLink } from '@/types/database';
 import { isSafePublicUrl, platformLabels } from '@/lib/qard/social';
 import { SocialIcon } from './SocialIcon';
 
-const spring = {
+const dragSpring = {
   type: 'spring',
-  stiffness: 390,
-  damping: 32,
-  mass: 0.72,
+  stiffness: 420,
+  damping: 38,
+  mass: 0.65,
 } as const;
 const directPlatforms = new Set(['email', 'phone', 'website']);
 
@@ -51,6 +52,7 @@ export function QardPreview({
   const cardRef = useRef<HTMLDivElement>(null);
   const tiltFrameRef = useRef<number | null>(null);
   const dragFlippedRef = useRef(false);
+  const gestureRef = useRef<{ x: number; time: number } | null>(null);
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [isFlipping, setIsFlipping] = useState(false);
@@ -130,8 +132,19 @@ export function QardPreview({
     '--text-primary': appearance.text_color,
   } as React.CSSProperties;
 
+  const resetTilt = () => {
+    if (tiltFrameRef.current !== null) {
+      window.cancelAnimationFrame(tiltFrameRef.current);
+      tiltFrameRef.current = null;
+    }
+    cardRef.current?.style.setProperty('--rx', '0deg');
+    cardRef.current?.style.setProperty('--ry', '0deg');
+    cardRef.current?.style.setProperty('--lx', '50%');
+    cardRef.current?.style.setProperty('--ly', '18%');
+  };
   const flip = () => {
     if (isFlipping) return;
+    resetTilt();
     setIsFlipping(true);
     setSide((current) => (current === 'front' ? 'back' : 'front'));
   };
@@ -150,13 +163,28 @@ export function QardPreview({
       flip();
     }
   };
-  const handleSwipeEnd = (_: unknown, info: PanInfo) => {
-    if (Math.abs(info.offset.x) < 72 && Math.abs(info.velocity.x) < 520) return;
+  const handleGestureStart = (event: PointerEvent<HTMLDivElement>) => {
+    gestureRef.current = { x: event.clientX, time: performance.now() };
+  };
+  const handleGestureEnd = (event: PointerEvent<HTMLDivElement>) => {
+    const start = gestureRef.current;
+    gestureRef.current = null;
+    if (!start) return;
+    const distance = event.clientX - start.x;
+    const duration = Math.max(1, performance.now() - start.time);
+    const velocity = (distance / duration) * 1000;
+    if (Math.abs(distance) < 52 && !(Math.abs(distance) > 24 && Math.abs(velocity) > 480)) return;
     dragFlippedRef.current = true;
     flip();
     window.setTimeout(() => {
       dragFlippedRef.current = false;
-    }, 180);
+    }, 320);
+  };
+  const handleGestureClickCapture = (event: MouseEvent<HTMLDivElement>) => {
+    if (!dragFlippedRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    dragFlippedRef.current = false;
   };
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>) => {
     if (reducedMotion || event.pointerType === 'touch') return;
@@ -176,16 +204,6 @@ export function QardPreview({
       element.style.setProperty('--ly', `${(y + 0.5) * 100}%`);
     });
   };
-  const resetTilt = () => {
-    if (tiltFrameRef.current !== null) {
-      window.cancelAnimationFrame(tiltFrameRef.current);
-      tiltFrameRef.current = null;
-    }
-    cardRef.current?.style.setProperty('--rx', '0deg');
-    cardRef.current?.style.setProperty('--ry', '0deg');
-    cardRef.current?.style.setProperty('--lx', '50%');
-    cardRef.current?.style.setProperty('--ly', '18%');
-  };
   const share = async () => {
     const url = `${window.location.origin}/u/${profile.slug}`;
     try {
@@ -202,8 +220,8 @@ export function QardPreview({
   const frontTabIndex = side === 'front' && !isFlipping ? 0 : -1;
   const backTabIndex = side === 'back' && !isFlipping ? 0 : -1;
   const vcardHref = contactHref ?? `/api/vcard/${profile.slug}`;
-  const renderLink = (link: DisplayLink, index: number) => (
-    <motion.a
+  const renderLink = (link: DisplayLink) => (
+    <a
       tabIndex={backTabIndex}
       href={link.url}
       target={link.url.startsWith('http') ? '_blank' : undefined}
@@ -215,17 +233,6 @@ export function QardPreview({
           ? link.id
           : undefined
       }
-      animate={
-        side === 'back'
-          ? { opacity: 1, y: 0, scale: 1 }
-          : { opacity: 0, y: 12, scale: 0.975 }
-      }
-      transition={{
-        ...spring,
-        delay: side === 'back' ? 0.16 + index * 0.035 : 0,
-      }}
-      whileHover={{ y: -3, scale: 1.012 }}
-      whileTap={{ scale: 0.97 }}
     >
       <span className="brand-icon">
         <SocialIcon platform={link.platform} />
@@ -237,12 +244,12 @@ export function QardPreview({
         </small>
       </div>
       <ArrowUpRight size={15} />
-    </motion.a>
+    </a>
   );
 
   return (
     <article
-      className={`qard-premium card-perspective theme-${appearance.theme} buttons-${appearance.button_style} avatar-${appearance.avatar_shape} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ' compact' : ''}`}
+      className={`${styles.root} qard-premium card-perspective theme-${appearance.theme} buttons-${appearance.button_style} avatar-${appearance.avatar_shape} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ' compact' : ''}`}
       style={vars}
     >
       <div className="swipe-orbit swipe-orbit-left" aria-hidden="true">
@@ -263,9 +270,15 @@ export function QardPreview({
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.16}
-          onDragEnd={handleSwipeEnd}
+          dragMomentum={false}
+          onPointerDown={handleGestureStart}
+          onPointerUp={handleGestureEnd}
+          onPointerCancel={() => {
+            gestureRef.current = null;
+          }}
+          onClickCapture={handleGestureClickCapture}
           whileDrag={reducedMotion ? undefined : { scale: 0.975, rotateZ: 0.7 }}
-          transition={spring}
+          transition={dragSpring}
         >
           <div
             className={`identity-card side-${side}${isFlipping ? ' is-flipping' : ''}`}
@@ -281,32 +294,23 @@ export function QardPreview({
             <motion.div
               className="flip-card"
               initial={false}
-              animate={
-                reducedMotion
-                  ? { rotateY: side === 'back' ? 180 : 0 }
-                  : side === 'back'
-                    ? {
-                        rotateY: [0, 9, 96, 176.5, 180],
-                        rotateX: [0, -0.35, 0.5, -0.12, 0],
-                        scale: [1, 0.998, 0.982, 0.997, 1],
-                        z: [0, 3, 13, 4, 0],
-                      }
-                    : {
-                        rotateY: [180, 171, 84, 3.5, 0],
-                        rotateX: [0, 0.35, -0.5, 0.12, 0],
-                        scale: [1, 0.998, 0.982, 0.997, 1],
-                        z: [0, 3, 13, 4, 0],
-                      }
-              }
-              transition={
-                reducedMotion
+              animate={{
+                rotateY: side === 'back' ? 180 : 0,
+                scale:
+                  reducedMotion || !isFlipping ? 1 : [1, 1.012, 1],
+              }}
+              transition={{
+                rotateY: reducedMotion
+                  ? { duration: 0.01 }
+                  : { duration: 0.58, ease: [0.4, 0, 0.4, 1] },
+                scale: reducedMotion
                   ? { duration: 0.01 }
                   : {
-                      duration: 0.56,
-                      times: [0, 0.075, 0.48, 0.86, 1],
-                      ease: [0.18, 0.82, 0.22, 1],
-                    }
-              }
+                      duration: 0.58,
+                      times: [0, 0.38, 1],
+                      ease: [0.22, 1, 0.36, 1],
+                    },
+              }}
               onAnimationComplete={() => setIsFlipping(false)}
             >
               <div className="card-depth" aria-hidden="true" />
@@ -316,14 +320,8 @@ export function QardPreview({
                 className="card-face card-front"
                 aria-hidden={side !== 'front'}
               >
-                <motion.div
+                <div
                   className={`portrait-panel ${visual ? 'has-photo' : 'portrait-placeholder'}`}
-                  animate={
-                    side === 'front'
-                      ? { opacity: 1, scale: 1.015 }
-                      : { opacity: 0.72, scale: 1.065 }
-                  }
-                  transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
                 >
                   {visual ? (
                     <Image
@@ -343,7 +341,7 @@ export function QardPreview({
                     </div>
                   )}
                   <div className="portrait-scan" aria-hidden="true" />
-                </motion.div>
+                </div>
                 <p className="human-note" aria-hidden="true">
                   Créer un web
                   <br />
@@ -397,15 +395,13 @@ export function QardPreview({
                       )}
                   </div>
                   <div className="primary-actions">
-                    <motion.button
+                    <button
                       tabIndex={frontTabIndex}
                       className="action-primary"
                       onClick={flip}
-                      whileHover={{ y: -2 }}
-                      whileTap={{ scale: 0.98 }}
                     >
                       Voir mes contacts <ArrowUpRight size={17} />
-                    </motion.button>
+                    </button>
                   </div>
                 </div>
                 <button
@@ -447,9 +443,7 @@ export function QardPreview({
                     <div className="contact-group">
                       <span className="contact-group-label">Direct</span>
                       <div className="contact-matrix direct-matrix">
-                        {directLinks.map((link, index) =>
-                          renderLink(link, networkLinks.length + index),
-                        )}
+                        {directLinks.map(renderLink)}
                       </div>
                     </div>
                   )}
@@ -481,11 +475,6 @@ export function QardPreview({
           </div>
         </motion.div>
       </div>
-      {side === 'back' && (
-        <button className="flip-hint qard-flip-hint" onClick={flip}>
-          <RotateCcw size={14} /> Revenir au profil
-        </button>
-      )}
       {profile.show_branding && (
         <a className="qard-branding" href="/">
           Créé avec <b>Qard</b>

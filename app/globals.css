@@ -7838,30 +7838,6 @@ a {
   accent-color: #8fc7ff;
 }
 
-/* The whole physical stack turns together. */
-.qard-premium .flip-card > .card-depth {
-  transform: translateZ(-7px);
-}
-.qard-premium .flip-card > .card-edge {
-  transform: translateZ(4px);
-}
-.qard-premium .flip-card > .card-glint {
-  transform: translateZ(5px);
-}
-.qard-premium .flip-card > .card-depth,
-.qard-premium .flip-card > .card-glint,
-.qard-premium .flip-card > .card-edge {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.qard-premium .flip-card {
-  transform-origin: 50% 50%;
-}
-.qard-premium .side-front .flip-card > .card-glint,
-.qard-premium .side-back .flip-card > .card-glint {
-  opacity: 0.34;
-}
-
 @media (max-width: 640px) {
   .appearance-studio {
     padding: 14px;
@@ -8035,53 +8011,9 @@ a {
   }
 }
 
-/* Keep the flip on the compositor: the portrait is opaque, so live backdrop blur
-   only adds raster work while the card is edge-on. */
-.qard-premium .flip-card {
-  will-change: transform;
-  transform-style: preserve-3d;
-  transform: translateZ(0);
-}
 .qard-premium .card-face {
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
-}
-.qard-premium .identity-card.is-flipping {
-  pointer-events: none;
-}
-.qard-premium .identity-card.is-flipping .portrait-panel,
-.qard-premium .identity-card.is-flipping .card-glint {
-  contain: paint;
-}
-.qard-premium .identity-card.is-flipping .card-glint {
-  animation: qard-flip-specular 0.56s cubic-bezier(0.18, 0.82, 0.22, 1) both;
-}
-.qard-premium .identity-card.is-flipping .card-depth {
-  animation: qard-flip-shadow 0.56s cubic-bezier(0.18, 0.82, 0.22, 1) both;
-}
-@keyframes qard-flip-specular {
-  0%,
-  100% {
-    opacity: 0.25;
-  }
-  44% {
-    opacity: 0.08;
-  }
-  58% {
-    opacity: 0.5;
-  }
-}
-@keyframes qard-flip-shadow {
-  0%,
-  100% {
-    filter: brightness(1);
-  }
-  48% {
-    filter: brightness(0.72);
-  }
-  78% {
-    filter: brightness(1.06);
-  }
 }
 
 @media (max-width: 640px) {
@@ -8127,9 +8059,5 @@ a {
   }
   .appearance-tabs button {
     transition: none;
-  }
-  .qard-premium .identity-card.is-flipping .card-glint,
-  .qard-premium .identity-card.is-flipping .card-depth {
-    animation: none;
   }
 }
