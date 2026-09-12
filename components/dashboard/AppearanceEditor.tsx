@@ -16,7 +16,9 @@ import {
 import { createClient } from '@/lib/supabase/client';
 import {
   appearanceGradients,
+  appearanceThemeCategories,
   appearanceThemes,
+  type AppearanceThemeCategory,
   compatibleBackgroundValue,
   isValidBackground,
 } from '@/lib/qard/appearance';
@@ -40,6 +42,11 @@ export function AppearanceEditor({ data }: { data: QardData }) {
   const [appearance, setAppearance] = useState(data.appearance);
   const [status, setStatus] = useState('');
   const [showMobilePreview, setShowMobilePreview] = useState(true);
+  const initialThemeCategory =
+    appearanceThemes.find((theme) => theme.id === data.appearance.theme)
+      ?.category ?? 'essential';
+  const [themeCategory, setThemeCategory] =
+    useState<AppearanceThemeCategory>(initialThemeCategory);
   const [activeSection, setActiveSection] = useState<
     'ambiance' | 'elements' | 'texte' | 'mouvement' | 'finition'
   >('ambiance');
@@ -106,6 +113,12 @@ export function AppearanceEditor({ data }: { data: QardData }) {
       background_value: theme.bg,
       accent_color: theme.accent,
       text_color: theme.text,
+      button_style: theme.buttonStyle,
+      font_family: theme.fontFamily,
+      avatar_shape: theme.avatarShape,
+      card_opacity: theme.cardOpacity,
+      card_blur: theme.cardBlur,
+      card_radius: theme.cardRadius,
     });
   }
   return (
@@ -164,24 +177,68 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                   <h3>Ambiance</h3>
                   <p>Choisissez une base, puis ajustez ses couleurs.</p>
                 </div>
-                <div className="theme-grid appearance-theme-grid">
-                  {appearanceThemes.map((theme) => (
+                <div
+                  className="appearance-theme-categories"
+                  role="tablist"
+                  aria-label="Familles de styles"
+                >
+                  {appearanceThemeCategories.map((category) => (
                     <button
-                      key={theme.id}
-                      className={
-                        appearance.theme === theme.id ? 'selected' : ''
-                      }
-                      onClick={() => pickTheme(theme)}
-                      style={{ background: theme.bg, color: theme.text }}
+                      key={category.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={themeCategory === category.id}
+                      className={themeCategory === category.id ? 'active' : ''}
+                      onClick={() => setThemeCategory(category.id)}
                     >
-                      <i style={{ background: theme.accent }} />
-                      {theme.name}
-                      {theme.pro && data.profile.plan !== 'pro' && (
-                        <Lock size={13} />
-                      )}
-                      {appearance.theme === theme.id && <Check size={15} />}
+                      {category.label}
                     </button>
                   ))}
+                </div>
+                <div className="theme-grid appearance-theme-grid">
+                  {appearanceThemes
+                    .filter((theme) => theme.category === themeCategory)
+                    .map((theme) => (
+                      <button
+                        key={theme.id}
+                        type="button"
+                        className={`appearance-theme-card${appearance.theme === theme.id ? ' selected' : ''}`}
+                        onClick={() => pickTheme(theme)}
+                      >
+                        <span
+                          className="appearance-theme-visual"
+                          style={{ background: theme.bg, color: theme.text }}
+                        >
+                          <span className="appearance-theme-visual-head">
+                            <i style={{ background: theme.accent }} />
+                            <small>QARD</small>
+                          </span>
+                          <b>Aa</b>
+                          <span
+                            className="appearance-theme-visual-action"
+                            style={{
+                              background:
+                                theme.buttonStyle === 'solid'
+                                  ? theme.accent
+                                  : 'transparent',
+                              borderColor: theme.accent,
+                            }}
+                          />
+                        </span>
+                        <span className="appearance-theme-meta">
+                          <b>{theme.name}</b>
+                          <small>{theme.description}</small>
+                        </span>
+                        <span className="appearance-theme-state">
+                          {theme.pro && data.profile.plan !== 'pro' && (
+                            <Lock size={13} aria-label="Premium" />
+                          )}
+                          {appearance.theme === theme.id && (
+                            <Check size={15} aria-label="Sélectionné" />
+                          )}
+                        </span>
+                      </button>
+                    ))}
                 </div>
                 <div className="appearance-divider" />
                 <div className="appearance-color-grid">

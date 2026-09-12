@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
+  appearanceThemeCategories,
+  appearanceThemes,
   compatibleBackgroundValue,
   isValidBackground,
   resolveAppearance,
@@ -51,5 +53,22 @@ describe('appearance rendering', () => {
     expect(
       resolveAppearance({ ...appearance, accent_color: '#10253a' }).onAccent,
     ).toBe('#ffffff');
+  });
+
+  it('offers a compact set of complete styles in distinct families', () => {
+    expect(appearanceThemeCategories).toHaveLength(3);
+    expect(appearanceThemes.length).toBeGreaterThanOrEqual(12);
+    for (const category of appearanceThemeCategories) {
+      const themes = appearanceThemes.filter(
+        (theme) => theme.category === category.id,
+      );
+      expect(themes.length).toBeGreaterThanOrEqual(3);
+      for (const theme of themes) {
+        expect(theme.description.length).toBeGreaterThan(3);
+        expect(theme.cardRadius).toBeGreaterThanOrEqual(0);
+        expect(theme.buttonStyle).toBeTruthy();
+        expect(theme.fontFamily).toBeTruthy();
+      }
+    }
   });
 });
