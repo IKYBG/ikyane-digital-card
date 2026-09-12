@@ -3,15 +3,11 @@ import Link from 'next/link';
 import {
   ArrowRight,
   AtSign,
-  BarChart3,
   Check,
-  ContactRound,
   Link2,
   Mail,
-  Palette,
-  RefreshCw,
-  Share2,
-  Smartphone,
+  MapPin,
+  Phone,
 } from 'lucide-react';
 import { MarketingNav } from '@/components/qard/MarketingNav';
 import { QardLogo } from '@/components/qard/QardLogo';
@@ -20,140 +16,177 @@ import styles from './landing.module.css';
 const steps = [
   {
     number: '01',
-    icon: ContactRound,
-    title: 'Créez votre identité',
-    text: 'Un nom, une photo et les moyens utiles pour vous joindre.',
+    title: 'Composez',
+    text: 'Votre identité, votre photo et les contacts qui comptent.',
   },
   {
     number: '02',
-    icon: Share2,
-    title: 'Partagez votre Qard',
-    text: 'Envoyez votre lien ou présentez votre QR code permanent.',
+    title: 'Présentez',
+    text: 'Un lien à envoyer. Un QR à montrer. Rien à installer.',
   },
   {
     number: '03',
-    icon: Smartphone,
-    title: 'Le contact est enregistré',
-    text: 'Votre interlocuteur choisit un canal et vous retrouve ensuite.',
+    title: 'Restez joignable',
+    text: 'Vous modifiez votre Qard, le même lien reste toujours à jour.',
   },
 ];
 
-const features = [
+const capabilities = [
   {
-    icon: Link2,
-    title: 'Un seul lien',
-    text: 'Tous vos contacts restent accessibles sans application.',
-    visual: 'links',
+    number: '01',
+    label: 'Identité',
+    title: 'On comprend qui vous êtes en quelques secondes.',
+    text: 'Nom, activité, lieu et une présentation courte. L’essentiel garde toute la place.',
+    visual: 'identity',
   },
   {
-    icon: RefreshCw,
-    title: 'Toujours à jour',
-    text: 'Modifiez votre profil sans réimprimer votre QR code.',
-    visual: 'update',
+    number: '02',
+    label: 'Contact',
+    title: 'Chaque moyen de vous joindre est au même endroit.',
+    text: 'Téléphone, email, site et réseaux s’ouvrent directement dans la bonne application.',
+    visual: 'contact',
   },
   {
-    icon: Palette,
-    title: 'Vraiment à vous',
-    text: 'Une apparence cohérente avec votre personnalité ou votre activité.',
+    number: '03',
+    label: 'Style',
+    title: 'Une présence qui vous ressemble vraiment.',
+    text: 'Des styles complets, sobres ou expressifs, puis des réglages précis si vous le souhaitez.',
     visual: 'style',
   },
   {
-    icon: BarChart3,
-    title: 'L’essentiel en chiffres',
-    text: 'Comprenez les vues et les contacts, sans tableau compliqué.',
-    visual: 'stats',
+    number: '04',
+    label: 'Suivi',
+    title: 'Des chiffres utiles, sans vous noyer.',
+    text: 'Repérez simplement les vues, les clics et les contacts qui intéressent votre audience.',
+    visual: 'signal',
   },
 ];
 
 function CardSample() {
   return (
     <div className={styles.productStage} aria-label="Exemple d’une Qard">
-      <span className={styles.liveBadge}>
-        <RefreshCw size={14} /> Mise à jour instantanée
-      </span>
+      <div className={styles.stageIndex} aria-hidden="true">
+        <span>FACE</span>
+        <strong>01</strong>
+      </div>
       <article className={styles.sampleCard}>
         <header className={styles.cardTopbar}>
-          <span className={styles.cardMark}>Q</span>
+          <span className={styles.cardWordmark}>QARD / PROFIL</span>
           <span className={styles.online}>
-            <i /> Profil actif
+            <i /> Disponible
           </span>
         </header>
-        <div className={styles.sampleIdentity}>
-          <div className={styles.sampleAvatar}>V</div>
-          <div>
-            <h2>
-              Votre nom <Check size={15} />
-            </h2>
-            <p>Votre activité, simplement.</p>
-          </div>
+        <div className={styles.samplePortrait} aria-hidden="true">
+          <span>C</span>
+          <i />
         </div>
-        <div className={styles.sampleContacts}>
-          <span>
-            <Mail size={17} /> Email
-          </span>
-          <span>
-            <AtSign size={17} /> Réseaux
-          </span>
-          <span>
-            <Link2 size={17} /> Site web
+        <div className={styles.sampleIdentity}>
+          <span className={styles.profileNumber}>N° 0248</span>
+          <h2>
+            Camille Morel <Check size={16} />
+          </h2>
+          <p>Architecte indépendante</p>
+          <span className={styles.location}>
+            <MapPin size={14} /> Lyon, France
           </span>
         </div>
         <div className={styles.sampleAction}>
           Voir mes contacts <ArrowRight size={17} />
         </div>
         <footer>
-          <span>myqard.vercel.app/u/votre-nom</span>
-          <i />
+          <span>myqard.vercel.app/u/camille</span>
+          <span>Glissez pour retourner</span>
         </footer>
       </article>
+      <aside className={styles.contactRail} aria-label="Contacts disponibles">
+        <span>
+          <Mail size={16} />
+          <small>Email</small>
+        </span>
+        <span>
+          <Phone size={16} />
+          <small>Téléphone</small>
+        </span>
+        <span>
+          <AtSign size={16} />
+          <small>Réseaux</small>
+        </span>
+        <span>
+          <Link2 size={16} />
+          <small>Site</small>
+        </span>
+      </aside>
       <div className={styles.qrTicket}>
         <Image
           src="/ikyane-qr.png"
-          width={72}
-          height={72}
+          width={74}
+          height={74}
           alt="QR code d’exemple"
-          sizes="72px"
+          sizes="74px"
         />
         <span>
-          <strong>Un scan suffit</strong>
-          <small>Aucune application</small>
+          <small>SCAN / OUVERTURE</small>
+          <strong>
+            Votre Qard.
+            <br />
+            En un geste.
+          </strong>
         </span>
       </div>
     </div>
   );
 }
 
-function FeatureVisual({ type }: { type: string }) {
-  if (type === 'links') {
+function CapabilityVisual({ type }: { type: string }) {
+  if (type === 'identity')
     return (
-      <div className={`${styles.featureVisual} ${styles.linkVisual}`}>
-        <span><Mail size={16} /> Email <Check size={14} /></span>
-        <span><AtSign size={16} /> Instagram <Check size={14} /></span>
-        <span><Link2 size={16} /> Portfolio <Check size={14} /></span>
+      <div className={`${styles.capabilityVisual} ${styles.identityVisual}`}>
+        <span>CM</span>
+        <div>
+          <b>Camille Morel</b>
+          <i />
+          <i />
+        </div>
       </div>
     );
-  }
-  if (type === 'update') {
+  if (type === 'contact')
     return (
-      <div className={`${styles.featureVisual} ${styles.updateVisual}`}>
-        <span>Q</span>
-        <i />
-        <strong>Publié</strong>
+      <div className={`${styles.capabilityVisual} ${styles.contactVisual}`}>
+        <span>
+          <Mail size={17} />
+        </span>
+        <span>
+          <Phone size={17} />
+        </span>
+        <span>
+          <AtSign size={17} />
+        </span>
+        <span>
+          <Link2 size={17} />
+        </span>
       </div>
     );
-  }
-  if (type === 'style') {
+  if (type === 'style')
     return (
-      <div className={`${styles.featureVisual} ${styles.styleVisual}`}>
-        <i /><i /><i />
-        <span><b /><b /><b /></span>
+      <div className={`${styles.capabilityVisual} ${styles.styleVisual}`}>
+        <span />
+        <span />
+        <span />
+        <span />
       </div>
     );
-  }
   return (
-    <div className={`${styles.featureVisual} ${styles.statsVisual}`}>
-      <strong>184</strong><small>interactions</small>
-      <span><i /><i /><i /><i /><i /><i /></span>
+    <div className={`${styles.capabilityVisual} ${styles.signalVisual}`}>
+      <span>184</span>
+      <div>
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+      </div>
     </div>
   );
 }
@@ -161,56 +194,73 @@ function FeatureVisual({ type }: { type: string }) {
 export default function Home() {
   return (
     <main className={`qard-site ${styles.site}`}>
-      <div className={styles.ambient} aria-hidden="true" />
+      <div className={styles.brandLine} aria-hidden="true" />
       <MarketingNav />
 
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <span className={styles.kicker}>Qard · identité numérique</span>
+          <span className={styles.kicker}>
+            La carte de contact qui reste à jour
+          </span>
           <h1>
-            Votre contact,
-            <br />sans détour.
+            Un geste.
+            <br />
+            <em>Le contact reste.</em>
           </h1>
           <p className={styles.heroLead}>
-            Un profil clair, un lien unique et un QR permanent. Vous changez,
-            votre Qard suit.
+            Qard rassemble votre identité et vos contacts dans une carte claire,
+            personnelle et toujours accessible.
           </p>
           <div className={styles.actions}>
             <Link className={styles.primary} href="/signup" prefetch={false}>
               Créer ma Qard <ArrowRight size={18} />
             </Link>
             <Link className={styles.secondary} href="/card" prefetch={false}>
-              Voir une vraie Qard
+              Ouvrir l’exemple <span>↗</span>
             </Link>
           </div>
-          <div className={styles.proof}>
-            <span><Check size={14} /> Gratuit pour commencer</span>
-            <span><Check size={14} /> Sans application</span>
-            <span><Check size={14} /> Prête en quelques minutes</span>
+          <div className={styles.proof} aria-label="Avantages principaux">
+            <span>
+              <strong>01</strong>
+              <small>lien unique</small>
+            </span>
+            <span>
+              <strong>00</strong>
+              <small>application</small>
+            </span>
+            <span>
+              <strong>∞</strong>
+              <small>mises à jour</small>
+            </span>
           </div>
         </div>
         <CardSample />
       </section>
 
       <section className={styles.manifesto}>
-        <span>Moins de présentation.</span>
-        <h2>Plus de vraies connexions.</h2>
-        <p>
-          Qard ne cherche pas à devenir un réseau social. Elle donne simplement
-          la bonne information, au bon moment.
+        <span className={styles.manifestoMark}>Q/</span>
+        <div>
+          <p>Notre parti pris</p>
+          <h2>Une bonne présentation n’a pas besoin d’explication.</h2>
+        </div>
+        <p className={styles.manifestoCopy}>
+          Pas de profil à chercher, pas d’application à imposer, pas de carte à
+          réimprimer. Qard laisse simplement la bonne information circuler.
         </p>
       </section>
 
       <section className={styles.process} id="fonctionnement">
         <header className={styles.sectionHeader}>
-          <span>Comment ça marche</span>
-          <h2>De vous à leur téléphone.</h2>
+          <span>Du premier geste au prochain échange</span>
+          <h2>Vous. Qard. Eux.</h2>
         </header>
+        <div className={styles.route} aria-hidden="true">
+          <i />
+        </div>
         <div className={styles.steps}>
-          {steps.map(({ number, icon: Icon, title, text }) => (
+          {steps.map(({ number, title, text }) => (
             <article key={number}>
-              <div className={styles.stepIcon}><Icon size={23} /></div>
-              <span>{number}</span>
+              <span>{number} / 03</span>
               <h3>{title}</h3>
               <p>{text}</p>
             </article>
@@ -218,37 +268,58 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={styles.features}>
+      <section className={styles.capabilities}>
         <header className={styles.sectionHeader}>
-          <span>Conçue pour rester simple</span>
-          <h2>Tout ce qu’il faut. Rien de plus.</h2>
+          <span>Le produit, sans détour</span>
+          <h2>
+            Quatre réponses.
+            <br />
+            Une seule carte.
+          </h2>
         </header>
-        <div className={styles.featureGrid}>
-          {features.map(({ icon: Icon, title, text, visual }) => (
-            <article key={title}>
-              <FeatureVisual type={visual} />
-              <div className={styles.featureTitle}><Icon size={19} /><h3>{title}</h3></div>
-              <p>{text}</p>
+        <div className={styles.capabilityList}>
+          {capabilities.map(({ number, label, title, text, visual }) => (
+            <article key={number}>
+              <span className={styles.capabilityNumber}>{number}</span>
+              <div className={styles.capabilityCopy}>
+                <small>{label}</small>
+                <h3>{title}</h3>
+                <p>{text}</p>
+              </div>
+              <CapabilityVisual type={visual} />
             </article>
           ))}
         </div>
       </section>
 
       <section className={styles.finalCta}>
-        <QardLogo linked={false} />
-        <h2>Une identité que l’on retient.</h2>
-        <p>Créez votre Qard aujourd’hui. Elle restera à jour demain.</p>
-        <Link className={styles.primary} href="/signup" prefetch={false}>
-          Commencer gratuitement <ArrowRight size={18} />
-        </Link>
+        <span className={styles.finalMonogram} aria-hidden="true">
+          Q
+        </span>
+        <div>
+          <span>Votre prochaine présentation commence ici.</span>
+          <h2>
+            Faites simple.
+            <br />
+            Faites-vous retenir.
+          </h2>
+          <Link className={styles.primary} href="/signup" prefetch={false}>
+            Commencer gratuitement <ArrowRight size={18} />
+          </Link>
+        </div>
       </section>
 
       <footer className={styles.footer}>
         <QardLogo />
-        <p>© 2026 Qard</p>
+        <p>La carte de contact qui reste à jour.</p>
+        <span>© 2026 Qard</span>
         <nav>
-          <Link href="/privacy" prefetch={false}>Confidentialité</Link>
-          <Link href="/terms" prefetch={false}>Conditions</Link>
+          <Link href="/privacy" prefetch={false}>
+            Confidentialité
+          </Link>
+          <Link href="/terms" prefetch={false}>
+            Conditions
+          </Link>
         </nav>
       </footer>
     </main>
