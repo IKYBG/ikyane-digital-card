@@ -6,11 +6,10 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000',
   ),
   title: {
-    default: 'Qard — Un geste. Le contact reste.',
+    default: 'Qard — Une nouvelle façon de se présenter',
     template: '%s | Qard',
   },
-  description:
-    'Rassemblez votre identité et vos contacts dans une Qard claire, personnelle et toujours à jour.',
+  description: 'Crée ta carte de contact numérique et partage-la en un scan.',
 };
 
 export default function RootLayout({
