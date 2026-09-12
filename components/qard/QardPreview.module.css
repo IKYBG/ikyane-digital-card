@@ -14,6 +14,11 @@
   transform-style: preserve-3d;
 }
 
+.root :global(.card-motion-shell) {
+  --card-radius: var(--preview-radius);
+  border-radius: var(--preview-radius);
+}
+
 .root :global(.identity-card) {
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -36,6 +41,11 @@
   transform-style: flat;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  border-color: color-mix(in srgb, var(--preview-accent) 52%, transparent);
+  border-radius: var(--preview-radius);
+  color: var(--preview-text);
+  -webkit-backdrop-filter: blur(var(--preview-blur)) saturate(118%);
+  backdrop-filter: blur(var(--preview-blur)) saturate(118%);
 }
 
 .root :global(.card-front) {
@@ -66,6 +76,198 @@
 .root :global(.card-front > .card-glint) {
   opacity: 0.25;
   transform: translateZ(1px);
+}
+
+.root:global(.qard-premium) :global(.card-front .portrait-panel) {
+  background: var(--preview-bg);
+}
+
+.root:global(.qard-premium) :global(.card-front .portrait-panel::before) {
+  opacity: 1;
+  background: linear-gradient(
+    to bottom,
+    transparent 25%,
+    rgb(var(--preview-surface-rgb) / 0.08) 42%,
+    rgb(var(--preview-surface-rgb) / calc(0.34 + var(--preview-opacity) * 0.48))
+      64%,
+    rgb(var(--preview-surface-rgb) / calc(0.62 + var(--preview-opacity) * 0.36))
+      82%,
+    rgb(var(--preview-surface-rgb) / 0.98) 100%
+  );
+}
+
+.root:global(.qard-premium) :global(.card-front .portrait-panel::after) {
+  background: radial-gradient(
+    circle at 50% 24%,
+    transparent 25%,
+    rgb(var(--preview-surface-rgb) / 0.1) 62%,
+    rgb(var(--preview-surface-rgb) / 0.48) 100%
+  );
+}
+
+.root:global(.qard-premium) :global(.card-front .identity-copy) {
+  background: linear-gradient(
+    to bottom,
+    transparent,
+    rgb(var(--preview-surface-rgb) / 0.5) 34%,
+    rgb(var(--preview-surface-rgb) / 0.9) 67%,
+    rgb(var(--preview-surface-rgb) / 0.98) 100%
+  );
+}
+
+.root:global(.qard-premium) :global(.flip-card .card-back) {
+  background:
+    linear-gradient(
+      150deg,
+      rgb(
+        var(--preview-surface-rgb) / calc(0.16 + var(--preview-opacity) * 0.54)
+      ),
+      rgb(
+        var(--preview-surface-rgb) / calc(0.38 + var(--preview-opacity) * 0.54)
+      )
+    ),
+    var(--preview-bg);
+}
+
+.root :global(.card-back::before) {
+  background: var(--preview-accent);
+  opacity: 0.12;
+}
+
+.root :global(.name-row h1),
+.root :global(.back-heading h2),
+.root :global(.contact-tile),
+.root :global(.back-actions a),
+.root :global(.back-actions button) {
+  color: var(--preview-text);
+}
+
+.root :global(.headline),
+.root :global(.identity-role),
+.root :global(.identity-location),
+.root :global(.identity-bio),
+.root :global(.reference-meta span),
+.root :global(.contact-tile small),
+.root :global(.contact-tile > svg),
+.root :global(.back-footer),
+.root :global(.qard-empty-contact),
+.root :global(.human-note) {
+  color: color-mix(in srgb, var(--preview-text) 76%, transparent);
+}
+
+.root :global(.back-heading span),
+.root :global(.contact-group-label),
+.root :global(.identity-location svg) {
+  color: var(--preview-accent);
+}
+
+.root :global(.verified) {
+  color: var(--preview-on-accent);
+  background: var(--preview-accent);
+}
+
+.root :global(.reference-meta span) {
+  border-color: color-mix(in srgb, var(--preview-accent) 28%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--preview-accent) 8%,
+    rgb(var(--preview-surface-rgb) / 0.72)
+  );
+}
+
+.root :global(.action-primary),
+.root :global(.back-actions a),
+.root :global(.back-actions button) {
+  border: 1px solid color-mix(in srgb, var(--preview-accent) 32%, transparent);
+}
+
+.root:global(.qard-premium.buttons-glass) :global(.action-primary),
+.root:global(.qard-premium.buttons-glass) :global(.back-actions a),
+.root:global(.qard-premium.buttons-glass) :global(.back-actions button),
+.root:global(.qard-premium.buttons-glass) :global(.contact-tile) {
+  color: var(--preview-text);
+  border-color: color-mix(in srgb, var(--preview-accent) 28%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--preview-accent) 11%,
+    rgb(var(--preview-surface-rgb) / 0.62)
+  );
+}
+
+.root:global(.qard-premium.buttons-solid) :global(.action-primary),
+.root:global(.qard-premium.buttons-solid) :global(.back-actions a),
+.root:global(.qard-premium.buttons-solid) :global(.back-actions button),
+.root:global(.qard-premium.buttons-solid) :global(.contact-tile) {
+  color: var(--preview-on-accent);
+  border-color: transparent;
+  background: var(--preview-accent);
+  box-shadow: none;
+}
+
+.root:global(.qard-premium.buttons-outline) :global(.action-primary),
+.root:global(.qard-premium.buttons-outline) :global(.back-actions a),
+.root:global(.qard-premium.buttons-outline) :global(.back-actions button),
+.root:global(.qard-premium.buttons-outline) :global(.contact-tile) {
+  color: var(--preview-text);
+  border-color: var(--preview-accent);
+  background: transparent;
+  box-shadow: none;
+}
+
+.root:global(.qard-premium.buttons-minimal) :global(.action-primary),
+.root:global(.qard-premium.buttons-minimal) :global(.back-actions a),
+.root:global(.qard-premium.buttons-minimal) :global(.back-actions button),
+.root:global(.qard-premium.buttons-minimal) :global(.contact-tile) {
+  color: var(--preview-text);
+  border: 0;
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--preview-accent) 68%, transparent);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.root:global(.avatar-rounded) :global(.portrait-panel.has-photo img),
+.root:global(.avatar-square) :global(.portrait-panel.has-photo img) {
+  inset: 5% !important;
+  width: 90% !important;
+  height: 90% !important;
+  border: 1px solid color-mix(in srgb, var(--preview-accent) 24%, transparent);
+  box-shadow: 0 24px 70px rgb(0 0 0 / 0.24);
+}
+
+.root:global(.avatar-rounded) :global(.portrait-panel.has-photo img) {
+  border-radius: max(12px, calc(var(--preview-radius) * 0.72));
+}
+
+.root:global(.avatar-square) :global(.portrait-panel.has-photo img) {
+  border-radius: 3px;
+}
+
+.root:global(.avatar-circle) :global(.portrait-placeholder .monogram) {
+  border-radius: 50%;
+}
+
+.root:global(.font-geist) {
+  font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
+}
+
+.root:global(.font-inter) {
+  font-family: 'Segoe UI Variable', 'Segoe UI', system-ui, sans-serif;
+}
+
+.root:global(.font-serif) {
+  font-family: ui-serif, Georgia, 'Times New Roman', serif;
+}
+
+.root:global(.font-mono) {
+  font-family: var(--font-geist-mono), Consolas, monospace;
+}
+
+.root :global(.back-heading span),
+.root :global(.contact-group-label),
+.root :global(.back-footer) {
+  font-family: inherit;
 }
 
 .root :global(.identity-card.is-flipping .card-depth) {

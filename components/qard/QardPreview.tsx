@@ -2,7 +2,13 @@
 
 /* oxlint-disable jsx-a11y/prefer-tag-over-role, next/no-html-link-for-pages -- the card contains nested controls and the vCard endpoint is a download */
 import Image from 'next/image';
-import { useRef, useState, type KeyboardEvent, type MouseEvent, type PointerEvent } from 'react';
+import {
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type MouseEvent,
+  type PointerEvent,
+} from 'react';
 import { motion, useReducedMotion } from 'motion/react';
 import styles from './QardPreview.module.css';
 import {
@@ -19,6 +25,7 @@ import {
   UserPlus,
 } from 'lucide-react';
 import type { QardData, SocialLink } from '@/types/database';
+import { resolveAppearance } from '@/lib/qard/appearance';
 import { isSafePublicUrl, platformLabels } from '@/lib/qard/social';
 import { SocialIcon } from './SocialIcon';
 
@@ -108,28 +115,18 @@ export function QardPreview({
   const visual = appearance.show_banner
     ? profile.avatar_url || profile.banner_url
     : null;
-  const safeImageBackground = /^https:\/\/[\w.-]+(?:\/[^\s]*)?$/i.test(
-    appearance.background_value,
-  );
-  const safeCssBackground =
-    appearance.background_type === 'color'
-      ? /^#[0-9a-f]{6}$/i.test(appearance.background_value)
-      : /^linear-gradient\([^;{}]+\)$/i.test(appearance.background_value);
-  const background =
-    appearance.background_type === 'image' && safeImageBackground
-      ? `linear-gradient(rgb(3 10 23 / .2), rgb(3 12 27 / .82)), url(${JSON.stringify(appearance.background_value)}) center / cover`
-      : safeCssBackground
-        ? appearance.background_value
-        : 'linear-gradient(145deg, #06101f, #0a2850)';
+  const presentation = resolveAppearance(appearance);
   const vars = {
-    '--preview-accent': appearance.accent_color,
-    '--preview-text': appearance.text_color,
-    '--preview-radius': `${Math.max(24, appearance.card_radius)}px`,
-    '--preview-opacity': appearance.card_opacity,
-    '--preview-blur': `${appearance.card_blur}px`,
-    '--preview-bg': background,
-    '--electric': appearance.accent_color,
-    '--text-primary': appearance.text_color,
+    '--preview-accent': presentation.accent,
+    '--preview-text': presentation.text,
+    '--preview-on-accent': presentation.onAccent,
+    '--preview-surface-rgb': presentation.surfaceRgb,
+    '--preview-radius': `${presentation.radius}px`,
+    '--preview-opacity': presentation.opacity,
+    '--preview-blur': `${presentation.blur}px`,
+    '--preview-bg': presentation.background,
+    '--electric': presentation.accent,
+    '--text-primary': presentation.text,
   } as React.CSSProperties;
 
   const resetTilt = () => {
@@ -173,7 +170,11 @@ export function QardPreview({
     const distance = event.clientX - start.x;
     const duration = Math.max(1, performance.now() - start.time);
     const velocity = (distance / duration) * 1000;
-    if (Math.abs(distance) < 52 && !(Math.abs(distance) > 24 && Math.abs(velocity) > 480)) return;
+    if (
+      Math.abs(distance) < 52 &&
+      !(Math.abs(distance) > 24 && Math.abs(velocity) > 480)
+    )
+      return;
     dragFlippedRef.current = true;
     flip();
     window.setTimeout(() => {
@@ -285,7 +286,11 @@ export function QardPreview({
             ref={cardRef}
             role="button"
             tabIndex={0}
-            aria-label={side === 'front' ? 'Carte Qard. Appuyez pour afficher les contacts.' : 'Contacts Qard. Appuyez pour revenir au profil.'}
+            aria-label={
+              side === 'front'
+                ? 'Carte Qard. Appuyez pour afficher les contacts.'
+                : 'Contacts Qard. Appuyez pour revenir au profil.'
+            }
             onClick={handleCardClick}
             onKeyDown={handleCardKey}
             onPointerMove={handlePointerMove}
@@ -296,8 +301,7 @@ export function QardPreview({
               initial={false}
               animate={{
                 rotateY: side === 'back' ? 180 : 0,
-                scale:
-                  reducedMotion || !isFlipping ? 1 : [1, 1.012, 1],
+                scale: reducedMotion || !isFlipping ? 1 : [1, 1.012, 1],
               }}
               transition={{
                 rotateY: reducedMotion

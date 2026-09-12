@@ -14,75 +14,28 @@ import {
   Waves,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import {
+  appearanceGradients,
+  appearanceThemes,
+  compatibleBackgroundValue,
+  isValidBackground,
+} from '@/lib/qard/appearance';
 import { appearanceSchema } from '@/lib/qard/validation';
 import type { Appearance, QardData } from '@/types/database';
 
 const QardPreview = dynamic(
-  () => import('@/components/qard/QardPreview').then((module) => module.QardPreview),
+  () =>
+    import('@/components/qard/QardPreview').then(
+      (module) => module.QardPreview,
+    ),
   {
     ssr: false,
-    loading: () => <div className="preview-loading">Chargement de l’aperçu…</div>,
+    loading: () => (
+      <div className="preview-loading">Chargement de l’aperçu…</div>
+    ),
   },
 );
 
-const themes = [
-  {
-    id: 'midnight-glass',
-    name: 'Midnight Glass',
-    bg: 'linear-gradient(145deg, #06101f, #0a2850)',
-    accent: '#8fd4ff',
-    text: '#f7fbff',
-    pro: false,
-  },
-  {
-    id: 'frost',
-    name: 'Frost',
-    bg: 'linear-gradient(145deg, #dce8ef, #f8fbfc)',
-    accent: '#1565c0',
-    text: '#10212e',
-    pro: false,
-  },
-  {
-    id: 'graphite',
-    name: 'Graphite',
-    bg: 'linear-gradient(145deg, #181b20, #060708)',
-    accent: '#d7ff58',
-    text: '#f5f7f8',
-    pro: false,
-  },
-  {
-    id: 'pearl',
-    name: 'Pearl',
-    bg: 'linear-gradient(145deg, #f6f2e9, #d9d2c5)',
-    accent: '#715d3e',
-    text: '#211d17',
-    pro: true,
-  },
-  {
-    id: 'aurora',
-    name: 'Aurora',
-    bg: 'linear-gradient(145deg, #10253a, #322555)',
-    accent: '#9ef7cc',
-    text: '#f7f5ff',
-    pro: true,
-  },
-  {
-    id: 'minimal-dark',
-    name: 'Minimal Dark',
-    bg: '#090a0c',
-    accent: '#ffffff',
-    text: '#ffffff',
-    pro: true,
-  },
-  {
-    id: 'minimal-light',
-    name: 'Minimal Light',
-    bg: '#f5f5f2',
-    accent: '#111111',
-    text: '#111111',
-    pro: true,
-  },
-] as const;
 export function AppearanceEditor({ data }: { data: QardData }) {
   const [appearance, setAppearance] = useState(data.appearance);
   const [status, setStatus] = useState('');
@@ -123,6 +76,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
           .from('qard_appearance')
           .update(parsed.data)
           .eq('id', id)
+          .eq('profile_id', data.profile.id)
           .select()
           .single();
         if (sequence !== saveSequence.current) return;
@@ -140,8 +94,11 @@ export function AppearanceEditor({ data }: { data: QardData }) {
       });
     await saveQueue.current;
   }
-  function pickTheme(theme: (typeof themes)[number]) {
-    if (theme.pro && data.profile.plan !== 'pro') return;
+  function pickTheme(theme: (typeof appearanceThemes)[number]) {
+    if (theme.pro && data.profile.plan !== 'pro') {
+      setStatus('Réservé au plan Premium');
+      return;
+    }
     void save({
       ...appearanceRef.current,
       theme: theme.id,
@@ -172,9 +129,12 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                 immédiatement.
               </p>
             </div>
-            <small className={status.startsWith('Erreur') ? 'is-error' : ''}>
+            <output
+              aria-live="polite"
+              className={status.startsWith('Erreur') ? 'is-error' : ''}
+            >
               {status}
-            </small>
+            </output>
           </header>
           <nav className="appearance-tabs" aria-label="Catégories d’apparence">
             {[
@@ -205,7 +165,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                   <p>Choisissez une base, puis ajustez ses couleurs.</p>
                 </div>
                 <div className="theme-grid appearance-theme-grid">
-                  {themes.map((theme) => (
+                  {appearanceThemes.map((theme) => (
                     <button
                       key={theme.id}
                       className={
@@ -267,14 +227,23 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                       className={
                         appearance.background_type === item ? 'selected' : ''
                       }
-                      onClick={() =>
+                      onClick={() => {
+                        const backgroundType =
+                          item as Appearance['background_type'];
+                        const current = appearanceRef.current;
+                        const backgroundValue = compatibleBackgroundValue(
+                          backgroundType,
+                          current.background_value,
+                          current.theme,
+                          data.profile.banner_url ?? data.profile.avatar_url,
+                        );
                         void save(
                           updateDraft({
-                            background_type:
-                              item as Appearance['background_type'],
+                            background_type: backgroundType,
+                            background_value: backgroundValue,
                           }),
-                        )
-                      }
+                        );
+                      }}
                     >
                       <i className={`background-demo ${item}`} />
                       <span>
@@ -287,31 +256,102 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                     </button>
                   ))}
                 </div>
-                <label className="appearance-value-field">
-                  <span>
-                    {appearance.background_type === 'image'
-                      ? 'Adresse de l’image'
-                      : 'Couleur ou dégradé'}
-                  </span>
-                  <input
-                    value={appearance.background_value}
-                    onChange={(e) =>
-                      updateDraft({ background_value: e.target.value })
-                    }
-                    onBlur={() => void save(appearanceRef.current)}
-                  />
-                </label>
+                {appearance.background_type === 'color' && (
+                  <label className="appearance-value-field appearance-background-color">
+                    <span>Couleur du fond</span>
+                    <input
+                      aria-label="Couleur du fond"
+                      type="color"
+                      value={appearance.background_value}
+                      onChange={(e) =>
+                        updateDraft({ background_value: e.target.value })
+                      }
+                      onBlur={() => void save(appearanceRef.current)}
+                    />
+                  </label>
+                )}
+                {appearance.background_type === 'gradient' && (
+                  <div
+                    className="appearance-gradient-grid"
+                    aria-label="Dégradés"
+                  >
+                    {appearanceGradients.map(([label, value]) => (
+                      <button
+                        type="button"
+                        key={label}
+                        aria-label={`Dégradé ${label}`}
+                        aria-pressed={appearance.background_value === value}
+                        className={
+                          appearance.background_value === value
+                            ? 'selected'
+                            : ''
+                        }
+                        style={{ background: value }}
+                        onClick={() =>
+                          void save(updateDraft({ background_value: value }))
+                        }
+                      >
+                        <span>{label}</span>
+                        {appearance.background_value === value && (
+                          <Check size={15} />
+                        )}
+                      </button>
+                    ))}
+                  </div>
+                )}
+                {appearance.background_type === 'image' && (
+                  <label className="appearance-value-field">
+                    <span>Adresse HTTPS de l’image</span>
+                    <input
+                      type="url"
+                      placeholder="https://…"
+                      value={appearance.background_value}
+                      aria-invalid={
+                        Boolean(appearance.background_value) &&
+                        !isValidBackground('image', appearance.background_value)
+                      }
+                      onChange={(e) =>
+                        updateDraft({ background_value: e.target.value })
+                      }
+                      onBlur={() => {
+                        if (
+                          !isValidBackground(
+                            'image',
+                            appearanceRef.current.background_value,
+                          )
+                        ) {
+                          setStatus(
+                            'Erreur : utilisez une adresse d’image HTTPS valide',
+                          );
+                          return;
+                        }
+                        void save(appearanceRef.current);
+                      }}
+                    />
+                    <small>
+                      Visible au verso et comme fond lorsque la photo est
+                      masquée.
+                    </small>
+                  </label>
+                )}
                 <label className="visual-toggle">
                   <span className="photo-demo">
                     <ImageIcon size={19} />
                   </span>
                   <span>
                     <b>Afficher ma photo</b>
-                    <small>Utilise votre portrait sur la face avant</small>
+                    <small>
+                      {data.profile.avatar_url || data.profile.banner_url
+                        ? 'Utilise votre portrait sur la face avant'
+                        : 'Ajoutez d’abord une photo dans Profil'}
+                    </small>
                   </span>
                   <input
                     type="checkbox"
                     checked={appearance.show_banner}
+                    disabled={
+                      !data.profile.avatar_url && !data.profile.banner_url
+                    }
                     onChange={(e) =>
                       void save(updateDraft({ show_banner: e.target.checked }))
                     }
@@ -352,9 +392,9 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                 </div>
                 <div className="visual-option-grid shape-options">
                   {[
-                    ['circle', 'Rond'],
-                    ['rounded', 'Doux'],
-                    ['square', 'Carré'],
+                    ['circle', 'Plein cadre'],
+                    ['rounded', 'Cadre doux'],
+                    ['square', 'Cadre net'],
                   ].map(([item, label]) => (
                     <button
                       key={item}
@@ -522,7 +562,11 @@ export function AppearanceEditor({ data }: { data: QardData }) {
         className={`editor-preview appearance-live-preview${showMobilePreview ? ' mobile-visible' : ''}`}
       >
         <div className="phone-frame">
-          <QardPreview data={preview} compact />
+          <QardPreview
+            key={`${appearance.animation_enabled}-${appearance.animation_style}`}
+            data={preview}
+            compact
+          />
         </div>
       </aside>
     </div>
