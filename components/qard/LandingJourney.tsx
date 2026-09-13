@@ -34,8 +34,8 @@ function StepArtwork({ type }: { type: (typeof steps)[number]['visual'] }) {
     return (
       <div className={`${styles.artwork} ${styles.identity}`} aria-hidden="true">
         <div className={styles.portrait}><UserRound size={32} strokeWidth={1.5} /></div>
-        <div className={styles.formLine}><small>Nom</small><strong>Camille Morel</strong></div>
-        <div className={styles.formLine}><small>Activité</small><strong>Designer produit</strong></div>
+        <div className={styles.formLine}><i /><i /></div>
+        <div className={styles.formLine}><i /><i /></div>
         <div className={styles.contactDots}><Mail size={15} /><Phone size={15} /><AtSign size={15} /></div>
       </div>
     );
@@ -44,9 +44,9 @@ function StepArtwork({ type }: { type: (typeof steps)[number]['visual'] }) {
   if (type === 'share') {
     return (
       <div className={`${styles.artwork} ${styles.share}`} aria-hidden="true">
-        <div className={styles.url}><span>myqard.vercel.app/u/</span><strong>camille</strong></div>
+        <div className={styles.url}><i /><i /></div>
         <div className={styles.qrFrame}><Image src="/ikyane-qr.png" width={104} height={104} alt="" sizes="104px" /></div>
-        <div className={styles.scanLine}><ScanLine size={17} /><span>Prêt à partager</span></div>
+        <div className={styles.scanLine}><ScanLine size={22} /></div>
       </div>
     );
   }
@@ -55,10 +55,10 @@ function StepArtwork({ type }: { type: (typeof steps)[number]['visual'] }) {
     <div className={`${styles.artwork} ${styles.contact}`} aria-hidden="true">
       <div className={styles.miniCard}>
         <div className={styles.miniPortrait} />
-        <div><strong>Camille Morel</strong><span>Designer produit · Lyon</span></div>
-        <div className={styles.quickActions}><span><Mail size={15} /> Écrire</span><span><Phone size={15} /> Appeler</span></div>
+        <div className={styles.identityLines}><i /><i /></div>
+        <div className={styles.quickActions}><span><Mail size={18} /></span><span><Phone size={18} /></span></div>
       </div>
-      <p><i /> Qard ouverte dans le navigateur</p>
+      <p><i /><i /><i /></p>
     </div>
   );
 }

@@ -25,7 +25,7 @@
   background: radial-gradient(circle, var(--gradient-color-3), transparent 68%);
   opacity: 0.46;
   transform: translate3d(0, 0, 0);
-  animation: ambient-shift 18s ease-in-out 2 alternate;
+  animation: ambient-shift 12s ease-in-out infinite alternate;
 }
 
 .lightB {
@@ -37,7 +37,7 @@
   background: radial-gradient(circle, var(--gradient-color-2), transparent 70%);
   opacity: 0.38;
   transform: translate3d(0, 0, 0);
-  animation: ambient-shift-reverse 22s ease-in-out 2 alternate;
+  animation: ambient-shift-reverse 15s ease-in-out infinite alternate;
 }
 
 .noise {
@@ -60,7 +60,7 @@
   }
 }
 
-@media (max-width: 720px), (prefers-reduced-motion: reduce) {
+@media (prefers-reduced-motion: reduce) {
   .lightA,
   .lightB {
     animation: none;

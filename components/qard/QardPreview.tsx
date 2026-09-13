@@ -59,7 +59,7 @@ export function QardPreview({
   const cardRef = useRef<HTMLDivElement>(null);
   const tiltFrameRef = useRef<number | null>(null);
   const dragFlippedRef = useRef(false);
-  const gestureRef = useRef<{ x: number; time: number } | null>(null);
+  const gestureRef = useRef<{ x: number; y: number; time: number } | null>(null);
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [isFlipping, setIsFlipping] = useState(false);
@@ -145,14 +145,6 @@ export function QardPreview({
     setIsFlipping(true);
     setSide((current) => (current === 'front' ? 'back' : 'front'));
   };
-  const handleCardClick = (event: MouseEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLElement).closest('a, button')) return;
-    if (dragFlippedRef.current) {
-      dragFlippedRef.current = false;
-      return;
-    }
-    flip();
-  };
   const handleCardKey = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.target !== event.currentTarget) return;
     if (event.key === 'Enter' || event.key === ' ') {
@@ -161,20 +153,22 @@ export function QardPreview({
     }
   };
   const handleGestureStart = (event: PointerEvent<HTMLDivElement>) => {
-    gestureRef.current = { x: event.clientX, time: performance.now() };
+    gestureRef.current = { x: event.clientX, y: event.clientY, time: performance.now() };
   };
   const handleGestureEnd = (event: PointerEvent<HTMLDivElement>) => {
     const start = gestureRef.current;
     gestureRef.current = null;
     if (!start) return;
+    if ((event.target as HTMLElement).closest('a, button')) return;
     const distance = event.clientX - start.x;
+    const verticalDistance = event.clientY - start.y;
     const duration = Math.max(1, performance.now() - start.time);
     const velocity = (distance / duration) * 1000;
-    if (
-      Math.abs(distance) < 52 &&
-      !(Math.abs(distance) > 24 && Math.abs(velocity) > 480)
-    )
-      return;
+    const isClick = Math.abs(distance) < 8 && Math.abs(verticalDistance) < 8;
+    const isHorizontalDrag =
+      Math.abs(distance) >= 38 ||
+      (Math.abs(distance) > 22 && Math.abs(velocity) > 420);
+    if (!isClick && !isHorizontalDrag) return;
     dragFlippedRef.current = true;
     flip();
     window.setTimeout(() => {
@@ -291,7 +285,6 @@ export function QardPreview({
                 ? 'Carte Qard. Appuyez pour afficher les contacts.'
                 : 'Contacts Qard. Appuyez pour revenir au profil.'
             }
-            onClick={handleCardClick}
             onKeyDown={handleCardKey}
             onPointerMove={handlePointerMove}
             onPointerLeave={resetTilt}

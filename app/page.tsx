@@ -6,12 +6,16 @@ import {
   Link2,
   Mail,
   MousePointerClick,
+  Palette,
   PencilLine,
+  Phone,
+  QrCode,
 } from 'lucide-react';
 import { LandingJourney } from '@/components/qard/LandingJourney';
 import { LandingQardDemo } from '@/components/qard/LandingQardDemo';
 import { MarketingNav } from '@/components/qard/MarketingNav';
 import { QardLogo } from '@/components/qard/QardLogo';
+import AnimatedGradient from '@/components/ui/animated-gradient';
 import styles from './landing.module.css';
 
 const features = [
@@ -52,18 +56,18 @@ function CardSample() {
 
 function FeatureVisual({ type }: { type: string }) {
   if (type === 'links') {
-    return <div className={`${styles.featureVisual} ${styles.linkVisual}`}><span><Mail size={16} /> Email</span><span><AtSign size={16} /> Instagram</span><span><Link2 size={16} /> Portfolio</span></div>;
+    return <div className={`${styles.featureVisual} ${styles.linkVisual}`} aria-hidden="true"><div className={styles.linkHub}><Link2 size={28} /></div><span><Mail size={20} /></span><span><Phone size={20} /></span><span><AtSign size={20} /></span></div>;
   }
   if (type === 'update') {
-    return <div className={`${styles.featureVisual} ${styles.updateVisual}`}><div><PencilLine size={17} /><span><small>Poste</small><strong>Lead Product Designer</strong></span></div><p>Publié à l’instant</p></div>;
+    return <div className={`${styles.featureVisual} ${styles.updateVisual}`} aria-hidden="true"><div className={styles.editCard}><i /><i /><i /></div><PencilLine size={25} /><div className={styles.permanentQr}><QrCode size={58} /></div></div>;
   }
   if (type === 'style') {
-    return <div className={`${styles.featureVisual} ${styles.styleVisual}`}><i /><i /><i /><i /><span>4 styles parmi votre collection</span></div>;
+    return <div className={`${styles.featureVisual} ${styles.styleVisual}`} aria-hidden="true"><Palette size={24} /><i /><i /><i /></div>;
   }
   return (
-    <div className={`${styles.featureVisual} ${styles.statsVisual}`}>
-      <div><Eye size={16} /><span><strong>1 284</strong><small>vues</small></span></div>
-      <div><MousePointerClick size={16} /><span><strong>327</strong><small>clics</small></span></div>
+    <div className={`${styles.featureVisual} ${styles.statsVisual}`} aria-hidden="true">
+      <div><Eye size={20} /><strong>1 284</strong></div>
+      <div><MousePointerClick size={20} /><strong>327</strong></div>
       <span><i /><i /><i /><i /><i /><i /><i /></span>
     </div>
   );
@@ -72,6 +76,11 @@ function FeatureVisual({ type }: { type: string }) {
 export default function Home() {
   return (
     <main className={`qard-site ${styles.site}`}>
+      <AnimatedGradient
+        className={styles.landingBackground}
+        config={{ color1: '#fffaf2', color2: '#f4d8c0', color3: '#efa173' }}
+        noise={{ opacity: 0.025, scale: 1.3 }}
+      />
       <MarketingNav />
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
