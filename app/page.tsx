@@ -7,27 +7,18 @@ import {
   Mail,
   MousePointerClick,
   PencilLine,
-  ScanLine,
-  Share2,
-  Smartphone,
-  UserRound,
 } from 'lucide-react';
+import { LandingJourney } from '@/components/qard/LandingJourney';
 import { LandingQardDemo } from '@/components/qard/LandingQardDemo';
 import { MarketingNav } from '@/components/qard/MarketingNav';
 import { QardLogo } from '@/components/qard/QardLogo';
 import styles from './landing.module.css';
 
-const steps = [
-  { number: '01', title: 'Créez votre identité', text: 'Ajoutez votre nom, votre photo et les moyens utiles pour vous joindre.' },
-  { number: '02', title: 'Partagez votre Qard', text: 'Envoyez votre lien ou présentez votre QR code permanent.' },
-  { number: '03', title: 'Vos contacts sont accessibles', text: 'Après un scan ou un clic, votre Qard s’ouvre immédiatement, sans application.' },
-];
-
 const features = [
-  { number: '01', title: 'Un seul lien', text: 'Email, téléphone, site et réseaux : toutes vos coordonnées restent accessibles au même endroit.', visual: 'links' },
-  { number: '02', title: 'Facile à modifier', text: 'Mettez votre profil à jour en quelques secondes. Votre lien et votre QR code restent identiques.', visual: 'update' },
-  { number: '03', title: 'À votre image', text: 'Choisissez une apparence cohérente avec votre personnalité ou votre activité.', visual: 'style' },
-  { number: '04', title: 'Des interactions mesurables', text: 'Suivez les vues, les clics et les moyens de contact les plus utilisés.', visual: 'stats' },
+  { title: 'Un lien pour tout', text: 'Vos contacts, sans application.', visual: 'links' },
+  { title: 'Toujours modifiable', text: 'Le lien et le QR restent identiques.', visual: 'update' },
+  { title: 'À votre image', text: 'Une identité qui vous ressemble.', visual: 'style' },
+  { title: 'Mesurez l’intérêt', text: 'Vues et clics, en un regard.', visual: 'stats' },
 ];
 
 function CardSample() {
@@ -45,7 +36,10 @@ function CardSample() {
           priority
         />
         <div className={styles.screenOverlay}>
-          <div className={`${styles.qardDemo} landing-demo-card`}><LandingQardDemo /></div>
+          <div className={styles.phoneChrome} aria-hidden="true"><i /><span>myqard.vercel.app</span><i /></div>
+          <div className={styles.cardViewport}>
+            <div className={`${styles.qardDemo} landing-demo-card`}><LandingQardDemo /></div>
+          </div>
         </div>
       </div>
       <div className={styles.qrNote}>
@@ -53,34 +47,6 @@ function CardSample() {
         <span><strong>Scannez</strong><small>La carte s’ouvre dans le navigateur</small></span>
       </div>
     </figure>
-  );
-}
-
-function StepVisual({ number }: { number: string }) {
-  if (number === '01') {
-    return (
-      <div className={`${styles.stepVisual} ${styles.identityVisual}`}>
-        <div className={styles.miniAvatar}><UserRound size={22} /></div>
-        <span><small>Nom</small><strong>Camille Morel</strong></span>
-        <span><small>Contact</small><strong>camille@exemple.fr</strong></span>
-      </div>
-    );
-  }
-  if (number === '02') {
-    return (
-      <div className={`${styles.stepVisual} ${styles.shareVisual}`}>
-        <Image src="/ikyane-qr.png" width={76} height={76} alt="" sizes="76px" />
-        <span><small>Lien permanent</small><strong>myqard.vercel.app/u/camille</strong></span>
-        <Share2 size={18} />
-      </div>
-    );
-  }
-  return (
-    <div className={`${styles.stepVisual} ${styles.accessVisual}`}>
-      <ScanLine size={25} />
-      <div><span><Mail size={15} /> Email</span><span><Smartphone size={15} /> Appeler</span></div>
-      <p>Ouvert</p>
-    </div>
   );
 }
 
@@ -125,16 +91,14 @@ export default function Home() {
       </section>
 
       <section className={styles.process} id="fonctionnement">
-        <header className={styles.sectionHeader}><span>Comment ça fonctionne</span><h2>Trois étapes, du profil au contact.</h2></header>
-        <div className={styles.steps}>
-          {steps.map(({ number, title, text }) => <article key={number}><span className={styles.stepNumber}>{number}</span><div className={styles.stepCopy}><h3>{title}</h3><p>{text}</p></div><StepVisual number={number} /></article>)}
-        </div>
+        <header className={styles.sectionHeader}><span>Comment ça fonctionne</span><h2>Créez. Partagez. Restez joignable.</h2></header>
+        <LandingJourney />
       </section>
 
       <section className={styles.features}>
         <header className={styles.sectionHeader}><span>Au quotidien</span><h2>Une carte utile après le premier partage.</h2></header>
         <div className={styles.featureGrid}>
-          {features.map(({ number, title, text, visual }) => <article key={title}><span className={styles.featureNumber}>{number}</span><div className={styles.featureCopy}><h3>{title}</h3><p>{text}</p></div><FeatureVisual type={visual} /></article>)}
+          {features.map(({ title, text, visual }) => <article key={title}><div className={styles.featureCopy}><h3>{title}</h3><p>{text}</p></div><FeatureVisual type={visual} /></article>)}
         </div>
       </section>
 
