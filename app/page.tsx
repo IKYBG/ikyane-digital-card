@@ -5,14 +5,19 @@ import {
   AtSign,
   BarChart3,
   Check,
-  ContactRound,
+  Eye,
   Link2,
   Mail,
+  MousePointerClick,
   Palette,
+  PencilLine,
   RefreshCw,
+  ScanLine,
   Share2,
   Smartphone,
+  UserRound,
 } from 'lucide-react';
+import { LandingQardDemo } from '@/components/qard/LandingQardDemo';
 import { MarketingNav } from '@/components/qard/MarketingNav';
 import { QardLogo } from '@/components/qard/QardLogo';
 import styles from './landing.module.css';
@@ -20,21 +25,18 @@ import styles from './landing.module.css';
 const steps = [
   {
     number: '01',
-    icon: ContactRound,
     title: 'Créez votre identité',
     text: 'Un nom, une photo et les moyens utiles pour vous joindre.',
   },
   {
     number: '02',
-    icon: Share2,
     title: 'Partagez votre Qard',
     text: 'Envoyez votre lien ou présentez votre QR code permanent.',
   },
   {
     number: '03',
-    icon: Smartphone,
-    title: 'Le contact est enregistré',
-    text: 'Votre interlocuteur choisit un canal et vous retrouve ensuite.',
+    title: 'Ils accèdent à vos contacts',
+    text: 'Après un scan ou un clic, votre Qard s’ouvre et vos coordonnées sont prêtes à être utilisées.',
   },
 ];
 
@@ -47,39 +49,42 @@ const features = [
   },
   {
     icon: RefreshCw,
-    title: 'Toujours à jour',
-    text: 'Modifiez votre profil sans réimprimer votre QR code.',
+    title: 'Très facile à modifier',
+    text: 'Mettez votre profil à jour en quelques secondes. Le lien et le QR ne changent pas.',
     visual: 'update',
   },
   {
     icon: Palette,
-    title: 'Vraiment à vous',
+    title: 'Personnalisable',
     text: 'Une apparence cohérente avec votre personnalité ou votre activité.',
     visual: 'style',
   },
   {
     icon: BarChart3,
-    title: 'L’essentiel en chiffres',
-    text: 'Comprenez les vues et les contacts, sans tableau compliqué.',
+    title: 'Suivez les interactions',
+    text: 'Suivez les vues, les clics et les moyens de contact les plus utilisés.',
     visual: 'stats',
   },
 ];
 
 function CardSample() {
   return (
-    <div className={styles.productStage} aria-label="Exemple d’une Qard">
+    <div className={styles.productStage} aria-label="Démonstration interactive d’une Qard">
       <span className={styles.liveBadge}>
-        <Check size={14} /> Une vraie carte de contact
+        <Check size={14} /> Aperçu interactif
       </span>
-      <Image
-        className={styles.phoneHeroImage}
-        src="/qard-phone-contact.png"
-        width={1367}
-        height={1151}
-        alt="Une Qard affichée sur un téléphone tenu en main"
-        sizes="(max-width: 680px) 110vw, (max-width: 900px) 620px, 590px"
-        priority
-      />
+      <div className={styles.phoneShell}>
+        <div className={styles.phoneHardware} aria-hidden="true">
+          <i /><span>9:41</span><b />
+        </div>
+        <div className={styles.phoneScreen}>
+          <div className={`${styles.qardDemo} landing-demo-card`}>
+            <LandingQardDemo />
+          </div>
+        </div>
+        <span className={styles.phoneHome} aria-hidden="true" />
+      </div>
+      <p className={styles.demoHint}>Touchez ou glissez la carte pour voir les contacts.</p>
       <div className={styles.qrTicket}>
         <Image
           src="/ikyane-qr.png"
@@ -90,9 +95,37 @@ function CardSample() {
         />
         <span>
           <strong>Un scan suffit</strong>
-          <small>Aucune application</small>
+          <small>La Qard s’ouvre aussitôt</small>
         </span>
       </div>
+    </div>
+  );
+}
+
+function StepVisual({ number }: { number: string }) {
+  if (number === '01') {
+    return (
+      <div className={`${styles.stepVisual} ${styles.identityVisual}`}>
+        <div className={styles.miniAvatar}><UserRound size={22} /></div>
+        <span><small>Nom</small><strong>Camille Morel</strong></span>
+        <span><small>Contact</small><strong>camille@exemple.fr</strong></span>
+      </div>
+    );
+  }
+  if (number === '02') {
+    return (
+      <div className={`${styles.stepVisual} ${styles.shareVisual}`}>
+        <Image src="/ikyane-qr.png" width={76} height={76} alt="" sizes="76px" />
+        <span><small>Votre lien permanent</small><strong>myqard.vercel.app/u/camille</strong></span>
+        <Share2 size={18} />
+      </div>
+    );
+  }
+  return (
+    <div className={`${styles.stepVisual} ${styles.accessVisual}`}>
+      <ScanLine size={26} />
+      <div><span><Mail size={15} /> Email</span><span><Smartphone size={15} /> Appeler</span></div>
+      <Check size={17} />
     </div>
   );
 }
@@ -110,9 +143,8 @@ function FeatureVisual({ type }: { type: string }) {
   if (type === 'update') {
     return (
       <div className={`${styles.featureVisual} ${styles.updateVisual}`}>
-        <span>Q</span>
-        <i />
-        <strong>Publié</strong>
+        <div><PencilLine size={17} /><span><small>Poste</small><strong>Lead Product Designer</strong></span></div>
+        <p><Check size={15} /> Modification publiée</p>
       </div>
     );
   }
@@ -126,7 +158,8 @@ function FeatureVisual({ type }: { type: string }) {
   }
   return (
     <div className={`${styles.featureVisual} ${styles.statsVisual}`}>
-      <strong>184</strong><small>interactions</small>
+      <div><Eye size={15} /><span><strong>1 284</strong><small>vues</small></span></div>
+      <div><MousePointerClick size={15} /><span><strong>327</strong><small>clics</small></span></div>
       <span><i /><i /><i /><i /><i /><i /></span>
     </div>
   );
@@ -181,9 +214,9 @@ export default function Home() {
           <h2>De vous à leur téléphone.</h2>
         </header>
         <div className={styles.steps}>
-          {steps.map(({ number, icon: Icon, title, text }) => (
+          {steps.map(({ number, title, text }) => (
             <article key={number}>
-              <div className={styles.stepIcon}><Icon size={23} /></div>
+              <StepVisual number={number} />
               <span>{number}</span>
               <h3>{title}</h3>
               <p>{text}</p>
@@ -194,8 +227,8 @@ export default function Home() {
 
       <section className={styles.features}>
         <header className={styles.sectionHeader}>
-          <span>Conçue pour rester simple</span>
-          <h2>Tout ce qu’il faut. Rien de plus.</h2>
+          <span>Nos avantages</span>
+          <h2>Utile dès le premier partage.</h2>
         </header>
         <div className={styles.featureGrid}>
           {features.map(({ icon: Icon, title, text, visual }) => (

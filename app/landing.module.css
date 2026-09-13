@@ -135,31 +135,112 @@
 
 .productStage {
   position: relative;
-  width: min(100%, 430px);
+  width: min(100%, 460px);
   margin-left: auto;
-  padding: 26px 0 52px;
+  padding: 34px 24px 64px;
 }
 
 .productStage::before {
   content: '';
   position: absolute;
-  inset: 12% -12% 0;
+  inset: 10% -5% 7%;
   border: 1px solid rgb(134 190 255 / 0.1);
   border-radius: 50%;
   background: radial-gradient(circle, rgb(45 108 178 / 0.12), transparent 62%);
 }
 
-.phoneHeroImage {
+.phoneShell {
   position: relative;
   z-index: 2;
-  display: block;
-  width: 146%;
-  max-width: none;
-  height: auto;
-  margin: -8px 0 -20px -24%;
-  filter: saturate(0.88) contrast(1.03);
-  -webkit-mask-image: radial-gradient(ellipse 66% 78% at 51% 50%, #000 58%, transparent 94%);
-  mask-image: radial-gradient(ellipse 66% 78% at 51% 50%, #000 58%, transparent 94%);
+  width: min(100%, 394px);
+  margin-inline: auto;
+  padding: 13px 10px 18px;
+  border: 1px solid rgb(181 215 255 / 0.26);
+  border-radius: 52px;
+  background: linear-gradient(145deg, #1c2938, #03070c 34%, #101b27 76%, #24384d);
+  box-shadow:
+    0 48px 90px rgb(0 0 0 / 0.5),
+    0 0 0 3px #020509,
+    inset 0 1px rgb(255 255 255 / 0.2);
+}
+
+.phoneHardware {
+  position: absolute;
+  z-index: 6;
+  top: 18px;
+  left: 28px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: rgb(241 247 255 / 0.82);
+  font-size: 0.65rem;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.phoneHardware i {
+  position: absolute;
+  left: 50%;
+  width: 94px;
+  height: 24px;
+  border-radius: 999px;
+  background: #010307;
+  transform: translateX(-50%);
+}
+
+.phoneHardware b {
+  width: 19px;
+  height: 8px;
+  border-top: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  opacity: 0.75;
+}
+
+.phoneScreen {
+  position: relative;
+  height: 676px;
+  padding: 18px 8px 8px;
+  overflow: hidden;
+  border-radius: 42px;
+  background:
+    radial-gradient(circle at 50% 18%, rgb(52 126 202 / 0.16), transparent 32%),
+    #030811;
+}
+
+.qardDemo {
+  position: relative;
+  width: 100%;
+  padding-top: 9px;
+}
+
+.qardDemo :global(.swipe-orbit) { display: none; }
+.qardDemo :global(.qard-premium) { width: 100%; }
+.qardDemo :global(.qard-premium.compact .card-motion-shell) {
+  height: 630px;
+  min-height: 0;
+}
+
+.phoneHome {
+  position: absolute;
+  z-index: 7;
+  right: 50%;
+  bottom: 9px;
+  width: 88px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgb(237 246 255 / 0.48);
+  transform: translateX(50%);
+}
+
+.demoHint {
+  position: relative;
+  z-index: 2;
+  margin: 17px 0 0;
+  color: #7f93aa;
+  font-size: 0.73rem;
+  line-height: 1.5;
+  text-align: center;
 }
 
 .sampleCard {
@@ -339,10 +420,69 @@
 .sectionHeader h2 { max-width: 620px; margin: 0; font-size: clamp(2.3rem, 4.7vw, 4.4rem); letter-spacing: -0.055em; line-height: 1; text-align: right; }
 
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid var(--line); }
-.steps article { min-width: 0; padding: 30px 32px 0 0; border-right: 1px solid var(--line); }
+.steps article { min-width: 0; padding: 24px 32px 0 0; border-right: 1px solid var(--line); }
 .steps article + article { padding-left: 32px; }
 .steps article:last-child { border-right: 0; }
 .stepIcon { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 48px; border: 1px solid rgb(151 199 250 / 0.18); border-radius: 15px; color: #a8d2ff; background: #0d1825; }
+.stepVisual {
+  height: 176px;
+  margin-bottom: 28px;
+  overflow: hidden;
+  border: 1px solid rgb(151 199 250 / 0.13);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #0d1926, #08111b);
+  box-shadow: inset 0 1px rgb(255 255 255 / 0.035);
+}
+
+.identityVisual {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 10px 12px;
+  align-content: center;
+  padding: 22px;
+}
+
+.miniAvatar {
+  display: grid;
+  grid-row: span 2;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  color: #dceeff;
+  background: linear-gradient(145deg, #315b88, #162b42);
+}
+
+.identityVisual > span { display: grid; gap: 3px; min-width: 0; }
+.stepVisual small { color: #61778e; font-size: 0.62rem; }
+.identityVisual strong { overflow: hidden; color: #c6d6e7; font-size: 0.73rem; font-weight: 620; text-overflow: ellipsis; white-space: nowrap; }
+
+.shareVisual {
+  position: relative;
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 12px;
+  padding: 22px;
+}
+
+.shareVisual img { border-radius: 13px; }
+.shareVisual > span { display: grid; gap: 6px; min-width: 0; }
+.shareVisual strong { overflow: hidden; color: #c8d8e9; font-size: 0.67rem; font-weight: 620; text-overflow: ellipsis; white-space: nowrap; }
+.shareVisual > svg { padding: 8px; width: 34px; height: 34px; border-radius: 11px; color: #a9d4ff; background: #142538; }
+
+.accessVisual {
+  display: grid;
+  grid-template-columns: 38px 1fr 30px;
+  align-items: center;
+  gap: 10px;
+  padding: 22px;
+  color: #a9d3ff;
+}
+
+.accessVisual > div { display: grid; gap: 8px; }
+.accessVisual span { display: flex; align-items: center; gap: 8px; padding: 10px; border: 1px solid rgb(157 202 248 / 0.12); border-radius: 11px; color: #c2d2e3; background: rgb(255 255 255 / 0.025); font-size: 0.69rem; }
+.accessVisual > svg:last-child { padding: 6px; width: 28px; height: 28px; border-radius: 50%; color: #06120d; background: #6fdda9; }
 .steps article > span { color: #60758c; font-size: 0.73rem; letter-spacing: 0.12em; }
 .steps h3 { margin: 13px 0 10px; font-size: 1.12rem; }
 .steps p { max-width: 280px; margin: 0; color: #8598ad; line-height: 1.6; font-size: 0.9rem; }
@@ -359,11 +499,12 @@
 .linkVisual span { display: flex; align-items: center; gap: 10px; padding: 13px 14px; border: 1px solid rgb(160 202 245 / 0.12); border-radius: 13px; color: #b6c8dc; background: #0e1a28; font-size: 0.8rem; }
 .linkVisual span svg:last-child { margin-left: auto; color: #66d7a4; }
 
-.updateVisual { position: relative; display: grid; place-items: center; }
-.updateVisual::before { content: ''; position: absolute; width: 150px; height: 150px; border: 1px solid rgb(133 190 248 / 0.13); border-radius: 50%; box-shadow: 0 0 0 36px rgb(83 143 204 / 0.035); }
-.updateVisual > span { position: relative; z-index: 1; display: grid; place-items: center; width: 72px; height: 72px; border-radius: 22px; color: #07111c; background: #baddff; font-size: 1.5rem; font-weight: 800; }
-.updateVisual > i { position: absolute; width: 8px; height: 8px; margin: 88px 0 0 84px; border-radius: 50%; background: #62d8a3; box-shadow: 0 0 0 5px rgb(98 216 163 / 0.08); }
-.updateVisual strong { position: absolute; bottom: 23px; color: #7e93aa; font-size: 0.72rem; font-weight: 600; }
+.updateVisual { display: grid; place-content: center; gap: 14px; padding: 28px 13%; }
+.updateVisual > div { display: flex; align-items: center; gap: 12px; min-width: 0; padding: 15px; border: 1px solid rgb(156 203 250 / 0.14); border-radius: 14px; color: #9dccff; background: #0e1a28; }
+.updateVisual > div span { display: grid; gap: 4px; min-width: 0; }
+.updateVisual small { color: #647b92; font-size: 0.64rem; }
+.updateVisual strong { overflow: hidden; color: #d1dfed; font-size: 0.75rem; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.updateVisual p { display: flex; align-items: center; gap: 7px; margin: 0; padding-left: 4px; color: #72dca9; font-size: 0.69rem; }
 
 .styleVisual { display: flex; align-items: center; justify-content: center; gap: 11px; }
 .styleVisual > i { width: 46px; height: 78px; border: 1px solid rgb(255 255 255 / 0.12); border-radius: 14px; background: linear-gradient(145deg, #152b43, #07111d); }
@@ -373,10 +514,12 @@
 .styleVisual b { width: 7px; height: 7px; border-radius: 50%; background: #31465e; }
 .styleVisual b:nth-child(2) { background: #9dcbf8; }
 
-.statsVisual { display: grid; align-content: center; padding: 0 15%; }
-.statsVisual > strong { font-size: 2.2rem; letter-spacing: -0.05em; }
-.statsVisual > small { color: #72869d; }
-.statsVisual > span { display: flex; align-items: end; gap: 8px; height: 72px; margin-top: 22px; }
+.statsVisual { display: grid; grid-template-columns: 1fr 1fr; align-content: center; gap: 12px; padding: 26px 13%; }
+.statsVisual > div { display: flex; align-items: center; gap: 10px; color: #9dccff; }
+.statsVisual > div span { display: grid; }
+.statsVisual > div strong { color: #e2edf8; font-size: 1.2rem; letter-spacing: -0.04em; }
+.statsVisual > div small { color: #6f849a; font-size: 0.62rem; }
+.statsVisual > span { grid-column: 1 / -1; display: flex; align-items: end; gap: 8px; height: 72px; margin-top: 10px; }
 .statsVisual i { flex: 1; height: 42%; border-radius: 5px 5px 2px 2px; background: #315d8a; }
 .statsVisual i:nth-child(2) { height: 68%; }
 .statsVisual i:nth-child(3) { height: 50%; }
@@ -415,20 +558,21 @@
   .primary { width: 100%; }
   .secondary { min-height: 42px; }
   .proof { display: grid; }
-  .productStage { width: calc(100% - 12px); padding-bottom: 45px; }
-  .phoneHeroImage {
-    width: 132%;
-    margin: -2px 0 -8px -16%;
-    -webkit-mask-image: radial-gradient(ellipse 68% 78% at 51% 50%, #000 58%, transparent 94%);
-    mask-image: radial-gradient(ellipse 68% 78% at 51% 50%, #000 58%, transparent 94%);
-  }
+  .productStage { width: 100%; padding: 28px 0 64px; }
+  .phoneShell { width: calc(100% - 20px); padding: 11px 8px 17px; border-radius: 45px; }
+  .phoneScreen { height: 626px; border-radius: 37px; }
+  .qardDemo :global(.qard-premium.compact .card-motion-shell) { height: 580px; }
+  .phoneHardware { top: 16px; left: 24px; right: 24px; }
+  .phoneHardware i { width: 82px; height: 22px; }
   .sampleCard { min-height: 490px; padding: 22px; border-radius: 28px; }
   .sampleIdentity { margin-top: 82px; }
   .sampleAvatar { flex-basis: 65px; height: 65px; border-radius: 20px; }
   .sampleIdentity h2 { font-size: 1.28rem; }
   .sampleContacts span { font-size: 0.65rem; }
   .liveBadge { left: -7px; }
-  .qrTicket { right: -7px; }
+  .qrTicket { right: 0; bottom: 0; }
+  .qrTicket img { width: 62px; height: 62px; }
+  .qrTicket span { padding-right: 4px; }
   .manifesto { padding: 98px 0 110px; }
   .manifesto p { margin-top: 30px; }
   .process,
@@ -437,6 +581,7 @@
   .steps article,
   .steps article + article { padding: 25px 0 28px; border-right: 0; border-bottom: 1px solid var(--line); }
   .stepIcon { margin-bottom: 25px; }
+  .stepVisual { margin-bottom: 24px; }
   .featureGrid { grid-template-columns: 1fr; }
   .featureGrid > article { min-height: 350px; }
   .featureVisual { height: 205px; }
