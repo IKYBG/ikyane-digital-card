@@ -31,17 +31,17 @@ const steps = [
 function ShareScene() {
   return (
     <svg className={styles.scene} viewBox="0 0 340 190" fill="none" aria-hidden="true">
-      <g className={styles.sceneSoft}>
-        <circle cx="57" cy="48" r="20" /><path d="M25 126c4-40 17-59 35-59s30 19 34 59" />
-        <circle cx="283" cy="48" r="20" /><path d="M247 126c5-40 18-59 36-59s31 19 34 59" />
-      </g>
+      <circle className={styles.personSkin} cx="57" cy="48" r="20" /><path className={styles.personHair} d="M38 46c1-19 12-27 24-25 10 2 17 10 17 24-9-3-16-8-21-14-4 8-11 13-20 15z" />
+      <path className={styles.personBody} d="M25 126c4-40 17-59 35-59s30 19 34 59z" />
+      <circle className={styles.personSkin} cx="283" cy="48" r="20" /><path className={styles.personHair} d="M263 49c-1-20 8-29 21-29 14 0 23 11 20 30-8-4-14-11-17-19-6 8-14 14-24 18z" />
+      <path className={styles.personBodyAlt} d="M247 126c5-40 18-59 36-59s31 19 34 59z" />
       <g className={styles.sceneStrong}>
         <path d="M75 91c26 2 38 16 60 21" /><path d="M264 88c-22 3-31 14-51 23" />
-        <rect x="127" y="72" width="39" height="70" rx="7" /><path d="M139 82h15M138 131h16" />
-        <rect x="174" y="84" width="48" height="48" rx="6" />
-        <path d="M183 93h10v10h-10zM203 93h10v10h-10zM183 113h10v10h-10zM203 113h4v4h6v6h-10z" />
+        <rect className={styles.phoneBody} x="127" y="72" width="39" height="70" rx="7" /><path d="M139 82h15M138 131h16" />
+        <rect className={styles.qrPaper} x="174" y="84" width="48" height="48" rx="6" />
         <path d="M168 96h-8M168 120h-8" />
       </g>
+      <image href="/ikyane-qr.png" x="179" y="89" width="38" height="38" />
       <path className={styles.scanBeam} d="M166 83l8 5v41l-8 5z" />
     </svg>
   );
@@ -52,10 +52,10 @@ function ContactScene() {
     <svg className={styles.scene} viewBox="0 0 340 190" fill="none" aria-hidden="true">
       <path className={styles.hand} d="M83 181c8-28 22-43 41-48l18-5 3-79c1-17 24-18 26-2l3 50 11-31c5-14 25-9 21 6l-8 32 11-24c7-13 25-4 19 10l-22 54c-8 20-26 34-47 37H83z" />
       <g className={styles.sceneStrong}>
-        <rect x="118" y="16" width="118" height="158" rx="18" />
+        <rect className={styles.phoneBody} x="118" y="16" width="118" height="158" rx="18" />
         <path d="M154 27h46" />
-        <rect x="132" y="44" width="90" height="108" rx="10" />
-        <circle cx="177" cy="76" r="19" />
+        <rect className={styles.screenCard} x="132" y="44" width="90" height="108" rx="10" />
+        <circle className={styles.avatarFill} cx="177" cy="76" r="19" />
         <path d="M151 107h52M158 119h38" />
         <rect x="146" y="133" width="26" height="9" rx="4.5" /><rect x="181" y="133" width="26" height="9" rx="4.5" />
       </g>

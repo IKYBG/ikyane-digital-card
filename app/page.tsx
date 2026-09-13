@@ -1,12 +1,14 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { CSSProperties } from 'react';
 import {
   Eye,
   Link2,
   MousePointerClick,
   Palette,
   PencilLine,
-  QrCode,
+  Plus,
+  Zap,
 } from 'lucide-react';
 import { LandingJourney } from '@/components/qard/LandingJourney';
 import { LandingQardDemo } from '@/components/qard/LandingQardDemo';
@@ -54,18 +56,18 @@ function CardSample() {
 
 function FeatureVisual({ type }: { type: string }) {
   if (type === 'links') {
-    return <div className={`${styles.featureVisual} ${styles.linkVisual}`} aria-hidden="true"><div className={styles.linkHub}><Link2 size={28} /></div>{['instagram', 'snapchat', 'discord', 'tiktok', 'github', 'linkedin'].map((platform) => <span key={platform}><SocialIcon platform={platform} size={21} /></span>)}</div>;
+    return <div className={`${styles.featureVisual} ${styles.linkVisual}`} aria-hidden="true"><div className={styles.linkHub}><Link2 size={28} /></div><div className={styles.networkOrbit}>{['instagram', 'snapchat', 'discord', 'tiktok', 'github', 'linkedin'].map((platform, index) => <span key={platform} style={{ '--network-index': index } as CSSProperties}><SocialIcon platform={platform} size={21} /></span>)}</div></div>;
   }
   if (type === 'update') {
-    return <div className={`${styles.featureVisual} ${styles.updateVisual}`} aria-hidden="true"><div className={styles.editCard}><i /><i /><i /></div><PencilLine size={25} /><div className={styles.permanentQr}><QrCode size={58} /></div></div>;
+    return <div className={`${styles.featureVisual} ${styles.updateVisual}`} aria-hidden="true"><div className={styles.cardTrail}><i /><i /><i /></div><div className={styles.liveEditCard}><span /><i /><i /><i /></div><div className={styles.quickTools}><span><Plus size={20} /></span><span><PencilLine size={20} /></span><span><Zap size={20} /></span></div></div>;
   }
   if (type === 'style') {
     return <div className={`${styles.featureVisual} ${styles.styleVisual}`} aria-hidden="true"><Palette size={24} /><i /><i /><i /></div>;
   }
   return (
     <div className={`${styles.featureVisual} ${styles.statsVisual}`} aria-hidden="true">
-      <div><Eye size={20} /><strong>1 284</strong></div>
-      <div><MousePointerClick size={20} /><strong>327</strong></div>
+      <div><Eye size={20} /><strong><span>1 284</span><span>1 319</span></strong></div>
+      <div><MousePointerClick size={20} /><strong><span>327</span><span>341</span></strong></div>
       <span><i /><i /><i /><i /><i /><i /><i /></span>
     </div>
   );
@@ -91,14 +93,8 @@ export default function Home() {
         <CardSample />
       </section>
 
-      <section className={styles.manifesto}>
-        <span>Une présence facile à retrouver</span>
-        <h2>Ne perdez plus un contact à cause d’une information dépassée.</h2>
-        <p>Modifiez votre Qard une fois : chaque personne retrouve immédiatement vos coordonnées actuelles, sans nouvelle carte à imprimer ni message à renvoyer.</p>
-      </section>
-
       <section className={styles.process} id="fonctionnement">
-        <header className={styles.sectionHeader}><span>Comment ça fonctionne</span><h2>De votre profil au téléphone de vos contacts.</h2></header>
+        <header className={styles.sectionHeader}><span>Comment ça fonctionne</span><h2>Créez votre Qard. Partagez-la en un geste.</h2></header>
         <LandingJourney />
       </section>
 

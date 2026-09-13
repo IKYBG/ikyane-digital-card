@@ -120,6 +120,14 @@
 .sceneStrong { stroke: #7f4932; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .scanBeam { fill: rgb(231 139 88 / 0.26); }
 .hand { fill: #edb48e; stroke: #9b5b3c; stroke-width: 2; stroke-linejoin: round; }
+.personSkin { fill: #efbd9b; stroke: #925339; stroke-width: 2; }
+.personHair { fill: #68402f; }
+.personBody { fill: #e89060; stroke: #925339; stroke-width: 2; }
+.personBodyAlt { fill: #f7d4bb; stroke: #925339; stroke-width: 2; }
+.phoneBody { fill: #5a382a; }
+.qrPaper,
+.screenCard { fill: #fffaf4; }
+.avatarFill { fill: #e9a579; }
 .url { display: grid; min-width: 0; gap: 9px; padding: 18px 0; border-top: 1px solid #294159; border-bottom: 1px solid #294159; }
 .url i { display: block; width: 92%; height: 8px; border-radius: 5px; background: #e3c2ac; }
 .url i:last-child { width: 54%; background: #d9956d; }
