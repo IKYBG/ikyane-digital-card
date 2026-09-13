@@ -1,7 +1,6 @@
 'use client';
 
-import Image from 'next/image';
-import { AtSign, Mail, Phone, ScanLine, UserRound } from 'lucide-react';
+import { AtSign, Mail, Phone, UserRound } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import styles from './LandingJourney.module.css';
 
@@ -29,6 +28,41 @@ const steps = [
   },
 ] as const;
 
+function ShareScene() {
+  return (
+    <svg className={styles.scene} viewBox="0 0 340 190" fill="none" aria-hidden="true">
+      <g className={styles.sceneSoft}>
+        <circle cx="57" cy="48" r="20" /><path d="M25 126c4-40 17-59 35-59s30 19 34 59" />
+        <circle cx="283" cy="48" r="20" /><path d="M247 126c5-40 18-59 36-59s31 19 34 59" />
+      </g>
+      <g className={styles.sceneStrong}>
+        <path d="M75 91c26 2 38 16 60 21" /><path d="M264 88c-22 3-31 14-51 23" />
+        <rect x="127" y="72" width="39" height="70" rx="7" /><path d="M139 82h15M138 131h16" />
+        <rect x="174" y="84" width="48" height="48" rx="6" />
+        <path d="M183 93h10v10h-10zM203 93h10v10h-10zM183 113h10v10h-10zM203 113h4v4h6v6h-10z" />
+        <path d="M168 96h-8M168 120h-8" />
+      </g>
+      <path className={styles.scanBeam} d="M166 83l8 5v41l-8 5z" />
+    </svg>
+  );
+}
+
+function ContactScene() {
+  return (
+    <svg className={styles.scene} viewBox="0 0 340 190" fill="none" aria-hidden="true">
+      <path className={styles.hand} d="M83 181c8-28 22-43 41-48l18-5 3-79c1-17 24-18 26-2l3 50 11-31c5-14 25-9 21 6l-8 32 11-24c7-13 25-4 19 10l-22 54c-8 20-26 34-47 37H83z" />
+      <g className={styles.sceneStrong}>
+        <rect x="118" y="16" width="118" height="158" rx="18" />
+        <path d="M154 27h46" />
+        <rect x="132" y="44" width="90" height="108" rx="10" />
+        <circle cx="177" cy="76" r="19" />
+        <path d="M151 107h52M158 119h38" />
+        <rect x="146" y="133" width="26" height="9" rx="4.5" /><rect x="181" y="133" width="26" height="9" rx="4.5" />
+      </g>
+    </svg>
+  );
+}
+
 function StepArtwork({ type }: { type: (typeof steps)[number]['visual'] }) {
   if (type === 'identity') {
     return (
@@ -44,21 +78,14 @@ function StepArtwork({ type }: { type: (typeof steps)[number]['visual'] }) {
   if (type === 'share') {
     return (
       <div className={`${styles.artwork} ${styles.share}`} aria-hidden="true">
-        <div className={styles.url}><i /><i /></div>
-        <div className={styles.qrFrame}><Image src="/ikyane-qr.png" width={104} height={104} alt="" sizes="104px" /></div>
-        <div className={styles.scanLine}><ScanLine size={22} /></div>
+        <ShareScene />
       </div>
     );
   }
 
   return (
     <div className={`${styles.artwork} ${styles.contact}`} aria-hidden="true">
-      <div className={styles.miniCard}>
-        <div className={styles.miniPortrait} />
-        <div className={styles.identityLines}><i /><i /></div>
-        <div className={styles.quickActions}><span><Mail size={18} /></span><span><Phone size={18} /></span></div>
-      </div>
-      <p><i /><i /><i /></p>
+      <ContactScene />
     </div>
   );
 }

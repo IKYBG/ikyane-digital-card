@@ -1,26 +1,24 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import {
-  AtSign,
   Eye,
   Link2,
-  Mail,
   MousePointerClick,
   Palette,
   PencilLine,
-  Phone,
   QrCode,
 } from 'lucide-react';
 import { LandingJourney } from '@/components/qard/LandingJourney';
 import { LandingQardDemo } from '@/components/qard/LandingQardDemo';
 import { MarketingNav } from '@/components/qard/MarketingNav';
 import { QardLogo } from '@/components/qard/QardLogo';
+import { SocialIcon } from '@/components/qard/SocialIcon';
 import AnimatedGradient from '@/components/ui/animated-gradient';
 import styles from './landing.module.css';
 
 const features = [
   { title: 'Un lien pour tout', text: 'Vos contacts, sans application.', visual: 'links' },
-  { title: 'Toujours modifiable', text: 'Le lien et le QR restent identiques.', visual: 'update' },
+  { title: 'Modifiez en quelques secondes', text: 'Le lien et le QR restent identiques.', visual: 'update' },
   { title: 'À votre image', text: 'Une identité qui vous ressemble.', visual: 'style' },
   { title: 'Mesurez l’intérêt', text: 'Vues et clics, en un regard.', visual: 'stats' },
 ];
@@ -56,7 +54,7 @@ function CardSample() {
 
 function FeatureVisual({ type }: { type: string }) {
   if (type === 'links') {
-    return <div className={`${styles.featureVisual} ${styles.linkVisual}`} aria-hidden="true"><div className={styles.linkHub}><Link2 size={28} /></div><span><Mail size={20} /></span><span><Phone size={20} /></span><span><AtSign size={20} /></span></div>;
+    return <div className={`${styles.featureVisual} ${styles.linkVisual}`} aria-hidden="true"><div className={styles.linkHub}><Link2 size={28} /></div>{['instagram', 'snapchat', 'discord', 'tiktok', 'github', 'linkedin'].map((platform) => <span key={platform}><SocialIcon platform={platform} size={21} /></span>)}</div>;
   }
   if (type === 'update') {
     return <div className={`${styles.featureVisual} ${styles.updateVisual}`} aria-hidden="true"><div className={styles.editCard}><i /><i /><i /></div><PencilLine size={25} /><div className={styles.permanentQr}><QrCode size={58} /></div></div>;
@@ -85,8 +83,8 @@ export default function Home() {
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <span className={styles.kicker}>Qard / carte de contact numérique</span>
-          <h1>Vos coordonnées. Une seule carte.</h1>
-          <p className={styles.heroLead}>Rassemblez ce qui permet de vous joindre, personnalisez votre profil et partagez-le par lien ou QR code.</p>
+          <h1>Partagez vos contacts. Gagnez du temps.</h1>
+          <p className={styles.heroLead}>Une Qard remplace les coordonnées dispersées par un profil clair, toujours à jour et prêt à partager.</p>
           <div className={styles.actions}><Link className={styles.primary} href="/signup" prefetch={false}>Créer ma Qard</Link><Link className={styles.secondary} href="/card" prefetch={false}>Ouvrir l’exemple</Link></div>
           <dl className={styles.proof}><div><dt>1</dt><dd>lien permanent</dd></div><div><dt>0</dt><dd>application requise</dd></div><div><dt>∞</dt><dd>mises à jour</dd></div></dl>
         </div>
@@ -95,23 +93,23 @@ export default function Home() {
 
       <section className={styles.manifesto}>
         <span>Une présence facile à retrouver</span>
-        <h2>La bonne information reste à portée de main.</h2>
-        <p>Votre activité évolue, vos coordonnées aussi. Vous les modifiez une fois ; les personnes qui possèdent votre lien retrouvent toujours la version actuelle.</p>
+        <h2>Ne perdez plus un contact à cause d’une information dépassée.</h2>
+        <p>Modifiez votre Qard une fois : chaque personne retrouve immédiatement vos coordonnées actuelles, sans nouvelle carte à imprimer ni message à renvoyer.</p>
       </section>
 
       <section className={styles.process} id="fonctionnement">
-        <header className={styles.sectionHeader}><span>Comment ça fonctionne</span><h2>Créez. Partagez. Restez joignable.</h2></header>
+        <header className={styles.sectionHeader}><span>Comment ça fonctionne</span><h2>De votre profil au téléphone de vos contacts.</h2></header>
         <LandingJourney />
       </section>
 
       <section className={styles.features}>
-        <header className={styles.sectionHeader}><span>Au quotidien</span><h2>Une carte utile après le premier partage.</h2></header>
+        <header className={styles.sectionHeader}><span>Vos avantages</span><h2>Un lien qui travaille pour vous.</h2></header>
         <div className={styles.featureGrid}>
           {features.map(({ title, text, visual }) => <article key={title}><div className={styles.featureCopy}><h3>{title}</h3><p>{text}</p></div><FeatureVisual type={visual} /></article>)}
         </div>
       </section>
 
-      <section className={styles.finalCta}><div><span>Votre Qard peut être prête aujourd’hui.</span><h2>Commencez par l’essentiel.</h2></div><Link className={styles.primary} href="/signup" prefetch={false}>Créer ma Qard gratuitement</Link></section>
+      <section className={styles.finalCta}><div><span>Quelques minutes suffisent.</span><h2>Soyez plus facile à contacter dès aujourd’hui.</h2></div><Link className={styles.primary} href="/signup" prefetch={false}>Créer ma Qard gratuitement</Link></section>
       <footer className={styles.footer}><QardLogo /><p>© 2026 Qard</p><nav><Link href="/privacy" prefetch={false}>Confidentialité</Link><Link href="/terms" prefetch={false}>Conditions</Link></nav></footer>
     </main>
   );

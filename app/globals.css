@@ -8287,3 +8287,146 @@ a {
     transition: none;
   }
 }
+
+/* Qard warm identity — shared application shell */
+.dashboard-shell,
+.auth-shell-v2,
+.legal-site,
+.onboarding-shell,
+.global-error {
+  --background: #fbf6ed;
+  --surface: rgb(255 251 245 / 0.88);
+  --surface-raised: #f5e8dc;
+  --text-primary: #38271f;
+  --text-secondary: #75645b;
+  --text-tertiary: #9a8275;
+  --border: rgb(104 66 45 / 0.14);
+  --border-bright: rgb(177 106 67 / 0.3);
+  --electric: #df8758;
+  --electric-bright: #f0b08b;
+  --cobalt: #c96f43;
+  --indigo: #9d6044;
+  --shadow-card: 0 20px 55px rgb(103 64 41 / 0.12);
+  color: var(--text-primary);
+  background: #fbf6ed;
+}
+.dashboard-animated-bg,
+.auth-animated-bg { opacity: 0.72; filter: saturate(0.84); }
+.dashboard-background-shade { background: linear-gradient(120deg, rgb(255 250 243 / 0.44), rgb(249 236 224 / 0.24) 55%, rgb(255 249 241 / 0.5)); }
+.dashboard-sidebar { border-color: rgb(108 68 45 / 0.14); background: rgb(255 251 246 / 0.9); box-shadow: 0 18px 50px rgb(103 64 41 / 0.11); }
+.sidebar-section-label { color: #9b7e6e; }
+.dashboard-sidebar nav a { color: #75645a; }
+.dashboard-sidebar nav a.active { color: #442e23; border-color: rgb(201 115 70 / 0.2); background: linear-gradient(90deg, rgb(232 157 112 / 0.2), rgb(245 211 188 / 0.08)); }
+.dashboard-sidebar nav a > i { background: #d77f52; }
+.sidebar-icon { color: #8c7162; background: rgb(177 111 73 / 0.06); }
+.dashboard-sidebar nav a.active .sidebar-icon { color: #7a4027; background: #f3d1ba; }
+.sidebar-bottom { border-color: rgb(108 68 45 / 0.11); }
+.dashboard-shell .panel,
+.dashboard-shell .editor-section,
+.dashboard-shell .appearance-studio-v2,
+.dashboard-shell .sortable-link,
+.dashboard-shell .qr-canvas,
+.dashboard-shell .mobile-card-controls {
+  color: #3d2a21;
+  border-color: rgb(108 68 45 / 0.13);
+  background: rgb(255 251 246 / 0.86);
+  box-shadow: 0 16px 42px rgb(103 64 41 / 0.08);
+}
+.dashboard-shell input,
+.dashboard-shell textarea,
+.dashboard-shell select,
+.dashboard-shell .copy-field,
+.dashboard-shell .appearance-value-field input {
+  color: #3c2920;
+  border-color: rgb(108 68 45 / 0.16);
+  background: rgb(255 253 249 / 0.9);
+}
+.dashboard-shell input:focus,
+.dashboard-shell textarea:focus,
+.dashboard-shell select:focus { border-color: #d8865a; box-shadow: 0 0 0 3px rgb(216 134 90 / 0.12); }
+.dashboard-shell .button:not(.button-ghost):not(.danger-button) { border-color: #d67d50; color: #39231a; background: #eca078; box-shadow: none; }
+.dashboard-shell .button-ghost,
+.dashboard-shell .text-button,
+.dashboard-shell .mobile-preview-visibility { color: #6f5142; border-color: rgb(108 68 45 / 0.14); background: #f8ede3; }
+.dashboard-shell .appearance-tabs,
+.dashboard-shell .appearance-theme-categories { border-color: rgb(108 68 45 / 0.11); background: #f3e5d8; }
+.dashboard-shell .appearance-tabs button,
+.dashboard-shell .appearance-theme-categories button { color: #8a7062; }
+.dashboard-shell .appearance-tabs button.active,
+.dashboard-shell .appearance-theme-categories button.active { color: #4c3327; background: #fffaf4; box-shadow: inset 0 0 0 1px rgb(177 105 66 / 0.13); }
+.dashboard-shell .appearance-tabs button.active svg { color: #cb7044; }
+.dashboard-shell .dashboard-header h1,
+.dashboard-shell .dashboard-header h2,
+.dashboard-shell .panel-title,
+.dashboard-shell .control-heading h2,
+.dashboard-shell .control-heading h3,
+.dashboard-shell .list-heading h2,
+.dashboard-shell .editor-section h2 { color: #3d2920; }
+.dashboard-shell .dashboard-header p,
+.dashboard-shell .control-heading p,
+.dashboard-shell .list-heading p { color: #806b60; }
+.dashboard-shell .appearance-stage-heading h3,
+.dashboard-shell .appearance-studio-head h2 { color: #402b22; }
+.dashboard-shell .appearance-stage-heading p,
+.dashboard-shell .appearance-studio-head p { color: #826d61; }
+.dashboard-shell .appearance-studio-v2 .visual-option-grid > button,
+.dashboard-shell .appearance-studio-v2 .appearance-color-grid label,
+.dashboard-shell .appearance-studio-v2 .visual-toggle,
+.dashboard-shell .appearance-studio-v2 .material-controls label { background: #f7ebdf; }
+.dashboard-shell .appearance-studio-v2 .visual-option-grid > button:hover { background: #f4dfcf; }
+.dashboard-shell .appearance-studio-v2 .visual-option-grid > button.selected { border-color: rgb(205 112 67 / 0.38); background: #f8ddca; }
+.dashboard-shell .appearance-theme-card { color: #4b3328; background: #f7eadf !important; }
+.dashboard-shell .appearance-theme-card:hover { background: #f4dfd0 !important; }
+.dashboard-shell .appearance-theme-card.selected { border-color: rgb(205 112 67 / 0.46) !important; background: #f8ddca !important; }
+.dashboard-shell .qard-logo img,
+.auth-shell-v2 .qard-logo img { filter: sepia(0.22) saturate(0.72) hue-rotate(326deg); }
+.dashboard-shell .mobile-guide { background: rgb(74 48 35 / 0.42); }
+.dashboard-shell .mobile-guide-sheet { border-color: rgb(108 68 45 / 0.14); color: #3c2920; background: #fffaf4; box-shadow: 0 28px 80px rgb(85 50 32 / 0.22); }
+.dashboard-shell .mobile-guide-sheet h2 { color: #3b281f; }
+.dashboard-shell .mobile-guide-progress { background: #eedfd3; }
+.dashboard-shell .mobile-guide-progress i { background: #dc8355; }
+
+.auth-background-veil { background: radial-gradient(circle at 50% 28%, transparent 0 22%, rgb(246 224 206 / 0.2) 58%, rgb(238 211 191 / 0.52) 100%); }
+.auth-shell-v2 > header { color: #3b2920; }
+.auth-card-frame { background: rgb(161 97 60 / 0.18); box-shadow: 0 28px 75px rgb(104 64 41 / 0.15); }
+.auth-card-frame::before { background: linear-gradient(90deg, transparent, rgb(224 135 87 / 0.62), transparent); }
+.auth-form-card { color: #3a281f; background: rgb(255 251 246 / 0.94); }
+.auth-lock-mark { border-color: rgb(161 97 60 / 0.16); color: #9b5535; background: #f6dfce; }
+.auth-form-card > div > p,
+.auth-form-card footer { color: #806c61; }
+.auth-form-card label { color: #5d463b; }
+.auth-form-card input { color: #39271f; border-color: rgb(111 70 48 / 0.16); background: #fffdf9; }
+.auth-form-card input:focus { border-color: #d98255; box-shadow: 0 0 0 3px rgb(217 130 85 / 0.11); }
+.auth-form-card footer a { color: #a75734; }
+.auth-form-card .button { color: #3c251a; background: #eca078; box-shadow: none; }
+
+.legal-site { min-height: 100svh; color: #38271f; background: #fbf6ed; }
+.legal-site .marketing-nav { color: #39271f; border-color: rgb(104 66 45 / 0.12); }
+.legal-site .pricing-grid article { border-color: rgb(104 66 45 / 0.14); background: #fffaf4; }
+.legal-site .pricing-grid article.featured { border-color: rgb(202 112 67 / 0.34); background: #f8e2d2; }
+.legal-site .pricing-grid article > b { color: #3c2419; background: #eca078; }
+.legal-site .pricing-grid li { color: #624b3f; }
+.legal-site .button { color: #3c2419; background: #eca078; box-shadow: none; }
+.legal-site .button-ghost { color: #60483c; border-color: rgb(104 66 45 / 0.17); background: #f5e8dd; }
+.legal-site .legal-copy > p:first-of-type,
+.legal-site .legal-copy p { color: #77665c; }
+
+.onboarding-shell { background: #fbf6ed; }
+.onboarding-card { color: #3b2920; border-color: rgb(104 66 45 / 0.14); background: #fffaf4; box-shadow: 0 30px 80px rgb(103 64 41 / 0.14); }
+.onboarding-progress { background: #ebd9cc; }
+.onboarding-card label { color: #634d42; }
+.onboarding-card input,
+.onboarding-card select { color: #39271f; border-color: rgb(104 66 45 / 0.16); background: #fffdf9; }
+
+@media (hover: hover) {
+  .dashboard-shell .dashboard-sidebar nav a:hover,
+  .dashboard-shell .sidebar-bottom a:hover,
+  .dashboard-shell .sidebar-bottom button:hover { color: #4c3327; background: #f5e3d6; }
+}
+
+@media (max-width: 900px) {
+  .mobile-dashboard-nav { border-color: rgb(108 68 45 / 0.15); background: rgb(255 251 246 / 0.94); box-shadow: 0 15px 42px rgb(103 64 41 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.75); }
+  .mobile-dashboard-nav a { color: #8b7163; }
+  .mobile-dashboard-nav a.active { color: #603d2d; }
+  .mobile-dashboard-nav a.active .mobile-nav-icon { color: #4c2d20; background: #efb48f; box-shadow: 0 8px 22px rgb(181 103 62 / 0.22); }
+}

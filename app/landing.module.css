@@ -75,13 +75,13 @@
 .proof dd { margin: 7px 0 0; color: #718398; font-size: 0.72rem; }
 
 .productStage { position: relative; align-self: end; width: 720px; height: 810px; margin: 0 -55px 0 auto; overflow: hidden; }
-.productStage::before { content: ''; position: absolute; inset: 8% 4% 2% 13%; border-left: 1px solid rgb(169 201 235 / 0.13); border-right: 1px solid rgb(169 201 235 / 0.06); background: #0a1724; }
+.productStage::before { content: ''; position: absolute; inset: 8% 4% 2% 13%; border-left: 1px solid rgb(113 69 44 / 0.15); border-right: 1px solid rgb(113 69 44 / 0.08); background: rgb(246 225 207 / 0.74); }
 .demoLabel { position: absolute; z-index: 6; top: 75px; left: 92px; display: grid; gap: 4px; padding-left: 13px; border-left: 2px solid #8bbceb; color: #d6e5f4; font-size: 0.73rem; font-weight: 650; letter-spacing: 0.04em; text-transform: uppercase; }
 .demoLabel span { color: #71869b; font-size: 0.62rem; font-weight: 500; letter-spacing: 0.06em; }
 .handStage { position: absolute; z-index: 2; inset: 0; }
 .handPhone { position: absolute; z-index: 2; inset: 0; width: 100%; height: auto; pointer-events: none; }
 
-.screenOverlay { position: absolute; z-index: 3; top: 17%; left: 24.7%; width: 46.4%; height: 80.5%; overflow: hidden; border-radius: 31px; background: #07111b; }
+.screenOverlay { position: absolute; z-index: 3; top: 17%; left: 24.7%; width: 46.4%; height: 80.5%; overflow: hidden; border-radius: 31px; background: #f6e9dd; }
 .phoneChrome { position: absolute; z-index: 5; top: 16px; left: 50%; display: grid; width: 84%; grid-template-columns: 5px 1fr 5px; align-items: center; gap: 8px; min-height: 31px; padding: 0 10px; transform: translateX(-50%); border-bottom: 1px solid rgb(174 201 227 / 0.13); color: #8da0b3; font-size: 0.75rem; text-align: center; }
 .phoneChrome i { width: 4px; height: 4px; border-radius: 50%; background: #4d647a; }
 .phoneChrome i:last-child { justify-self: end; }
@@ -125,23 +125,27 @@
 
 .featureVisual { position: relative; min-height: 300px; overflow: hidden; background: #0b1824; }
 .linkVisual { display: grid; place-items: center; }
+.linkVisual::before { content: ''; position: absolute; width: 224px; height: 224px; border: 1px solid #d9ad91; border-radius: 50%; background: transparent; }
+.linkVisual::after { content: ''; position: absolute; width: 112px; height: 112px; border: 1px solid rgb(217 173 145 / 0.55); border-radius: 50%; }
 .linkHub,
 .linkVisual > span { position: absolute; display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid #ddb99e; border-radius: 50%; color: #9a5736; background: #fffaf4; }
 .linkHub { z-index: 2; width: 82px; height: 82px; color: #7f4026; background: #f2c4a6; }
-.linkVisual::before,
-.linkVisual::after { content: ''; position: absolute; width: 190px; height: 1px; background: #d9ad91; }
-.linkVisual::before { transform: rotate(30deg); }
-.linkVisual::after { transform: rotate(-30deg); }
-.linkVisual > span:nth-of-type(1) { transform: translate(-112px, -65px); }
-.linkVisual > span:nth-of-type(2) { transform: translate(112px, -65px); }
-.linkVisual > span:nth-of-type(3) { transform: translateY(110px); }
+.linkVisual > span:nth-of-type(1) { transform: translateY(-112px); }
+.linkVisual > span:nth-of-type(2) { transform: translate(97px, -56px); }
+.linkVisual > span:nth-of-type(3) { transform: translate(97px, 56px); }
+.linkVisual > span:nth-of-type(4) { transform: translateY(112px); }
+.linkVisual > span:nth-of-type(5) { transform: translate(-97px, 56px); }
+.linkVisual > span:nth-of-type(6) { transform: translate(-97px, -56px); }
 .updateVisual { display: grid; grid-template-columns: 120px 48px 120px; place-content: center; align-items: center; gap: 18px; color: #a25e3d; }
+.updateVisual::before { content: ''; position: absolute; left: 27%; right: 27%; height: 54px; opacity: 0.62; background: repeating-linear-gradient(to bottom, transparent 0 8px, #dea07c 9px 11px); transform: skewX(-18deg); }
+.updateVisual > svg { z-index: 2; padding: 10px; box-sizing: content-box; border-radius: 50%; color: #7e4027; background: #f3bd99; animation: quick-edit 2.2s cubic-bezier(.22,1,.36,1) infinite; }
 .editCard,
-.permanentQr { display: grid; width: 120px; height: 164px; place-content: center; gap: 13px; padding: 18px; border: 1px solid #debda6; border-radius: 8px; background: #fffaf4; }
+.permanentQr { position: relative; display: grid; width: 120px; height: 164px; place-content: center; gap: 13px; padding: 18px; border: 1px solid #debda6; border-radius: 8px; background: #fffaf4; }
 .editCard i { display: block; width: 80px; height: 8px; border-radius: 5px; background: #e8cdb9; }
 .editCard i:first-child { width: 44px; height: 44px; border-radius: 50%; background: #efb58e; }
 .editCard i:last-child { width: 58px; }
 .permanentQr { color: #7a4a35; }
+.editCard::after { content: '+'; position: absolute; top: 10px; right: 10px; display: grid; width: 27px; height: 27px; place-items: center; border-radius: 50%; color: #fffaf4; background: #d97849; font-size: 1.1rem; }
 .styleVisual { display: flex; align-items: center; justify-content: center; gap: 12px; color: #9d593a; }
 .styleVisual > svg { margin-right: 7px; }
 .styleVisual > i { width: 76px; height: 164px; border: 1px solid rgb(95 54 33 / 0.14); border-radius: 7px; background: linear-gradient(160deg, #fbddc7, #ca754d); }
@@ -158,6 +162,11 @@
 .statsVisual i:nth-child(5) { height: 58%; }
 .statsVisual i:nth-child(6) { height: 69%; }
 .statsVisual i:nth-child(7) { height: 54%; }
+
+@keyframes quick-edit {
+  0%, 100% { transform: translateX(-3px) rotate(-5deg); }
+  50% { transform: translateX(3px) rotate(5deg); }
+}
 
 .finalCta { display: flex; align-items: end; justify-content: space-between; gap: 50px; padding: 120px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .finalCta span { color: #788b9f; font-size: 0.86rem; }
@@ -184,6 +193,12 @@
 .site :global(.marketing-nav) { color: #35251e; }
 .site :global(.marketing-nav .button) { border-color: #d88255; color: #342018; background: #efa276; box-shadow: none; }
 .site :global(.qard-logo img) { filter: sepia(0.22) saturate(0.72) hue-rotate(326deg); }
+.site .demoLabel { border-color: #d77f52; color: #50372b; }
+.site .demoLabel span { color: #8b7163; }
+.site .phoneChrome { border-color: rgb(108 68 45 / 0.16); color: #8a7164; }
+.site .phoneChrome i { background: #c18a6c; }
+.site .qrNote { border-color: var(--line); color: #4a3227; background: #fbf6ed; }
+.site .qrNote small { color: #826e63; }
 .hero,
 .manifesto,
 .process,
