@@ -1,6 +1,7 @@
 .journey {
   --journey-progress: 0;
   position: relative;
+  height: 158vh;
   height: 158svh;
 }
 
@@ -8,6 +9,7 @@
   position: sticky;
   top: 88px;
   display: grid;
+  min-height: calc(100vh - 112px);
   min-height: calc(100svh - 112px);
   align-content: center;
   gap: 28px;
@@ -181,12 +183,12 @@
 .copy p { color: #7c695f; }
 
 @media (max-width: 780px) {
-  .journey { height: 172svh; }
-  .stickyStage { top: 68px; min-height: calc(100svh - 82px); gap: 22px; }
+  .journey { height: 172vh; height: 172svh; }
+  .stickyStage { top: 68px; min-height: calc(100vh - 82px); min-height: calc(100svh - 82px); gap: 22px; }
   .progress { padding-inline: 0; }
   .track { right: 16.67%; left: 16.67%; }
   .marker { font-size: 0.75rem; }
-  .cards { position: relative; display: grid; min-height: 408px; }
+  .cards { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; min-height: 408px; }
   .card { grid-area: 1 / 1; min-height: 408px; pointer-events: none; opacity: 0; transform: translateX(18px); }
   .card[data-active='true'] { z-index: 1; pointer-events: auto; opacity: 1; transform: translateX(0); }
 }

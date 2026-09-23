@@ -210,10 +210,14 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                           style={{ background: theme.bg, color: theme.text }}
                         >
                           <span className="appearance-theme-visual-head">
+                            <small>Qard</small>
                             <i style={{ background: theme.accent }} />
-                            <small>QARD</small>
                           </span>
-                          <b>Aa</b>
+                          <span className="appearance-theme-portrait" />
+                          <span className="appearance-theme-lines">
+                            <b />
+                            <i />
+                          </span>
                           <span
                             className="appearance-theme-visual-action"
                             style={{

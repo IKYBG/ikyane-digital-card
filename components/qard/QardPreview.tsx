@@ -59,7 +59,9 @@ export function QardPreview({
   const cardRef = useRef<HTMLDivElement>(null);
   const tiltFrameRef = useRef<number | null>(null);
   const dragFlippedRef = useRef(false);
-  const gestureRef = useRef<{ x: number; y: number; time: number } | null>(null);
+  const gestureRef = useRef<{ x: number; y: number; time: number } | null>(
+    null,
+  );
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [isFlipping, setIsFlipping] = useState(false);
@@ -112,9 +114,8 @@ export function QardPreview({
     });
   }
 
-  const visual = appearance.show_banner
-    ? profile.avatar_url || profile.banner_url
-    : null;
+  const visual = appearance.show_banner ? profile.banner_url : null;
+  const avatarVisual = appearance.show_banner ? profile.avatar_url : null;
   const presentation = resolveAppearance(appearance);
   const vars = {
     '--preview-accent': presentation.accent,
@@ -153,7 +154,11 @@ export function QardPreview({
     }
   };
   const handleGestureStart = (event: PointerEvent<HTMLDivElement>) => {
-    gestureRef.current = { x: event.clientX, y: event.clientY, time: performance.now() };
+    gestureRef.current = {
+      x: event.clientX,
+      y: event.clientY,
+      time: performance.now(),
+    };
   };
   const handleGestureEnd = (event: PointerEvent<HTMLDivElement>) => {
     const start = gestureRef.current;
@@ -337,6 +342,10 @@ export function QardPreview({
                       {profile.display_name.slice(0, 1).toUpperCase()}
                     </div>
                   )}
+                  <div className="card-brand-mark" aria-hidden="true">
+                    <b>Qard</b>
+                    <small>Des gens · Des projets · Un monde plus ouvert</small>
+                  </div>
                   <div className="portrait-scan" aria-hidden="true" />
                 </div>
                 <p className="human-note" aria-hidden="true">
@@ -345,6 +354,15 @@ export function QardPreview({
                   plus humain.
                 </p>
                 <div className="identity-copy">
+                  <div className="portrait-avatar" aria-hidden="true">
+                    {avatarVisual ? (
+                      <Image src={avatarVisual} alt="" fill sizes="148px" />
+                    ) : (
+                      <span>
+                        {profile.display_name.slice(0, 1).toUpperCase()}
+                      </span>
+                    )}
+                  </div>
                   <div className="name-row">
                     <div>
                       <h1>{profile.display_name}</h1>

@@ -12,9 +12,9 @@ export default function AuthLayout({
       <AnimatedGradient
         className="auth-animated-bg"
         config={{
-          color1: '#fbf5eb',
-          color2: '#f1d7c2',
-          color3: '#e99b70',
+          color1: '#f8fbff',
+          color2: '#dce7ff',
+          color3: '#e9e0ff',
           speed: 28,
           distortion: 3,
           swirl: 13,

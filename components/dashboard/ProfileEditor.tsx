@@ -20,10 +20,15 @@ import { MediaUploader } from './MediaUploader';
 import { z } from 'zod';
 
 const QardPreview = dynamic(
-  () => import('@/components/qard/QardPreview').then((module) => module.QardPreview),
+  () =>
+    import('@/components/qard/QardPreview').then(
+      (module) => module.QardPreview,
+    ),
   {
     ssr: false,
-    loading: () => <div className="preview-loading">Chargement de l’aperçu…</div>,
+    loading: () => (
+      <div className="preview-loading">Chargement de l’aperçu…</div>
+    ),
   },
 );
 
@@ -107,6 +112,12 @@ export function ProfileEditor({ data }: { data: QardData }) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questionAnswer, setQuestionAnswer] = useState('');
   const [guideBusy, setGuideBusy] = useState(false);
+  const [guideCompleted, setGuideCompleted] = useState(Boolean(
+    data.profile.email_public?.trim() || data.profile.phone_public?.trim() ||
+    data.profile.website?.trim() || data.links.some((link) => link.enabled),
+  ));
+  const [guideError, setGuideError] = useState('');
+  const guideRef = useRef<HTMLDialogElement>(null);
   const first = useRef(true);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const saveRevision = useRef(0);
@@ -137,13 +148,32 @@ export function ProfileEditor({ data }: { data: QardData }) {
   const values = watch();
   const deferredValues = useDeferredValue(values);
   const deferredLinks = useDeferredValue(links);
-  const hasConfiguredQard = Boolean(
-    values.email_public?.trim() ||
-    values.phone_public?.trim() ||
-    values.website?.trim() ||
-    links.some((link) => link.enabled),
-  );
+  const hasConfiguredQard = guideCompleted;
   const currentQuestion = mobileQuestions[questionIndex];
+  useEffect(() => {
+    if (!guideOpen || !guideRef.current) return;
+    const dialog = guideRef.current;
+    dialog.showModal();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const viewport = window.visualViewport;
+    const updateViewport = () => {
+      dialog.style.setProperty(
+        '--guide-height',
+        `${viewport?.height ?? window.innerHeight}px`,
+      );
+      dialog.style.setProperty('--guide-top', `${viewport?.offsetTop ?? 0}px`);
+    };
+    updateViewport();
+    viewport?.addEventListener('resize', updateViewport);
+    viewport?.addEventListener('scroll', updateViewport);
+    return () => {
+      viewport?.removeEventListener('resize', updateViewport);
+      viewport?.removeEventListener('scroll', updateViewport);
+      document.body.style.overflow = previousOverflow;
+      if (dialog.open) dialog.close();
+    };
+  }, [guideOpen]);
   useEffect(() => {
     if (!guideOpen) return;
     if (currentQuestion.kind === 'profile') {
@@ -205,7 +235,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
   );
 
   function advanceGuide() {
+    setGuideError('');
     if (questionIndex === mobileQuestions.length - 1) {
+      setGuideCompleted(Boolean(getValues('email_public') || getValues('phone_public') || getValues('website') || links.some((link) => link.enabled)));
       setGuideOpen(false);
       setQuestionIndex(0);
       return;
@@ -214,9 +246,19 @@ export function ProfileEditor({ data }: { data: QardData }) {
   }
 
   async function saveGuideAnswer() {
+    if (guideBusy) return;
+    setGuideError('');
     const answer = questionAnswer.trim();
     if (!answer) return advanceGuide();
     if (currentQuestion.kind === 'profile') {
+      const parsed =
+        profileSchema.shape[currentQuestion.field].safeParse(answer);
+      if (!parsed.success) {
+        setGuideError(
+          parsed.error.issues[0]?.message ?? 'Vérifiez cette information.',
+        );
+        return;
+      }
       setValue(currentQuestion.field, answer, {
         shouldDirty: true,
         shouldValidate: true,
@@ -225,53 +267,62 @@ export function ProfileEditor({ data }: { data: QardData }) {
       return;
     }
     setGuideBusy(true);
-    const supabase = createClient();
-    const existing = links.find(
-      (link) => link.platform === currentQuestion.field,
-    );
-    const payload = {
-      platform: currentQuestion.field,
-      label: null,
-      url: normalizeSocialUrl(currentQuestion.field, answer),
-      username: answer.replace(/^@/, ''),
-      enabled: true,
-    };
-    const parsedLink = socialLinkSchema.safeParse(payload);
-    if (!parsedLink.success) {
+    try {
+      const supabase = createClient();
+      const existing = links.find(
+        (link) => link.platform === currentQuestion.field,
+      );
+      const payload = {
+        platform: currentQuestion.field,
+        label: null,
+        url: normalizeSocialUrl(currentQuestion.field, answer),
+        username: answer.replace(/^@/, ''),
+        enabled: true,
+      };
+      const parsedLink = socialLinkSchema.safeParse(payload);
+      if (!parsedLink.success) {
+        setGuideBusy(false);
+        setGuideError('Vérifiez cet identifiant.');
+        return;
+      }
+      const request = existing
+        ? supabase
+            .from('qard_social_links')
+            .update(parsedLink.data)
+            .eq('id', existing.id)
+            .select()
+            .single()
+        : supabase
+            .from('qard_social_links')
+            .insert({
+              ...parsedLink.data,
+              profile_id: data.profile.id,
+              position: links.length,
+            })
+            .select()
+            .single();
+      const { data: saved, error } = await request;
       setGuideBusy(false);
-      setStatus('error');
-      return;
+      if (error || !saved) {
+        setStatus('error');
+        setGuideError(
+          'Enregistrement impossible. Réessayez sans quitter cette étape.',
+        );
+        return;
+      }
+      setLinks((current) =>
+        existing
+          ? current.map((link) =>
+              link.id === existing.id ? (saved as SocialLink) : link,
+            )
+          : [...current, saved as SocialLink],
+      );
+      advanceGuide();
+    } catch {
+      setGuideError('Connexion interrompue. Réessayez dans un instant.');
+    } finally {
+      setGuideBusy(false);
     }
-    const request = existing
-      ? supabase
-          .from('qard_social_links')
-          .update(parsedLink.data)
-          .eq('id', existing.id)
-          .select()
-          .single()
-      : supabase
-          .from('qard_social_links')
-          .insert({
-            ...parsedLink.data,
-            profile_id: data.profile.id,
-            position: links.length,
-          })
-          .select()
-          .single();
-    const { data: saved, error } = await request;
-    setGuideBusy(false);
-    if (error || !saved) {
-      setStatus('error');
-      return;
-    }
-    setLinks((current) =>
-      existing
-        ? current.map((link) =>
-            link.id === existing.id ? (saved as SocialLink) : link,
-          )
-        : [...current, saved as SocialLink],
-    );
-    advanceGuide();
   }
 
   return (
@@ -452,10 +503,13 @@ export function ProfileEditor({ data }: { data: QardData }) {
       </aside>
       {guideOpen && (
         <dialog
-          open
+          ref={guideRef}
           className="mobile-guide"
           aria-labelledby="mobile-guide-title"
-          onCancel={() => setGuideOpen(false)}
+          onCancel={(event) => {
+            event.preventDefault();
+            setGuideOpen(false);
+          }}
         >
           <div className="mobile-guide-sheet">
             <header>
@@ -466,6 +520,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
                 type="button"
                 onClick={() => setGuideOpen(false)}
                 aria-label="Arrêter la configuration"
+                autoFocus
               >
                 <X size={18} />
               </button>
@@ -481,14 +536,27 @@ export function ProfileEditor({ data }: { data: QardData }) {
             <h2 id="mobile-guide-title">{currentQuestion.label}</h2>
             <small>{currentQuestion.hint}</small>
             <input
+              aria-label={currentQuestion.label}
+              aria-invalid={Boolean(guideError)}
+              aria-describedby={guideError ? 'guide-error' : undefined}
               type={currentQuestion.type}
               value={questionAnswer}
               onChange={(event) => setQuestionAnswer(event.target.value)}
               placeholder={currentQuestion.placeholder}
-              autoFocus
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault();
+                  void saveGuideAnswer();
+                }
+              }}
             />
+            {guideError && (
+              <p id="guide-error" className="field-error" role="alert">
+                {guideError}
+              </p>
+            )}
             <footer>
-              <button type="button" onClick={advanceGuide}>
+              <button type="button" onClick={advanceGuide} disabled={guideBusy}>
                 Passer
               </button>
               <button

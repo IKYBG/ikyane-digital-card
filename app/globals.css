@@ -8386,6 +8386,49 @@ a {
 .dashboard-shell .mobile-guide-progress { background: #eedfd3; }
 .dashboard-shell .mobile-guide-progress i { background: #dc8355; }
 
+/* Keep the guide inside Safari's visible viewport, including its keyboard. */
+.mobile-guide[open] {
+  top: var(--guide-top, 0px);
+  bottom: auto;
+  height: var(--guide-height, 100dvh);
+  max-height: var(--guide-height, 100dvh);
+  padding: 16px;
+  align-items: center;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.mobile-guide::backdrop { background: rgb(74 48 35 / 0.45); }
+.mobile-guide[open] .mobile-guide-sheet {
+  max-height: calc(var(--guide-height, 100dvh) - 32px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px;
+  border-radius: 20px;
+}
+.mobile-guide[open] .mobile-guide-sheet footer {
+  position: sticky;
+  bottom: -20px;
+  margin: 20px -20px -20px;
+  padding: 14px 20px max(14px, env(safe-area-inset-bottom));
+  background: #fffaf4;
+  border-color: rgb(108 68 45 / 0.14);
+}
+.mobile-guide[open] .mobile-guide-sheet input { font-size: 16px; }
+@media (max-width: 900px) {
+  .dashboard-main { min-width: 0; padding-bottom: calc(112px + env(safe-area-inset-bottom)); }
+  .dashboard-shell input:not([type='range']):not([type='color']),
+  .dashboard-shell textarea,
+  .dashboard-shell select,
+  .auth-shell-v2 input { font-size: 16px; }
+  .editor-layout, .appearance-layout, .links-layout, .qr-layout { min-width: 0; }
+  .editor-live-card .qard-premium.compact .card-motion-shell {
+    min-height: 0;
+    height: min(560px, 68svh);
+  }
+  .mobile-guide[open] { padding: 8px; }
+  .mobile-guide[open] .mobile-guide-sheet { max-height: calc(var(--guide-height, 100dvh) - 16px); }
+}
+
 .auth-background-veil { background: radial-gradient(circle at 50% 28%, transparent 0 22%, rgb(246 224 206 / 0.2) 58%, rgb(238 211 191 / 0.52) 100%); }
 .auth-shell-v2 > header { color: #3b2920; }
 .auth-card-frame { background: rgb(161 97 60 / 0.18); box-shadow: 0 28px 75px rgb(104 64 41 / 0.15); }
