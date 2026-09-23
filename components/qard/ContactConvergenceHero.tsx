@@ -179,11 +179,19 @@ export function ContactConvergenceHero() {
                 priority
               />
             </div>
-            <div className={styles.cardShade} />
+            <div className={styles.demoBrand}>
+              <b>Qard</b>
+              <small>Des gens · Des projets · Un monde plus ouvert</small>
+            </div>
             <div className={styles.cardContent}>
-              <span className={styles.available}>
-                <i /> Disponible
-              </span>
+              <div className={styles.demoAvatar}>
+                <Image
+                  src="/qard-demo-avatar.jpg"
+                  alt=""
+                  fill
+                  sizes="118px"
+                />
+              </div>
               <div>
                 <span className={styles.identity}>
                   Camille Morel{' '}
@@ -196,7 +204,10 @@ export function ContactConvergenceHero() {
                   <MapPin size={13} /> Lyon, France
                 </small>
               </div>
-              <span className={styles.contactLabel}>Me contacter</span>
+              <span className={styles.available}>
+                <i /> Profil actif
+              </span>
+              <span className={styles.contactLabel}>Voir mes contacts</span>
             </div>
           </motion.article>
         </div>

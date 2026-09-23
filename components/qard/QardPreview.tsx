@@ -115,7 +115,7 @@ export function QardPreview({
   }
 
   const visual = appearance.show_banner ? profile.banner_url : null;
-  const avatarVisual = appearance.show_banner ? profile.avatar_url : null;
+  const avatarVisual = profile.avatar_url;
   const presentation = resolveAppearance(appearance);
   const vars = {
     '--preview-accent': presentation.accent,
@@ -432,10 +432,43 @@ export function QardPreview({
                 className="card-face card-back"
                 aria-hidden={side !== 'back'}
               >
+                <div className="back-identity">
+                  <div className="back-brand" aria-hidden="true">
+                    <b>Qard</b>
+                    <span>Les bonnes connexions font avancer les idées.</span>
+                  </div>
+                  <div className="back-profile">
+                    <div className="back-avatar">
+                      {avatarVisual ? (
+                        <Image
+                          src={avatarVisual}
+                          alt=""
+                          fill
+                          sizes="104px"
+                        />
+                      ) : (
+                        <span>
+                          {profile.display_name.slice(0, 1).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <div className="back-profile-name">
+                        <h2>{profile.display_name}</h2>
+                        <span className="verified" aria-hidden="true">
+                          <Check size={11} />
+                        </span>
+                      </div>
+                      {(profile.job_title || profile.headline) && (
+                        <p>{profile.job_title || profile.headline}</p>
+                      )}
+                    </div>
+                  </div>
+                  {profile.bio && <p className="back-bio">{profile.bio}</p>}
+                </div>
                 <div className="back-heading">
                   <div>
-                    <span>Contact</span>
-                    <h2>Mes contacts</h2>
+                    <span>Coordonnées &amp; réseaux</span>
                   </div>
                   <button
                     tabIndex={backTabIndex}

@@ -105,50 +105,91 @@
   overflow: hidden;
   border: 1px solid rgb(104 132 219 / 0.7);
   border-radius: 32px;
-  background: #101a4b;
+  background: #eef3ff;
   box-shadow: 0 34px 80px rgb(40 55 120 / 0.18);
   transform-origin: center;
 }
 .portrait {
   position: absolute;
-  inset: 0;
+  inset: 0 0 52%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #10245f, #6083da);
 }
 .portrait img {
   object-fit: cover;
   object-position: center 24%;
 }
-.cardShade {
+.portrait::after {
+  content: '';
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    180deg,
-    rgb(23 14 10 / 0.05) 30%,
-    rgb(22 13 10 / 0.32) 55%,
-    #19100b 90%
-  );
+  background: linear-gradient(to bottom, transparent 55%, rgb(17 30 78 / 0.22));
+}
+.demoBrand {
+  position: absolute;
+  z-index: 2;
+  top: 22px;
+  right: 24px;
+  left: 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  color: #fff;
+}
+.demoBrand b {
+  font-size: 1.8rem;
+  font-weight: 820;
+  letter-spacing: -0.07em;
+}
+.demoBrand small {
+  width: 104px;
+  color: rgb(255 255 255 / 0.82);
+  font-size: 0.42rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  line-height: 1.5;
+  text-align: right;
+  text-transform: uppercase;
 }
 .cardContent {
   position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding: 26px 26px 72px;
-  color: #fffaf4;
-}
-.available {
-  position: absolute;
-  top: 22px;
-  left: 22px;
+  inset: 44% 0 0;
   display: flex;
   align-items: center;
+  flex-direction: column;
+  padding: 76px 26px 22px;
+  color: #111b4f;
+  background: rgb(250 252 255 / 0.97);
+  text-align: center;
+}
+.demoAvatar {
+  position: absolute;
+  top: -59px;
+  left: 50%;
+  width: 118px;
+  height: 118px;
+  overflow: hidden;
+  border: 6px solid #fafdff;
+  border-radius: 50%;
+  box-shadow: 0 13px 32px rgb(29 44 102 / 0.18);
+  transform: translateX(-50%);
+}
+.demoAvatar img {
+  object-fit: cover;
+  object-position: center 22%;
+}
+.available {
+  display: flex;
+  min-height: 29px;
+  align-items: center;
   gap: 7px;
+  margin-top: 16px;
   padding: 8px 11px;
-  border: 1px solid rgb(255 255 255 / 0.28);
+  border: 1px solid rgb(66 101 207 / 0.16);
   border-radius: 999px;
-  background: rgb(23 14 10 / 0.4);
+  color: #53608a;
+  background: #eef3ff;
   font-size: 0.69rem;
-  backdrop-filter: blur(10px);
 }
 .available i {
   width: 7px;
@@ -160,8 +201,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-family: 'Iowan Old Style', Georgia, serif;
   font-size: 2rem;
+  font-weight: 760;
+  letter-spacing: -0.055em;
   line-height: 1;
 }
 .identity b {
@@ -175,21 +217,21 @@
 }
 .cardContent p {
   margin: 9px 0 7px;
-  color: #f3ded0;
+  color: #56618a;
   font-size: 0.86rem;
 }
 .cardContent small {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: #d9bdaa;
+  color: #7180aa;
 }
 .contactLabel {
   position: absolute;
   right: 0;
-  bottom: 42px;
+  bottom: 22px;
   left: 0;
-  color: #c4d2ff;
+  color: #3155bb;
   font-size: 0.65rem;
   font-weight: 700;
   letter-spacing: 0.11em;

@@ -720,7 +720,7 @@
   color: #d9e8f7;
 }
 
-/* Warm Qard identity */
+/* Qard opaline identity */
 .site {
   --ink: #111b4f;
   --muted: #5e6990;
@@ -749,29 +749,29 @@
   box-shadow: none;
 }
 .site :global(.qard-logo img) {
-  filter: sepia(0.22) saturate(0.72) hue-rotate(326deg);
+  filter: saturate(0.82) hue-rotate(12deg);
 }
 .site .demoLabel {
-  border-color: #d77f52;
-  color: #50372b;
+  border-color: #8ea8ef;
+  color: #26366f;
 }
 .site .demoLabel span {
-  color: #8b7163;
+  color: #66739b;
 }
 .site .phoneChrome {
-  border-color: rgb(108 68 45 / 0.16);
-  color: #8a7164;
+  border-color: rgb(45 67 142 / 0.16);
+  color: #69759c;
 }
 .site .phoneChrome i {
-  background: #c18a6c;
+  background: #829de8;
 }
 .site .qrNote {
   border-color: var(--line);
-  color: #4a3227;
-  background: #fbf6ed;
+  color: #28376d;
+  background: #f8faff;
 }
 .site .qrNote small {
-  color: #826e63;
+  color: #6f7a9e;
 }
 .hero,
 .manifesto,
@@ -808,13 +808,13 @@
   border-color: var(--line);
 }
 .proof dt {
-  color: #9d5937;
+  color: #4265cf;
 }
 .proof dd,
 .manifesto > span,
 .finalCta span,
 .footer {
-  color: #88746a;
+  color: #69759a;
 }
 .sectionHeader h2,
 .manifesto h2,
@@ -831,22 +831,22 @@
   background: #eaf0ff;
 }
 .statsVisual > div {
-  color: #a65f3e;
+  color: #4265cf;
 }
 .statsVisual > div strong {
-  color: #53392d;
+  color: #172052;
 }
 .statsVisual i {
-  background: #e4c5ad;
+  background: #c7d5fb;
 }
 .statsVisual i:nth-child(4) {
-  background: #dd8a5e;
+  background: #6686df;
 }
 .finalCta .primary {
-  color: #352018;
+  color: #fff;
 }
 .footer a:hover {
-  color: #4a3125;
+  color: #294baa;
 }
 
 @media (max-width: 1040px) {
