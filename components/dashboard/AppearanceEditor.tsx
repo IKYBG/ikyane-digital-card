@@ -7,10 +7,7 @@ import {
   EyeOff,
   ImageIcon,
   Lock,
-  MousePointerClick,
   Palette,
-  Shapes,
-  Type,
   Waves,
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
@@ -48,7 +45,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
   const [themeCategory, setThemeCategory] =
     useState<AppearanceThemeCategory>(initialThemeCategory);
   const [activeSection, setActiveSection] = useState<
-    'ambiance' | 'elements' | 'texte' | 'mouvement' | 'finition'
+    'ambiance' | 'mouvement'
   >('ambiance');
   const appearanceRef = useRef(data.appearance);
   const saveSequence = useRef(0);
@@ -152,10 +149,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
           <nav className="appearance-tabs" aria-label="Catégories d’apparence">
             {[
               ['ambiance', 'Ambiance', Palette],
-              ['elements', 'Éléments', MousePointerClick],
-              ['texte', 'Texte', Type],
               ['mouvement', 'Mouvement', Waves],
-              ['finition', 'Finition', Shapes],
             ].map(([id, label, Icon]) => (
               <button
                 key={id as string}
@@ -421,93 +415,6 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               </section>
             )}
 
-            {activeSection === 'elements' && (
-              <section className="appearance-stage-section">
-                <div className="appearance-stage-heading">
-                  <h3>Éléments</h3>
-                  <p>Le style des boutons et de votre photo.</p>
-                </div>
-                <div className="visual-option-grid button-options">
-                  {[
-                    ['glass', 'Verre'],
-                    ['solid', 'Plein'],
-                    ['outline', 'Contour'],
-                    ['minimal', 'Minimal'],
-                  ].map(([item, label]) => (
-                    <button
-                      key={item}
-                      className={
-                        appearance.button_style === item ? 'selected' : ''
-                      }
-                      onClick={() =>
-                        void save(updateDraft({ button_style: item }))
-                      }
-                    >
-                      <i className={`button-demo ${item}`}>Aa</i>
-                      <span>
-                        <b>{label}</b>
-                      </span>
-                      {appearance.button_style === item && <Check size={15} />}
-                    </button>
-                  ))}
-                </div>
-                <div className="visual-option-grid shape-options">
-                  {[
-                    ['circle', 'Plein cadre'],
-                    ['rounded', 'Cadre doux'],
-                    ['square', 'Cadre net'],
-                  ].map(([item, label]) => (
-                    <button
-                      key={item}
-                      className={
-                        appearance.avatar_shape === item ? 'selected' : ''
-                      }
-                      onClick={() =>
-                        void save(updateDraft({ avatar_shape: item }))
-                      }
-                    >
-                      <i className={`shape-demo ${item}`} />
-                      <span>
-                        <b>{label}</b>
-                      </span>
-                      {appearance.avatar_shape === item && <Check size={15} />}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
-
-            {activeSection === 'texte' && (
-              <section className="appearance-stage-section">
-                <div className="appearance-stage-heading">
-                  <h3>Typographie</h3>
-                  <p>Choisissez la personnalité de vos textes.</p>
-                </div>
-                <div className="visual-option-grid font-options">
-                  {[
-                    ['geist', 'Moderne'],
-                    ['inter', 'Neutre'],
-                    ['serif', 'Éditorial'],
-                    ['mono', 'Technique'],
-                  ].map(([item, label]) => (
-                    <button
-                      key={item}
-                      className={`${item}${appearance.font_family === item ? ' selected' : ''}`}
-                      onClick={() =>
-                        void save(updateDraft({ font_family: item }))
-                      }
-                    >
-                      <i>Aa</i>
-                      <span>
-                        <b>{label}</b>
-                      </span>
-                      {appearance.font_family === item && <Check size={15} />}
-                    </button>
-                  ))}
-                </div>
-              </section>
-            )}
-
             {activeSection === 'mouvement' && (
               <section className="appearance-stage-section">
                 <div className="appearance-stage-heading">
@@ -548,74 +455,6 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               </section>
             )}
 
-            {activeSection === 'finition' && (
-              <section className="appearance-stage-section">
-                <div className="appearance-stage-heading">
-                  <h3>Finition</h3>
-                  <p>Ajustez doucement la matière de la carte.</p>
-                </div>
-                <div className="material-controls">
-                  <label>
-                    <span>
-                      <b>Opacité</b>
-                      <small>
-                        {Math.round(appearance.card_opacity * 100)}%
-                      </small>
-                    </span>
-                    <input
-                      aria-label="Opacité de la carte"
-                      type="range"
-                      min="35"
-                      max="100"
-                      value={appearance.card_opacity * 100}
-                      onChange={(e) =>
-                        updateDraft({
-                          card_opacity: Number(e.target.value) / 100,
-                        })
-                      }
-                      onPointerUp={() => void save(appearanceRef.current)}
-                      onKeyUp={() => void save(appearanceRef.current)}
-                    />
-                  </label>
-                  <label>
-                    <span>
-                      <b>Flou</b>
-                      <small>{appearance.card_blur}px</small>
-                    </span>
-                    <input
-                      aria-label="Flou de la carte"
-                      type="range"
-                      min="0"
-                      max="32"
-                      value={appearance.card_blur}
-                      onChange={(e) =>
-                        updateDraft({ card_blur: Number(e.target.value) })
-                      }
-                      onPointerUp={() => void save(appearanceRef.current)}
-                      onKeyUp={() => void save(appearanceRef.current)}
-                    />
-                  </label>
-                  <label>
-                    <span>
-                      <b>Coins</b>
-                      <small>{appearance.card_radius}px</small>
-                    </span>
-                    <input
-                      aria-label="Arrondi des coins"
-                      type="range"
-                      min="0"
-                      max="48"
-                      value={appearance.card_radius}
-                      onChange={(e) =>
-                        updateDraft({ card_radius: Number(e.target.value) })
-                      }
-                      onPointerUp={() => void save(appearanceRef.current)}
-                      onKeyUp={() => void save(appearanceRef.current)}
-                    />
-                  </label>
-                </div>
-              </section>
-            )}
           </div>
         </section>
       </div>

@@ -1,5 +1,5 @@
 .root {
-  --card-radius: clamp(22px, var(--preview-radius), 38px);
+  --card-radius: 38px;
   --card-panel: rgb(var(--preview-surface-rgb) / 0.97);
   --card-soft: color-mix(in srgb, var(--preview-accent) 10%, var(--card-panel));
   position: relative;
@@ -48,6 +48,7 @@
   color: var(--preview-text);
   background: var(--preview-bg);
   box-shadow: 0 34px 90px rgb(20 35 92 / 0.18), inset 0 1px 0 rgb(255 255 255 / 0.82);
+  font-family: var(--font-geist-sans), ui-sans-serif, sans-serif;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
 }
@@ -87,7 +88,7 @@
 
 .root :global(.portrait-panel) {
   position: absolute;
-  inset: 0 0 48%;
+  inset: 0 0 62%;
   overflow: hidden;
   border-bottom: 1px solid color-mix(in srgb, var(--preview-accent) 18%, white);
   background: linear-gradient(128deg, transparent 0 38%, color-mix(in srgb, var(--preview-accent) 25%, white) 39% 55%, transparent 56%), radial-gradient(circle at 76% 18%, rgb(255 255 255 / 0.7), transparent 26%), var(--preview-bg);
@@ -153,7 +154,7 @@
 .root :global(.identity-copy) {
   position: absolute;
   z-index: 5;
-  inset: 42% 0 64px;
+  inset: 36% 0 64px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -220,17 +221,40 @@
 .root :global(.flip-hint i) { width: 40px; height: 3px; border-radius: 999px; background: color-mix(in srgb, var(--preview-accent) 48%, transparent); }
 
 .root :global(.back-identity) { flex: none; }
-.root :global(.back-brand) { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 19px; }
-.root :global(.back-brand span) { width: 150px; color: color-mix(in srgb, var(--preview-text) 65%, var(--preview-accent)); font-family: ui-serif, Georgia, serif; font-size: 0.78rem; font-style: italic; line-height: 1.35; text-align: right; }
-.root :global(.back-profile) { display: flex; align-items: center; gap: 14px; }
-.root :global(.back-avatar) { position: relative; width: 82px; height: 82px; flex: none; overflow: hidden; border: 5px solid color-mix(in srgb, var(--preview-accent) 18%, white); border-radius: 50%; color: var(--preview-text); background: var(--preview-bg); box-shadow: 0 10px 26px rgb(27 39 88 / 0.12); }
+.root :global(.back-brand) { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+.root :global(.back-brand span) { color: color-mix(in srgb, var(--preview-accent) 72%, var(--preview-text)); font-size: 1.65rem; }
+.root :global(.back-art) {
+  position: relative;
+  display: flex;
+  height: 112px;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 22px 24px;
+  border: 1px solid color-mix(in srgb, var(--preview-accent) 18%, white);
+  border-radius: 22px;
+  background: linear-gradient(138deg, color-mix(in srgb, var(--preview-accent) 12%, white), rgb(255 255 255 / 0.42) 42%, color-mix(in srgb, var(--preview-accent) 22%, white));
+}
+.root :global(.back-art::before) {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  content: '';
+  background: radial-gradient(ellipse at 35% 110%, rgb(255 255 255 / 0.82), transparent 48%), linear-gradient(120deg, transparent 45%, rgb(255 255 255 / 0.42) 46% 62%, transparent 63%);
+}
+.root :global(.back-art small), .root :global(.back-art em) { position: relative; z-index: 1; }
+.root :global(.back-art small) { color: color-mix(in srgb, var(--preview-text) 72%, transparent); font-size: 0.5rem; font-weight: 700; letter-spacing: 0.17em; line-height: 1.55; text-transform: uppercase; }
+.root :global(.back-art em) { width: 132px; color: color-mix(in srgb, var(--preview-text) 68%, var(--preview-accent)); font-family: ui-serif, Georgia, serif; font-size: 0.69rem; line-height: 1.3; text-align: right; transform: rotate(-4deg); }
+.root :global(.back-profile) { display: flex; align-items: center; justify-content: center; margin-top: 48px; text-align: center; }
+.root :global(.back-avatar) { position: absolute; z-index: 3; bottom: -43px; left: 50%; width: 92px; height: 92px; overflow: hidden; border: 6px solid var(--card-panel); border-radius: 50%; color: var(--preview-text); background: var(--preview-bg); box-shadow: 0 10px 26px rgb(27 39 88 / 0.12); transform: translateX(-50%); }
 .root :global(.back-avatar > span) { font-size: 2rem; }
 .root :global(.back-profile-name) { display: flex; align-items: center; gap: 7px; }
 .root :global(.back-profile-name h2) { margin: 0; color: var(--preview-text); font-size: 1.45rem; font-weight: 760; letter-spacing: -0.045em; }
 .root :global(.back-profile p), .root :global(.back-bio) { color: color-mix(in srgb, var(--preview-text) 64%, transparent); }
 .root :global(.back-profile p) { margin: 4px 0 0; font-size: 0.77rem; }
-.root :global(.back-bio) { display: -webkit-box; margin: 13px 0 0; overflow: hidden; font-size: 0.73rem; line-height: 1.4; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
-.root :global(.back-heading) { display: flex; flex: none; align-items: center; justify-content: space-between; margin: 17px 0 10px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--preview-accent) 16%, transparent); }
+.root :global(.back-about) { margin-top: 10px; text-align: center; }
+.root :global(.back-about strong) { color: var(--preview-text); font-size: 0.72rem; }
+.root :global(.back-bio) { display: -webkit-box; max-width: 330px; margin: 5px auto 0; overflow: hidden; font-size: 0.69rem; line-height: 1.35; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.root :global(.back-heading) { display: flex; flex: none; align-items: center; justify-content: space-between; margin: 11px 0 8px; padding-top: 10px; border-top: 1px solid color-mix(in srgb, var(--preview-accent) 16%, transparent); }
 .root :global(.back-heading span), .root :global(.contact-group-label) { color: var(--preview-text); font-size: 0.72rem; font-weight: 720; letter-spacing: 0.02em; }
 .root :global(.back-heading button) { display: grid; width: 34px; height: 34px; place-items: center; border: 1px solid color-mix(in srgb, var(--preview-accent) 22%, transparent); border-radius: 50%; color: var(--preview-text); background: var(--card-soft); cursor: pointer; }
 .root :global(.qard-contact-groups) { display: grid; min-height: 0; flex: 1; align-content: start; gap: 10px; overflow-y: auto; padding-right: 2px; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--preview-accent) 35%, transparent) transparent; }
@@ -267,7 +291,7 @@
   .root { width: min(100%, 400px); perspective: 1500px; }
   .root :global(.card-motion-shell) { height: clamp(590px, calc(100svh - 102px), 670px); }
   .root:global(.compact) :global(.card-motion-shell) { height: 620px; }
-  .root :global(.identity-copy) { top: 40%; padding: 78px 20px 18px; }
+  .root :global(.identity-copy) { top: 36%; padding: 78px 20px 18px; }
   .root :global(.portrait-avatar) { top: -62px; width: 126px; height: 126px; }
   .root :global(.card-brand-mark) { top: 21px; right: 21px; left: 21px; }
   .root :global(.card-brand-mark b) { font-size: 1.8rem; }
@@ -277,10 +301,12 @@
   .root :global(.reference-meta) { margin-top: 9px; }
   .root :global(.primary-actions) { margin-top: 10px; }
   .root :global(.card-back) { padding: 21px 19px 17px; }
-  .root :global(.back-brand) { margin-bottom: 13px; }
+  .root :global(.back-brand) { margin-bottom: 8px; }
   .root :global(.back-brand b) { font-size: 1.8rem; }
-  .root :global(.back-avatar) { width: 70px; height: 70px; }
-  .root :global(.back-heading) { margin-top: 12px; padding-top: 11px; }
+  .root :global(.back-art) { height: 100px; padding: 18px; }
+  .root :global(.back-avatar) { bottom: -38px; width: 80px; height: 80px; }
+  .root :global(.back-profile) { margin-top: 42px; }
+  .root :global(.back-heading) { margin-top: 9px; padding-top: 9px; }
   .root :global(.contact-tile) { min-height: 49px; }
   .root :global(.swipe-orbit) { display: none; }
 }

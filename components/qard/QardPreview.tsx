@@ -249,7 +249,7 @@ export function QardPreview({
 
   return (
     <article
-      className={`${styles.root} qard-premium card-perspective theme-${appearance.theme} buttons-${appearance.button_style} avatar-${appearance.avatar_shape} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ' compact' : ''}`}
+      className={`${styles.root} qard-premium card-perspective theme-${appearance.theme}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ' compact' : ''}`}
       style={vars}
     >
       <div className="swipe-orbit swipe-orbit-left" aria-hidden="true">
@@ -435,9 +435,11 @@ export function QardPreview({
                 <div className="back-identity">
                   <div className="back-brand" aria-hidden="true">
                     <b>Qard</b>
-                    <span>Les bonnes connexions font avancer les idées.</span>
+                    <span>✦</span>
                   </div>
-                  <div className="back-profile">
+                  <div className="back-art" aria-hidden="true">
+                    <small>Des gens<br />Des projets<br />Un monde plus ouvert</small>
+                    <em>Les bonnes connexions font avancer les idées.</em>
                     <div className="back-avatar">
                       {avatarVisual ? (
                         <Image
@@ -452,6 +454,8 @@ export function QardPreview({
                         </span>
                       )}
                     </div>
+                  </div>
+                  <div className="back-profile">
                     <div>
                       <div className="back-profile-name">
                         <h2>{profile.display_name}</h2>
@@ -464,7 +468,12 @@ export function QardPreview({
                       )}
                     </div>
                   </div>
-                  {profile.bio && <p className="back-bio">{profile.bio}</p>}
+                  {profile.bio && (
+                    <div className="back-about">
+                      <strong>À propos</strong>
+                      <p className="back-bio">{profile.bio}</p>
+                    </div>
+                  )}
                 </div>
                 <div className="back-heading">
                   <div>
