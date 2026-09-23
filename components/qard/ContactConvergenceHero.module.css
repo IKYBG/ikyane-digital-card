@@ -100,143 +100,10 @@
 }
 .exampleCard {
   position: relative;
-  width: 360px;
-  height: 510px;
-  overflow: hidden;
-  border: 1px solid rgb(104 132 219 / 0.7);
-  border-radius: 32px;
-  background: #eef3ff;
-  box-shadow: 0 34px 80px rgb(40 55 120 / 0.18);
-  transform-origin: center;
-}
-.portrait {
-  position: absolute;
-  inset: 0 0 52%;
-  overflow: hidden;
-  background: linear-gradient(135deg, #10245f, #6083da);
-}
-.portrait img {
-  object-fit: cover;
-  object-position: center 24%;
-}
-.portrait::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 55%, rgb(17 30 78 / 0.22));
-}
-.demoBrand {
-  position: absolute;
-  z-index: 2;
-  top: 22px;
-  right: 24px;
-  left: 24px;
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  color: #fff;
-}
-.demoBrand b {
-  font-size: 1.8rem;
-  font-weight: 820;
-  letter-spacing: -0.07em;
-}
-.demoBrand small {
-  width: 104px;
-  color: rgb(255 255 255 / 0.82);
-  font-size: 0.42rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  line-height: 1.5;
-  text-align: right;
-  text-transform: uppercase;
-}
-.cardContent {
-  position: absolute;
-  inset: 44% 0 0;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
-  padding: 76px 26px 22px;
-  color: #111b4f;
-  background: rgb(250 252 255 / 0.97);
-  text-align: center;
-}
-.demoAvatar {
-  position: absolute;
-  top: -59px;
-  left: 50%;
-  width: 118px;
-  height: 118px;
-  overflow: hidden;
-  border: 6px solid #fafdff;
-  border-radius: 50%;
-  box-shadow: 0 13px 32px rgb(29 44 102 / 0.18);
-  transform: translateX(-50%);
-}
-.demoAvatar img {
-  object-fit: cover;
-  object-position: center 22%;
-}
-.available {
-  display: flex;
-  min-height: 29px;
-  align-items: center;
-  gap: 7px;
-  margin-top: 16px;
-  padding: 8px 11px;
-  border: 1px solid rgb(66 101 207 / 0.16);
-  border-radius: 999px;
-  color: #53608a;
-  background: #eef3ff;
-  font-size: 0.69rem;
-}
-.available i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: #75df9b;
-}
-.identity {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 2rem;
-  font-weight: 760;
-  letter-spacing: -0.055em;
-  line-height: 1;
-}
-.identity b {
   display: grid;
-  width: 20px;
-  height: 20px;
+  width: min(360px, 100%);
   place-items: center;
-  border-radius: 50%;
-  color: #fff;
-  background: #5275db;
-}
-.cardContent p {
-  margin: 9px 0 7px;
-  color: #56618a;
-  font-size: 0.86rem;
-}
-.cardContent small {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  color: #7180aa;
-}
-.contactLabel {
-  position: absolute;
-  right: 0;
-  bottom: 22px;
-  left: 0;
-  color: #3155bb;
-  font-size: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.11em;
-  text-align: center;
-  text-transform: uppercase;
+  transform-origin: center;
 }
 .particles {
   position: absolute;
@@ -352,15 +219,6 @@
   }
   .exampleCard {
     width: min(326px, calc(100vw - 42px));
-    height: min(476px, calc(100svh - 114px));
-    min-height: 430px;
-    border-radius: 28px;
-  }
-  .cardContent {
-    padding-inline: 22px;
-  }
-  .identity {
-    font-size: 1.75rem;
   }
   .particle strong {
     display: none;
@@ -383,7 +241,7 @@
     font-size: clamp(3.1rem, 12vh, 5.4rem);
   }
   .exampleCard {
-    height: 430px;
+    width: min(300px, calc(100vw - 42px));
   }
 }
 @media (prefers-reduced-motion: reduce) {

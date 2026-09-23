@@ -18,7 +18,7 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
         width: 680,
         margin: 4,
         errorCorrectionLevel: 'H',
-        color: { dark: '#080b10', light: '#ffffff' },
+        color: { dark: '#111a4f', light: '#ffffff' },
       });
   }, [url]);
   async function record() {

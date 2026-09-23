@@ -42,6 +42,20 @@
   background: var(--brand-canvas);
 }
 
+.public-qard-shell {
+  color: var(--brand-ink);
+  background:
+    radial-gradient(circle at 50% 18%, rgb(255 255 255 / 0.98), transparent 42%),
+    radial-gradient(circle at 8% 86%, rgb(217 227 255 / 0.82), transparent 34%),
+    radial-gradient(circle at 92% 78%, rgb(236 225 255 / 0.72), transparent 34%),
+    linear-gradient(145deg, #eef3ff, #fafbff 48%, #f2efff);
+}
+
+.public-qard-shell .qard-premium + a,
+.public-qard-shell .qard-premium ~ a {
+  color: var(--brand-muted);
+}
+
 .dashboard-animated-bg,
 .auth-animated-bg { opacity: 0.56; filter: saturate(0.72) brightness(1.04); }
 .dashboard-background-shade,
@@ -75,13 +89,90 @@
 .dashboard-shell .sortable-link,
 .dashboard-shell .qr-canvas,
 .dashboard-shell .mobile-card-controls,
-.dashboard-shell [class*='sideCard'],
-.dashboard-shell [class*='card'] {
+.dashboard-shell [class*='sideCard'] {
   border-color: var(--brand-line);
   color: var(--brand-ink);
   background: rgb(255 255 255 / 0.9);
   box-shadow: var(--brand-shadow);
 }
+
+.editor-live-card .phone-frame,
+.appearance-live-preview .phone-frame {
+  display: grid;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.editor-preview,
+.appearance-live-preview {
+  min-width: 0;
+}
+
+/* Dashboard content surfaces: remove the remaining dark-era component rules. */
+.dashboard-shell .editor-form fieldset,
+.dashboard-shell .add-link-panel,
+.dashboard-shell .links-list,
+.dashboard-shell .settings-section,
+.dashboard-shell .chart-panel,
+.dashboard-shell .popular-panel,
+.dashboard-shell .qr-controls,
+.dashboard-shell .qr-preview {
+  border-color: var(--brand-line);
+  color: var(--brand-ink);
+  background: rgb(255 255 255 / 0.9);
+  box-shadow: var(--brand-shadow);
+}
+
+.dashboard-shell .editor-form legend,
+.dashboard-shell .editor-section > summary,
+.dashboard-shell .appearance-fields > summary,
+.dashboard-shell .settings-section h2,
+.dashboard-shell .add-link-panel h2,
+.dashboard-shell .links-list h2 {
+  color: var(--brand-ink);
+}
+
+.dashboard-shell .save-state {
+  border-color: var(--brand-line);
+  color: var(--brand-copy);
+  background: rgb(255 255 255 / 0.96);
+  box-shadow: 0 8px 24px rgb(38 51 111 / 0.08);
+}
+
+.dashboard-shell .save-state.saved { color: var(--brand-success); }
+.dashboard-shell .save-state.error,
+.dashboard-shell .field-error { color: var(--brand-danger); }
+
+.dashboard-shell .stat-grid article,
+.dashboard-shell .period-tabs,
+.dashboard-shell .popular-panel > div,
+.dashboard-shell .sortable-link {
+  border-color: var(--brand-line);
+  color: var(--brand-ink);
+  background: #f8faff;
+}
+
+.dashboard-shell .stat-grid article > span,
+.dashboard-shell .popular-panel > div > span,
+.dashboard-shell .empty-chart p { color: var(--brand-copy); }
+
+.dashboard-shell .period-tabs a { color: var(--brand-copy); }
+.dashboard-shell .period-tabs a.active { color: #fff; background: var(--brand-blue); }
+.dashboard-shell .bar-chart { border-color: var(--brand-line); background: #f6f8ff; }
+.dashboard-shell .bar-chart span { background: var(--brand-blue); }
+.dashboard-shell .bar-chart i { background: #9a8bdc; }
+
+.dashboard-shell .toggle-row span small,
+.dashboard-shell .sortable-link small,
+.dashboard-shell .qr-warning,
+.dashboard-shell .form-message.info { color: var(--brand-copy); }
+
+.dashboard-shell .toggle-row input,
+.dashboard-shell input[type='range'] { accent-color: var(--brand-blue); }
 
 .dashboard-shell h1,
 .dashboard-shell h2,

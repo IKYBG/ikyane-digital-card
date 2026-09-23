@@ -8288,7 +8288,8 @@ a {
   }
 }
 
-/* Qard warm identity — shared application shell */
+/* Retired warm identity kept inert during the design-system migration. */
+@media not all {
 .dashboard-shell,
 .auth-shell-v2,
 .legal-site,
@@ -8472,4 +8473,5 @@ a {
   .mobile-dashboard-nav a { color: #8b7163; }
   .mobile-dashboard-nav a.active { color: #603d2d; }
   .mobile-dashboard-nav a.active .mobile-nav-icon { color: #4c2d20; background: #efb48f; box-shadow: 0 8px 22px rgb(181 103 62 / 0.22); }
+}
 }

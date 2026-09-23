@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import {
@@ -10,9 +9,60 @@ import {
   useSpring,
   useTransform,
 } from 'motion/react';
-import { ArrowUpRight, Check, MapPin } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import type { QardData } from '@/types/database';
+import { QardPreview } from './QardPreview';
 import { SocialIcon } from './SocialIcon';
 import styles from './ContactConvergenceHero.module.css';
+
+const demoQard: QardData = {
+  profile: {
+    id: 'demo-profile',
+    user_id: 'demo-user',
+    slug: 'camille-morel',
+    display_name: 'Camille Morel',
+    first_name: 'Camille',
+    last_name: 'Morel',
+    headline: 'Designer produit',
+    bio: 'Je crée des expériences numériques simples, utiles et humaines.',
+    avatar_url: '/qard-demo-avatar.jpg',
+    banner_url: '/qard-demo-avatar.jpg',
+    company: 'Studio Camille',
+    job_title: 'Designer indépendante',
+    location: 'Lyon, France',
+    email_public: 'camille@qard.me',
+    phone_public: '+33 6 12 34 56 78',
+    website: null,
+    published: true,
+    show_branding: false,
+    plan: 'pro',
+    onboarding_completed: true,
+    qr_downloaded_at: null,
+    created_at: '',
+    updated_at: '',
+  },
+  links: [
+    {
+      id: 'demo-instagram', profile_id: 'demo-profile', platform: 'instagram',
+      label: 'Instagram', url: 'https://instagram.com/camille.design',
+      username: '@camille.design', position: 0, enabled: true, created_at: '', updated_at: '',
+    },
+    {
+      id: 'demo-linkedin', profile_id: 'demo-profile', platform: 'linkedin',
+      label: 'LinkedIn', url: 'https://linkedin.com', username: 'Camille Morel',
+      position: 1, enabled: true, created_at: '', updated_at: '',
+    },
+  ],
+  appearance: {
+    id: 'demo-appearance', profile_id: 'demo-profile', theme: 'frost',
+    background_type: 'gradient',
+    background_value: 'linear-gradient(145deg, #fafdff, #dfe9ff 54%, #eee7ff)',
+    accent_color: '#4265cf', text_color: '#111a5b', card_opacity: 0.96,
+    card_blur: 0, card_radius: 38, button_style: 'solid',
+    avatar_shape: 'circle', font_family: 'geist', animation_style: 'fade',
+    animation_enabled: true, show_banner: true, created_at: '', updated_at: '',
+  },
+};
 
 const contacts = [
   {
@@ -161,7 +211,7 @@ export function ContactConvergenceHero() {
         </div>
 
         <div className={styles.cardAnchor}>
-          <motion.article
+          <motion.div
             className={styles.exampleCard}
             style={
               reduced
@@ -170,46 +220,8 @@ export function ContactConvergenceHero() {
             }
             aria-label="Exemple de carte de contact Camille Morel"
           >
-            <div className={styles.portrait}>
-              <Image
-                src="/qard-demo-avatar.jpg"
-                alt="Portrait de Camille Morel"
-                fill
-                sizes="360px"
-                priority
-              />
-            </div>
-            <div className={styles.demoBrand}>
-              <b>Qard</b>
-              <small>Des gens · Des projets · Un monde plus ouvert</small>
-            </div>
-            <div className={styles.cardContent}>
-              <div className={styles.demoAvatar}>
-                <Image
-                  src="/qard-demo-avatar.jpg"
-                  alt=""
-                  fill
-                  sizes="118px"
-                />
-              </div>
-              <div>
-                <span className={styles.identity}>
-                  Camille Morel{' '}
-                  <b>
-                    <Check size={13} />
-                  </b>
-                </span>
-                <p>Designer produit indépendante</p>
-                <small>
-                  <MapPin size={13} /> Lyon, France
-                </small>
-              </div>
-              <span className={styles.available}>
-                <i /> Profil actif
-              </span>
-              <span className={styles.contactLabel}>Voir mes contacts</span>
-            </div>
-          </motion.article>
+            <QardPreview data={demoQard} compact />
+          </motion.div>
         </div>
 
         <div

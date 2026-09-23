@@ -1,6 +1,6 @@
 'use client';
 
-/* oxlint-disable jsx-a11y/prefer-tag-over-role, next/no-html-link-for-pages -- the card contains nested controls and the vCard endpoint is a download */
+/* oxlint-disable jsx-a11y/prefer-tag-over-role, next/no-html-link-for-pages -- the interactive card contains nested contact controls */
 import Image from 'next/image';
 import {
   useRef,
@@ -13,16 +13,11 @@ import { motion, useReducedMotion } from 'motion/react';
 import styles from './QardPreview.module.css';
 import {
   ArrowUpRight,
-  BriefcaseBusiness,
   Check,
   ChevronLeft,
   ChevronRight,
-  GraduationCap,
   MapPin,
   Monitor,
-  RotateCcw,
-  Share2,
-  UserPlus,
 } from 'lucide-react';
 import type { QardData, SocialLink } from '@/types/database';
 import { resolveAppearance } from '@/lib/qard/appearance';
@@ -46,14 +41,10 @@ export function QardPreview({
   data,
   compact = false,
   analyticsAttributes = false,
-  contactHref,
-  contactLabel = 'Enregistrer',
 }: {
   data: QardData;
   compact?: boolean;
   analyticsAttributes?: boolean;
-  contactHref?: string;
-  contactLabel?: string;
 }) {
   const { profile, appearance } = data;
   const cardRef = useRef<HTMLDivElement>(null);
@@ -65,7 +56,6 @@ export function QardPreview({
   const reducedMotion = useReducedMotion();
   const [side, setSide] = useState<'front' | 'back'>('front');
   const [isFlipping, setIsFlipping] = useState(false);
-  const [shared, setShared] = useState(false);
   const enabledLinks = data.links.filter(
     (link) => link.enabled && isSafePublicUrl(link.platform, link.url),
   );
@@ -84,7 +74,7 @@ export function QardPreview({
     directLinks.push({
       id: 'profile-email',
       platform: 'email',
-      label: 'M’écrire',
+      label: 'E-mail',
       url: `mailto:${profile.email_public}`,
       username: profile.email_public,
     });
@@ -96,7 +86,7 @@ export function QardPreview({
     directLinks.push({
       id: 'profile-phone',
       platform: 'phone',
-      label: 'M’appeler',
+      label: 'Téléphone',
       url: `tel:${profile.phone_public.replace(/\s/g, '')}`,
       username: profile.phone_public,
     });
@@ -204,22 +194,9 @@ export function QardPreview({
       element.style.setProperty('--ly', `${(y + 0.5) * 100}%`);
     });
   };
-  const share = async () => {
-    const url = `${window.location.origin}/u/${profile.slug}`;
-    try {
-      if (navigator.share)
-        await navigator.share({ title: `${profile.display_name} — Qard`, url });
-      else await navigator.clipboard.writeText(url);
-      setShared(true);
-      window.setTimeout(() => setShared(false), 1500);
-    } catch {
-      setShared(false);
-    }
-  };
-
   const frontTabIndex = side === 'front' && !isFlipping ? 0 : -1;
   const backTabIndex = side === 'back' && !isFlipping ? 0 : -1;
-  const vcardHref = contactHref ?? `/api/vcard/${profile.slug}`;
+  const displayLinks = [...networkLinks, ...directLinks];
   const renderLink = (link: DisplayLink) => (
     <a
       tabIndex={backTabIndex}
@@ -227,14 +204,14 @@ export function QardPreview({
       target={link.url.startsWith('http') ? '_blank' : undefined}
       rel="noreferrer"
       key={link.id}
-      className={`contact-tile ${link.platform}`}
+      className={`${styles.contactItem} qref-contact-item ${link.platform}`}
       data-qard-link-id={
         analyticsAttributes && !link.id.startsWith('profile-')
           ? link.id
           : undefined
       }
     >
-      <span className="brand-icon">
+      <span className={styles.contactIcon}>
         <SocialIcon platform={link.platform} />
       </span>
       <div>
@@ -243,30 +220,24 @@ export function QardPreview({
           {link.username || link.url.replace(/^(mailto:|tel:|https?:\/\/)/, '')}
         </small>
       </div>
-      <ArrowUpRight size={15} />
+      <ChevronRight className={styles.contactChevron} size={20} />
     </a>
   );
 
   return (
     <article
-      className={`${styles.root} qard-premium card-perspective theme-${appearance.theme}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ' compact' : ''}`}
+      className={`${styles.root} qard-premium theme-${appearance.theme}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ` ${styles.compact}` : ''}`}
       style={vars}
     >
-      <div className="swipe-orbit swipe-orbit-left" aria-hidden="true">
+      <div className={`${styles.swipeCue} ${styles.swipeCueLeft}`} aria-hidden="true">
         <ChevronLeft size={19} />
-        <i />
-        <i />
-        <i />
       </div>
-      <div className="swipe-orbit swipe-orbit-right" aria-hidden="true">
-        <i />
-        <i />
-        <i />
+      <div className={`${styles.swipeCue} ${styles.swipeCueRight}`} aria-hidden="true">
         <ChevronRight size={19} />
       </div>
-      <div className="card-breath">
+      <div className={styles.breath}>
         <motion.div
-          className="card-motion-shell"
+          className={styles.shell}
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.16}
@@ -281,7 +252,7 @@ export function QardPreview({
           transition={dragSpring}
         >
           <div
-            className={`identity-card side-${side}${isFlipping ? ' is-flipping' : ''}`}
+            className={`${styles.stage} ${side === 'back' ? styles.sideBack : styles.sideFront}${isFlipping ? ` ${styles.flipping}` : ''}`}
             ref={cardRef}
             role="button"
             tabIndex={0}
@@ -295,7 +266,7 @@ export function QardPreview({
             onPointerLeave={resetTilt}
           >
             <motion.div
-              className="flip-card"
+              className={styles.flip}
               initial={false}
               animate={{
                 rotateY: side === 'back' ? 180 : 0,
@@ -315,225 +286,147 @@ export function QardPreview({
               }}
               onAnimationComplete={() => setIsFlipping(false)}
             >
-              <div className="card-depth" aria-hidden="true" />
-              <div className="card-edge" aria-hidden="true" />
+              <div className={styles.depth} aria-hidden="true" />
+              <div className={styles.edge} aria-hidden="true" />
               <div
-                className="card-face card-front"
+                className={`${styles.face} ${styles.front}`}
                 aria-hidden={side !== 'front'}
               >
-                <div className="card-glint" aria-hidden="true" />
+                <div className={styles.glint} aria-hidden="true" />
                 <div
-                  className={`portrait-panel ${visual ? 'has-photo' : 'portrait-placeholder'}`}
+                  className={`${styles.banner} ${visual ? styles.hasBanner : styles.bannerPlaceholder}`}
                 >
                   {visual ? (
                     <Image
                       src={visual}
-                      alt={`Portrait de ${profile.display_name}`}
+                      alt={`Bannière de ${profile.display_name}`}
                       fill
                       loading="eager"
                       fetchPriority="high"
                       sizes="(max-width: 640px) 94vw, 420px"
                     />
                   ) : (
-                    <div
-                      className="monogram"
-                      aria-label={`Avatar ${profile.display_name[0]}`}
-                    >
-                      {profile.display_name.slice(0, 1).toUpperCase()}
-                    </div>
+                    <div className={styles.bannerShape} aria-hidden="true" />
                   )}
-                  <div className="card-brand-mark" aria-hidden="true">
+                  <div className={styles.brand} aria-hidden="true">
                     <b>Qard</b>
-                    <small>Des gens · Des projets · Un monde plus ouvert</small>
+                    <small>Des gens<br />Des projets<br />Un monde plus ouvert</small>
                   </div>
-                  <div className="portrait-scan" aria-hidden="true" />
+                  <p className={styles.bannerQuote} aria-hidden="true">
+                    Les bonnes<br />connexions font avancer<br />les belles idées.
+                  </p>
                 </div>
-                <p className="human-note" aria-hidden="true">
-                  Créer un web
-                  <br />
-                  plus humain.
-                </p>
-                <div className="identity-copy">
-                  <div className="portrait-avatar" aria-hidden="true">
+                <div className={styles.frontPanel}>
+                  <div className={styles.avatar} aria-hidden="true">
                     {avatarVisual ? (
-                      <Image src={avatarVisual} alt="" fill sizes="148px" />
+                      <Image src={avatarVisual} alt="" fill sizes="170px" />
                     ) : (
                       <span>
                         {profile.display_name.slice(0, 1).toUpperCase()}
                       </span>
                     )}
                   </div>
-                  <div className="name-row">
-                    <div>
-                      <h1>{profile.display_name}</h1>
-                    </div>
-                    <span className="verified" aria-label="Profil Qard">
+                  <div className={styles.nameRow}>
+                    <h1>{profile.display_name}</h1>
+                    <span className={styles.verified} aria-label="Profil Qard vérifié">
                       <Check size={13} />
                     </span>
                   </div>
                   {profile.headline && (
-                    <p className="headline">{profile.headline}</p>
+                    <p className={styles.headline}>{profile.headline}</p>
                   )}
-                  {(profile.job_title || profile.company) && (
-                    <p className="identity-role">
-                      {[profile.job_title, profile.company]
-                        .filter(Boolean)
-                        .join(' · ')}
-                    </p>
-                  )}
-                  {profile.location && (
-                    <p className="identity-location">
-                      <MapPin size={16} /> {profile.location}
-                    </p>
-                  )}
-                  {profile.bio && <p className="identity-bio">{profile.bio}</p>}
-                  <div className="identity-meta reference-meta">
-                    <span className="active-profile">
-                      <i /> Profil actif
-                    </span>
-                    {profile.job_title && (
-                      <span>
-                        <Monitor size={15} /> {profile.job_title}
-                      </span>
+                  <div className={styles.identityFacts}>
+                    {(profile.company || profile.job_title) && (
+                      <p>
+                        <span><Monitor size={17} /></span>
+                        {profile.company || profile.job_title}
+                      </p>
                     )}
-                    {profile.company && (
-                      <span>
-                        <GraduationCap size={16} /> {profile.company}
-                      </span>
+                    {profile.location && (
+                      <p>
+                        <span><MapPin size={17} /></span>
+                        {profile.location}
+                      </p>
                     )}
-                    {!profile.job_title &&
-                      !profile.company &&
-                      profile.headline && (
-                        <span>
-                          <BriefcaseBusiness size={15} /> {profile.headline}
-                        </span>
-                      )}
                   </div>
-                  <div className="primary-actions">
-                    <button
-                      tabIndex={frontTabIndex}
-                      className="action-primary"
-                      onClick={flip}
-                    >
-                      Voir mes contacts <ArrowUpRight size={17} />
-                    </button>
-                  </div>
+                  {profile.bio && <p className={styles.bio}>{profile.bio}</p>}
+                  <button
+                    tabIndex={frontTabIndex}
+                    className={styles.contactButton}
+                    onClick={flip}
+                  >
+                    Entrer en contact <ArrowUpRight size={22} />
+                  </button>
                 </div>
-                <button
-                  tabIndex={frontTabIndex}
-                  className="flip-hint qard-flip-hint front-flip-hint"
-                  onClick={flip}
-                >
-                  <i aria-hidden="true" /> Glissez pour retourner
-                </button>
               </div>
 
               <div
-                className="card-face card-back"
+                className={`${styles.face} ${styles.back}`}
                 aria-hidden={side !== 'back'}
               >
-                <div className="back-identity">
-                  <div className="back-brand" aria-hidden="true">
-                    <b>Qard</b>
-                    <span>✦</span>
+                <div className={styles.backBrand} aria-hidden="true">
+                  <b>Qard</b>
+                  <span>✦</span>
+                </div>
+                <div className={styles.backBanner} aria-hidden="true">
+                  {visual && (
+                    <Image
+                      src={visual}
+                      alt=""
+                      fill
+                      sizes="(max-width: 640px) 86vw, 380px"
+                    />
+                  )}
+                  <small>Des gens<br />Des projets<br />Un monde plus ouvert</small>
+                  <em>Les bonnes connexions font avancer les belles idées.</em>
+                  <div className={styles.backAvatar}>
+                    {avatarVisual ? (
+                      <Image src={avatarVisual} alt="" fill sizes="132px" />
+                    ) : (
+                      <span>{profile.display_name.slice(0, 1).toUpperCase()}</span>
+                    )}
                   </div>
-                  <div className="back-art" aria-hidden="true">
-                    <small>Des gens<br />Des projets<br />Un monde plus ouvert</small>
-                    <em>Les bonnes connexions font avancer les idées.</em>
-                    <div className="back-avatar">
-                      {avatarVisual ? (
-                        <Image
-                          src={avatarVisual}
-                          alt=""
-                          fill
-                          sizes="104px"
-                        />
-                      ) : (
-                        <span>
-                          {profile.display_name.slice(0, 1).toUpperCase()}
-                        </span>
-                      )}
-                    </div>
+                </div>
+                <div className={styles.backProfile}>
+                  <div className={styles.backName}>
+                    <h2>{profile.display_name}</h2>
+                    <span className={styles.verified} aria-hidden="true"><Check size={11} /></span>
                   </div>
-                  <div className="back-profile">
-                    <div>
-                      <div className="back-profile-name">
-                        <h2>{profile.display_name}</h2>
-                        <span className="verified" aria-hidden="true">
-                          <Check size={11} />
-                        </span>
-                      </div>
-                      {(profile.job_title || profile.headline) && (
-                        <p>{profile.job_title || profile.headline}</p>
-                      )}
-                    </div>
-                  </div>
-                  {profile.bio && (
-                    <div className="back-about">
-                      <strong>À propos</strong>
-                      <p className="back-bio">{profile.bio}</p>
-                    </div>
+                  {(profile.job_title || profile.headline) && (
+                    <p>{profile.job_title || profile.headline}</p>
                   )}
                 </div>
-                <div className="back-heading">
-                  <div>
-                    <span>Coordonnées &amp; réseaux</span>
+                {profile.bio && (
+                  <div className={styles.about}>
+                    <strong>À propos</strong>
+                    <p>{profile.bio}</p>
                   </div>
-                  <button
-                    tabIndex={backTabIndex}
-                    onClick={flip}
-                    aria-label="Retourner la carte"
-                  >
-                    <RotateCcw size={17} />
-                  </button>
-                </div>
-                <div className="contact-groups qard-contact-groups">
-                  {networkLinks.length > 0 && (
-                    <div className="contact-group">
-                      <span className="contact-group-label">Réseaux</span>
-                      <div className="contact-matrix network-matrix">
-                        {networkLinks.map(renderLink)}
-                      </div>
-                    </div>
-                  )}
-                  {directLinks.length > 0 && (
-                    <div className="contact-group">
-                      <span className="contact-group-label">Direct</span>
-                      <div className="contact-matrix direct-matrix">
-                        {directLinks.map(renderLink)}
-                      </div>
-                    </div>
-                  )}
-                  {networkLinks.length === 0 && directLinks.length === 0 && (
-                    <p className="qard-empty-contact">
+                )}
+                <h3 className={styles.contactsTitle}>Coordonnées &amp; réseaux</h3>
+                <div className={styles.contactList}>
+                  {displayLinks.map(renderLink)}
+                  {displayLinks.length === 0 && (
+                    <p className={styles.emptyContact}>
                       Les coordonnées apparaîtront ici.
                     </p>
                   )}
                 </div>
-                <div className="back-actions">
-                  <a
-                    tabIndex={backTabIndex}
-                    href={vcardHref}
-                    data-qard-contact={analyticsAttributes ? 'true' : undefined}
-                  >
-                    <UserPlus size={16} /> {contactLabel}
-                  </a>
-                  <button tabIndex={backTabIndex} onClick={share}>
-                    {shared ? <Check size={16} /> : <Share2 size={16} />}{' '}
-                    {shared ? 'Lien copié' : 'Partager'}
-                  </button>
-                </div>
-                <div className="back-footer">
-                  <span>@{profile.slug}</span>
-                  <span>Glissez pour revenir</span>
-                </div>
+                <button
+                  type="button"
+                  tabIndex={backTabIndex}
+                  className={styles.backFlip}
+                  onClick={flip}
+                  aria-label="Revenir au profil"
+                >
+                  <ChevronLeft size={18} /> Profil
+                </button>
               </div>
             </motion.div>
           </div>
         </motion.div>
       </div>
       {profile.show_branding && (
-        <a className="qard-branding" href="/">
+        <a className={styles.branding} href="/">
           Créé avec <b>Qard</b>
         </a>
       )}
