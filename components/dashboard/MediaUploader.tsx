@@ -1,7 +1,15 @@
 'use client';
 import Image from 'next/image';
 import { useRef, useState } from 'react';
-import { Check, ImagePlus, Loader2, Move, Trash2, X, ZoomIn } from 'lucide-react';
+import {
+  Check,
+  ImagePlus,
+  Loader2,
+  Move,
+  Trash2,
+  X,
+  ZoomIn,
+} from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 
 export function MediaUploader({
@@ -165,7 +173,9 @@ export function MediaUploader({
                 <X size={18} />
               </button>
             </header>
-            <div className={`cropper-stage ${bucket === 'banners' ? 'banner' : 'avatar'}`}>
+            <div
+              className={`cropper-stage ${bucket === 'banners' ? 'banner' : 'avatar'}`}
+            >
               <Image
                 src={selection.preview}
                 alt="Aperçu du cadrage"
@@ -180,22 +190,77 @@ export function MediaUploader({
             </div>
             <div className="cropper-controls">
               <label>
-                <span><ZoomIn size={15} /> Zoom</span>
-                <input type="range" min="1" max="2.4" step="0.01" value={crop.zoom} onChange={(event) => setCrop((current) => ({ ...current, zoom: Number(event.target.value) }))} />
+                <span>
+                  <ZoomIn size={15} /> Zoom
+                </span>
+                <input
+                  type="range"
+                  min="1"
+                  max="2.4"
+                  step="0.01"
+                  value={crop.zoom}
+                  onChange={(event) =>
+                    setCrop((current) => ({
+                      ...current,
+                      zoom: Number(event.target.value),
+                    }))
+                  }
+                />
               </label>
               <label>
-                <span><Move size={15} /> Horizontal</span>
-                <input type="range" min="-100" max="100" value={crop.x} onChange={(event) => setCrop((current) => ({ ...current, x: Number(event.target.value) }))} />
+                <span>
+                  <Move size={15} /> Horizontal
+                </span>
+                <input
+                  type="range"
+                  min="-100"
+                  max="100"
+                  value={crop.x}
+                  onChange={(event) =>
+                    setCrop((current) => ({
+                      ...current,
+                      x: Number(event.target.value),
+                    }))
+                  }
+                />
               </label>
               <label>
-                <span><Move size={15} /> Vertical</span>
-                <input type="range" min="-100" max="100" value={crop.y} onChange={(event) => setCrop((current) => ({ ...current, y: Number(event.target.value) }))} />
+                <span>
+                  <Move size={15} /> Vertical
+                </span>
+                <input
+                  type="range"
+                  min="-100"
+                  max="100"
+                  value={crop.y}
+                  onChange={(event) =>
+                    setCrop((current) => ({
+                      ...current,
+                      y: Number(event.target.value),
+                    }))
+                  }
+                />
               </label>
             </div>
             <footer>
-              <button type="button" className="button button-ghost" onClick={closeCropper}>Annuler</button>
-              <button type="button" className="button" onClick={() => void upload()} disabled={loading}>
-                {loading ? <Loader2 className="spin" size={17} /> : <Check size={17} />}
+              <button
+                type="button"
+                className="button button-ghost"
+                onClick={closeCropper}
+              >
+                Annuler
+              </button>
+              <button
+                type="button"
+                className="button"
+                onClick={() => void upload()}
+                disabled={loading}
+              >
+                {loading ? (
+                  <Loader2 className="spin" size={17} />
+                ) : (
+                  <Check size={17} />
+                )}
                 Utiliser ce cadrage
               </button>
             </footer>
@@ -211,8 +276,8 @@ async function prepareImage(
   bucket: 'avatars' | 'banners',
   crop: { zoom: number; x: number; y: number },
 ) {
-  const targetWidth = bucket === 'avatars' ? 1200 : 1600;
-  const targetHeight = bucket === 'avatars' ? 1200 : 1000;
+  const targetWidth = bucket === 'avatars' ? 1200 : 1560;
+  const targetHeight = bucket === 'avatars' ? 1200 : 948;
   const bitmap = await createImageBitmap(file, {
     imageOrientation: 'from-image',
   });

@@ -12,12 +12,9 @@ import {
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import {
-  appearanceGradients,
   appearanceThemeCategories,
   appearanceThemes,
   type AppearanceThemeCategory,
-  compatibleBackgroundValue,
-  isValidBackground,
 } from '@/lib/qard/appearance';
 import { appearanceSchema } from '@/lib/qard/validation';
 import type { Appearance, QardData } from '@/types/database';
@@ -44,9 +41,9 @@ export function AppearanceEditor({ data }: { data: QardData }) {
       ?.category ?? 'essential';
   const [themeCategory, setThemeCategory] =
     useState<AppearanceThemeCategory>(initialThemeCategory);
-  const [activeSection, setActiveSection] = useState<
-    'ambiance' | 'mouvement'
-  >('ambiance');
+  const [activeSection, setActiveSection] = useState<'ambiance' | 'mouvement'>(
+    'ambiance',
+  );
   const appearanceRef = useRef(data.appearance);
   const saveSequence = useRef(0);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
@@ -238,157 +235,6 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                       </button>
                     ))}
                 </div>
-                <div className="appearance-divider" />
-                <div className="appearance-color-grid">
-                  <label>
-                    <input
-                      aria-label="Couleur d’accent"
-                      type="color"
-                      value={appearance.accent_color}
-                      onChange={(e) =>
-                        updateDraft({ accent_color: e.target.value })
-                      }
-                      onBlur={() => void save(appearanceRef.current)}
-                    />
-                    <span>
-                      <b>Accent</b>
-                      <small>Bordures et détails</small>
-                    </span>
-                  </label>
-                  <label>
-                    <input
-                      aria-label="Couleur du texte"
-                      type="color"
-                      value={appearance.text_color}
-                      onChange={(e) =>
-                        updateDraft({ text_color: e.target.value })
-                      }
-                      onBlur={() => void save(appearanceRef.current)}
-                    />
-                    <span>
-                      <b>Texte</b>
-                      <small>Nom et informations</small>
-                    </span>
-                  </label>
-                </div>
-                <div className="visual-option-grid background-options">
-                  {[
-                    ['color', 'Uni', 'Une couleur nette'],
-                    ['gradient', 'Dégradé', 'Une lumière progressive'],
-                    ['image', 'Image', 'Votre propre univers'],
-                  ].map(([item, label, help]) => (
-                    <button
-                      key={item}
-                      className={
-                        appearance.background_type === item ? 'selected' : ''
-                      }
-                      onClick={() => {
-                        const backgroundType =
-                          item as Appearance['background_type'];
-                        const current = appearanceRef.current;
-                        const backgroundValue = compatibleBackgroundValue(
-                          backgroundType,
-                          current.background_value,
-                          current.theme,
-                          data.profile.banner_url ?? data.profile.avatar_url,
-                        );
-                        void save(
-                          updateDraft({
-                            background_type: backgroundType,
-                            background_value: backgroundValue,
-                          }),
-                        );
-                      }}
-                    >
-                      <i className={`background-demo ${item}`} />
-                      <span>
-                        <b>{label}</b>
-                        <small>{help}</small>
-                      </span>
-                      {appearance.background_type === item && (
-                        <Check size={15} />
-                      )}
-                    </button>
-                  ))}
-                </div>
-                {appearance.background_type === 'color' && (
-                  <label className="appearance-value-field appearance-background-color">
-                    <span>Couleur du fond</span>
-                    <input
-                      aria-label="Couleur du fond"
-                      type="color"
-                      value={appearance.background_value}
-                      onChange={(e) =>
-                        updateDraft({ background_value: e.target.value })
-                      }
-                      onBlur={() => void save(appearanceRef.current)}
-                    />
-                  </label>
-                )}
-                {appearance.background_type === 'gradient' && (
-                  <div
-                    className="appearance-gradient-grid"
-                    aria-label="Dégradés"
-                  >
-                    {appearanceGradients.map(([label, value]) => (
-                      <button
-                        type="button"
-                        key={label}
-                        aria-label={`Dégradé ${label}`}
-                        aria-pressed={appearance.background_value === value}
-                        className={
-                          appearance.background_value === value
-                            ? 'selected'
-                            : ''
-                        }
-                        style={{ background: value }}
-                        onClick={() =>
-                          void save(updateDraft({ background_value: value }))
-                        }
-                      >
-                        <span>{label}</span>
-                        {appearance.background_value === value && (
-                          <Check size={15} />
-                        )}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                {appearance.background_type === 'image' && (
-                  <label className="appearance-value-field">
-                    <span>Adresse HTTPS de l’image</span>
-                    <input
-                      type="url"
-                      placeholder="https://…"
-                      value={appearance.background_value}
-                      aria-invalid={
-                        Boolean(appearance.background_value) &&
-                        !isValidBackground('image', appearance.background_value)
-                      }
-                      onChange={(e) =>
-                        updateDraft({ background_value: e.target.value })
-                      }
-                      onBlur={() => {
-                        if (
-                          !isValidBackground(
-                            'image',
-                            appearanceRef.current.background_value,
-                          )
-                        ) {
-                          setStatus(
-                            'Erreur : utilisez une adresse d’image HTTPS valide',
-                          );
-                          return;
-                        }
-                        void save(appearanceRef.current);
-                      }}
-                    />
-                    <small>
-                      Visible au verso et comme fond lorsque la photo est
-                      masquée.
-                    </small>
-                  </label>
-                )}
                 <label className="visual-toggle">
                   <span className="photo-demo">
                     <ImageIcon size={19} />
@@ -454,7 +300,6 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                 </div>
               </section>
             )}
-
           </div>
         </section>
       </div>

@@ -12,12 +12,13 @@ import {
 import { motion, useReducedMotion } from 'motion/react';
 import styles from './QardPreview.module.css';
 import {
-  ArrowUpRight,
+  ArrowRight,
   Check,
   ChevronLeft,
   ChevronRight,
   MapPin,
   Monitor,
+  UsersRound,
 } from 'lucide-react';
 import type { QardData, SocialLink } from '@/types/database';
 import { resolveAppearance } from '@/lib/qard/appearance';
@@ -227,12 +228,21 @@ export function QardPreview({
   return (
     <article
       className={`${styles.root} qard-premium theme-${appearance.theme}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ` ${styles.compact}` : ''}`}
+      data-entry-animation={
+        appearance.animation_enabled ? appearance.animation_style : 'none'
+      }
       style={vars}
     >
-      <div className={`${styles.swipeCue} ${styles.swipeCueLeft}`} aria-hidden="true">
+      <div
+        className={`${styles.swipeCue} ${styles.swipeCueLeft}`}
+        aria-hidden="true"
+      >
         <ChevronLeft size={19} />
       </div>
-      <div className={`${styles.swipeCue} ${styles.swipeCueRight}`} aria-hidden="true">
+      <div
+        className={`${styles.swipeCue} ${styles.swipeCueRight}`}
+        aria-hidden="true"
+      >
         <ChevronRight size={19} />
       </div>
       <div className={styles.breath}>
@@ -310,10 +320,20 @@ export function QardPreview({
                   )}
                   <div className={styles.brand} aria-hidden="true">
                     <b>Qard</b>
-                    <small>Des gens<br />Des projets<br />Un monde plus ouvert</small>
+                    <small>
+                      Des gens
+                      <br />
+                      Des projets
+                      <br />
+                      Un monde plus ouvert
+                    </small>
                   </div>
                   <p className={styles.bannerQuote} aria-hidden="true">
-                    Les bonnes<br />connexions font avancer<br />les belles idées.
+                    Les bonnes
+                    <br />
+                    connexions font avancer
+                    <br />
+                    les belles idées.
                   </p>
                 </div>
                 <div className={styles.frontPanel}>
@@ -328,7 +348,10 @@ export function QardPreview({
                   </div>
                   <div className={styles.nameRow}>
                     <h1>{profile.display_name}</h1>
-                    <span className={styles.verified} aria-label="Profil Qard vérifié">
+                    <span
+                      className={styles.verified}
+                      aria-label="Profil Qard vérifié"
+                    >
                       <Check size={13} />
                     </span>
                   </div>
@@ -338,13 +361,17 @@ export function QardPreview({
                   <div className={styles.identityFacts}>
                     {(profile.company || profile.job_title) && (
                       <p>
-                        <span><Monitor size={17} /></span>
+                        <span>
+                          <Monitor size={17} />
+                        </span>
                         {profile.company || profile.job_title}
                       </p>
                     )}
                     {profile.location && (
                       <p>
-                        <span><MapPin size={17} /></span>
+                        <span>
+                          <MapPin size={17} />
+                        </span>
                         {profile.location}
                       </p>
                     )}
@@ -355,7 +382,17 @@ export function QardPreview({
                     className={styles.contactButton}
                     onClick={flip}
                   >
-                    Entrer en contact <ArrowUpRight size={22} />
+                    <span
+                      className={styles.contactButtonIcon}
+                      aria-hidden="true"
+                    >
+                      <UsersRound size={21} />
+                    </span>
+                    <span>Entrer en contact</span>
+                    <ArrowRight
+                      className={styles.contactButtonArrow}
+                      size={22}
+                    />
                   </button>
                 </div>
               </div>
@@ -377,20 +414,30 @@ export function QardPreview({
                       sizes="(max-width: 640px) 86vw, 380px"
                     />
                   )}
-                  <small>Des gens<br />Des projets<br />Un monde plus ouvert</small>
+                  <small>
+                    Des gens
+                    <br />
+                    Des projets
+                    <br />
+                    Un monde plus ouvert
+                  </small>
                   <em>Les bonnes connexions font avancer les belles idées.</em>
                   <div className={styles.backAvatar}>
                     {avatarVisual ? (
                       <Image src={avatarVisual} alt="" fill sizes="132px" />
                     ) : (
-                      <span>{profile.display_name.slice(0, 1).toUpperCase()}</span>
+                      <span>
+                        {profile.display_name.slice(0, 1).toUpperCase()}
+                      </span>
                     )}
                   </div>
                 </div>
                 <div className={styles.backProfile}>
                   <div className={styles.backName}>
                     <h2>{profile.display_name}</h2>
-                    <span className={styles.verified} aria-hidden="true"><Check size={11} /></span>
+                    <span className={styles.verified} aria-hidden="true">
+                      <Check size={11} />
+                    </span>
                   </div>
                   {(profile.job_title || profile.headline) && (
                     <p>{profile.job_title || profile.headline}</p>
@@ -402,7 +449,9 @@ export function QardPreview({
                     <p>{profile.bio}</p>
                   </div>
                 )}
-                <h3 className={styles.contactsTitle}>Coordonnées &amp; réseaux</h3>
+                <h3 className={styles.contactsTitle}>
+                  Coordonnées &amp; réseaux
+                </h3>
                 <div className={styles.contactList}>
                   {displayLinks.map(renderLink)}
                   {displayLinks.length === 0 && (

@@ -103,6 +103,7 @@ const mobileQuestions = [
 export function ProfileEditor({ data }: { data: QardData }) {
   const [avatar, setAvatar] = useState(data.profile.avatar_url);
   const [banner, setBanner] = useState(data.profile.banner_url);
+  const [showBanner, setShowBanner] = useState(data.appearance.show_banner);
   const [status, setStatus] = useState<
     'idle' | 'dirty' | 'saving' | 'saved' | 'error'
   >('idle');
@@ -112,10 +113,14 @@ export function ProfileEditor({ data }: { data: QardData }) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questionAnswer, setQuestionAnswer] = useState('');
   const [guideBusy, setGuideBusy] = useState(false);
-  const [guideCompleted, setGuideCompleted] = useState(Boolean(
-    data.profile.email_public?.trim() || data.profile.phone_public?.trim() ||
-    data.profile.website?.trim() || data.links.some((link) => link.enabled),
-  ));
+  const [guideCompleted, setGuideCompleted] = useState(
+    Boolean(
+      data.profile.email_public?.trim() ||
+      data.profile.phone_public?.trim() ||
+      data.profile.website?.trim() ||
+      data.links.some((link) => link.enabled),
+    ),
+  );
   const [guideError, setGuideError] = useState('');
   const guideRef = useRef<HTMLDialogElement>(null);
   const first = useRef(true);
@@ -224,6 +229,10 @@ export function ProfileEditor({ data }: { data: QardData }) {
     () => ({
       ...data,
       links: deferredLinks,
+      appearance: {
+        ...data.appearance,
+        show_banner: showBanner,
+      },
       profile: {
         ...data.profile,
         ...deferredValues,
@@ -231,13 +240,37 @@ export function ProfileEditor({ data }: { data: QardData }) {
         banner_url: banner,
       },
     }),
-    [data, deferredValues, avatar, banner, deferredLinks],
+    [data, deferredValues, avatar, banner, deferredLinks, showBanner],
   );
+
+  function changeBanner(nextBanner: string | null) {
+    setBanner(nextBanner);
+    if (!nextBanner || showBanner) return;
+
+    setShowBanner(true);
+    void createClient()
+      .from('qard_appearance')
+      .update({ show_banner: true })
+      .eq('profile_id', data.profile.id)
+      .then(({ error }) => {
+        if (error) {
+          setShowBanner(false);
+          setStatus('error');
+        }
+      });
+  }
 
   function advanceGuide() {
     setGuideError('');
     if (questionIndex === mobileQuestions.length - 1) {
-      setGuideCompleted(Boolean(getValues('email_public') || getValues('phone_public') || getValues('website') || links.some((link) => link.enabled)));
+      setGuideCompleted(
+        Boolean(
+          getValues('email_public') ||
+          getValues('phone_public') ||
+          getValues('website') ||
+          links.some((link) => link.enabled),
+        ),
+      );
       setGuideOpen(false);
       setQuestionIndex(0);
       return;
@@ -378,6 +411,14 @@ export function ProfileEditor({ data }: { data: QardData }) {
               onChange={setAvatar}
               label="Photo de profil"
             />
+            <MediaUploader
+              bucket="banners"
+              userId={data.profile.user_id}
+              value={banner}
+              onChange={changeBanner}
+              label="Bannière"
+              maxMb={8}
+            />
             <div className="field-row">
               <label>
                 Nom affiché
@@ -398,14 +439,6 @@ export function ProfileEditor({ data }: { data: QardData }) {
           <details className="editor-section">
             <summary>Informations complémentaires</summary>
             <div className="editor-section-body">
-              <MediaUploader
-                bucket="banners"
-                userId={data.profile.user_id}
-                value={banner}
-                onChange={setBanner}
-                label="Bannière"
-                maxMb={8}
-              />
               <div className="field-row two">
                 <label>
                   Prénom
