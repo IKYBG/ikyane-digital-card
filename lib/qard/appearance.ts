@@ -47,7 +47,7 @@ export const appearanceThemes = [
     name: 'Opaline',
     description: 'Blanc lumineux et bleu lavande',
     category: 'essential',
-    bg: 'linear-gradient(145deg, #fafdff, #dfe9ff 54%, #eee7ff)',
+    bg: 'linear-gradient(145deg, #edf2f7, #cbd7ec 54%, #ddd6ed)',
     accent: '#3156be',
     text: '#101c68',
     pro: false,
@@ -95,7 +95,7 @@ export const appearanceThemes = [
     name: 'Aube Rosée',
     description: 'Nacre rosée et lilas doux',
     category: 'expressive',
-    bg: 'linear-gradient(145deg, #fff5f8, #ecdfff 55%, #dae8ff)',
+    bg: 'linear-gradient(145deg, #f2e4e9, #dacbe9 55%, #cad8e9)',
     accent: '#7652b6',
     text: '#33215b',
     pro: false,
@@ -127,7 +127,7 @@ export const appearanceThemes = [
     name: 'Perle Studio',
     description: 'Ivoire, lumière et précision',
     category: 'minimal',
-    bg: 'linear-gradient(145deg, #fffefd, #e9eefb 58%, #f1e9ff)',
+    bg: 'linear-gradient(145deg, #f0efec, #d7ddea 58%, #e0d9ea)',
     accent: '#3655a5',
     text: '#15205c',
     pro: true,
@@ -159,7 +159,7 @@ export const appearanceThemes = [
     name: 'Verre Sauge',
     description: 'Minéral, calme et lumineux',
     category: 'expressive',
-    bg: 'linear-gradient(145deg, #d8e2d6, #f1f4ed)',
+    bg: 'linear-gradient(145deg, #bdc9bc, #e1e7dc)',
     accent: '#355c49',
     text: '#18251e',
     pro: true,
@@ -191,7 +191,7 @@ export const appearanceThemes = [
     name: 'Galerie',
     description: 'Blanc architectural et bleu encre',
     category: 'minimal',
-    bg: '#f8f9fd',
+    bg: '#e9ecf3',
     accent: '#18266a',
     text: '#121942',
     pro: true,
@@ -207,7 +207,7 @@ export const appearanceThemes = [
     name: 'Papier Bleu',
     description: 'Papier ivoire et encre cobalt',
     category: 'minimal',
-    bg: '#f3f0e9',
+    bg: '#e4e0d7',
     accent: '#233c99',
     text: '#171f4f',
     pro: true,
@@ -221,10 +221,10 @@ export const appearanceThemes = [
 ] as const satisfies readonly AppearanceTheme[];
 
 export const appearanceGradients = [
-  ['Opaline', 'linear-gradient(145deg, #fafdff, #dfe9ff 54%, #eee7ff)'],
+  ['Opaline', 'linear-gradient(145deg, #edf2f7, #cbd7ec 54%, #ddd6ed)'],
   ['Studio', 'linear-gradient(145deg, #06184f, #315cae)'],
   ['Iris', 'linear-gradient(145deg, #101d4e, #4a316f)'],
-  ['Rosée', 'linear-gradient(145deg, #fff5f8, #ecdfff 55%, #dae8ff)'],
+  ['Rosée', 'linear-gradient(145deg, #f2e4e9, #dacbe9 55%, #cad8e9)'],
 ] as const;
 
 const hexPattern = /^#[0-9a-f]{6}$/i;

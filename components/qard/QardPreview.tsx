@@ -49,6 +49,13 @@ export function QardPreview({
   analyticsAttributes?: boolean;
 }) {
   const { profile, appearance } = data;
+  const structuredName = [profile.first_name, profile.last_name]
+    .map((part) => part?.trim())
+    .filter(Boolean);
+  const fullName =
+    (structuredName.length === 2 ? structuredName.join(' ') : '') ||
+    profile.display_name.trim() ||
+    structuredName.join(' ');
   const cardRef = useRef<HTMLDivElement>(null);
   const tiltFrameRef = useRef<number | null>(null);
   const dragFlippedRef = useRef(false);
@@ -311,7 +318,7 @@ export function QardPreview({
                     <Image
                       key={visual}
                       src={visual}
-                      alt={`Bannière de ${profile.display_name}`}
+                      alt={`Bannière de ${fullName}`}
                       fill
                       loading="eager"
                       fetchPriority="high"
@@ -323,21 +330,7 @@ export function QardPreview({
                   )}
                   <div className={styles.brand} aria-hidden="true">
                     <b>Qard</b>
-                    <small>
-                      Des gens
-                      <br />
-                      Des projets
-                      <br />
-                      Un monde plus ouvert
-                    </small>
                   </div>
-                  <p className={styles.bannerQuote} aria-hidden="true">
-                    Les bonnes
-                    <br />
-                    connexions font avancer
-                    <br />
-                    les belles idées.
-                  </p>
                 </div>
                 <div className={styles.frontPanel}>
                   <div className={styles.avatar} aria-hidden="true">
@@ -345,12 +338,12 @@ export function QardPreview({
                       <Image src={avatarVisual} alt="" fill sizes="170px" />
                     ) : (
                       <span>
-                        {profile.display_name.slice(0, 1).toUpperCase()}
+                        {fullName.slice(0, 1).toUpperCase()}
                       </span>
                     )}
                   </div>
                   <div className={styles.nameRow}>
-                    <h1>{profile.display_name}</h1>
+                    <h1>{fullName}</h1>
                     <span
                       className={styles.verified}
                       aria-label="Profil Qard vérifié"
@@ -433,27 +426,19 @@ export function QardPreview({
                       unoptimized
                     />
                   )}
-                  <small>
-                    Des gens
-                    <br />
-                    Des projets
-                    <br />
-                    Un monde plus ouvert
-                  </small>
-                  <em>Les bonnes connexions font avancer les belles idées.</em>
                   <div className={styles.backAvatar}>
                     {avatarVisual ? (
                       <Image src={avatarVisual} alt="" fill sizes="132px" />
                     ) : (
                       <span>
-                        {profile.display_name.slice(0, 1).toUpperCase()}
+                        {fullName.slice(0, 1).toUpperCase()}
                       </span>
                     )}
                   </div>
                 </div>
                 <div className={styles.backProfile}>
                   <div className={styles.backName}>
-                    <h2>{profile.display_name}</h2>
+                    <h2>{fullName}</h2>
                     <span className={styles.verified} aria-hidden="true">
                       <Check size={11} />
                     </span>

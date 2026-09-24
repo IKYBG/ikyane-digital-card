@@ -200,11 +200,22 @@ export function ProfileEditor({ data }: { data: QardData }) {
     }
     setStatus('dirty');
     const timer = window.setTimeout(async () => {
-      const parsed = profileSchema.safeParse(values);
-      if (!parsed.success) return;
+      const payload = Object.fromEntries(
+        (
+          Object.entries(profileSchema.shape) as Array<
+            [keyof Values, z.ZodType]
+          >
+        ).flatMap(([key, schema]) => {
+          const parsedField = schema.safeParse(values[key]);
+          return parsedField.success ? [[key, parsedField.data]] : [];
+        }),
+      ) as Partial<Values>;
+      if (Object.keys(payload).length === 0) {
+        setStatus('error');
+        return;
+      }
       setStatus('saving');
       const revision = ++saveRevision.current;
-      const payload = parsed.data;
       saveQueue.current = saveQueue.current
         .catch(() => undefined)
         .then(async () => {

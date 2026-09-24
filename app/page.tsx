@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { ArrowUpRight, Check, Link2, RefreshCw } from 'lucide-react';
-import { ContactConvergenceHero } from '@/components/qard/ContactConvergenceHero';
 import { MarketingNav } from '@/components/qard/MarketingNav';
+import { PrismaQardHero } from '@/components/qard/PrismaQardHero';
 import { QardFeatureSteps } from '@/components/qard/QardFeatureSteps';
 import { QardLogo } from '@/components/qard/QardLogo';
-import AnimatedGradient from '@/components/ui/animated-gradient';
 import styles from './landing.module.css';
 
 const promises = [
@@ -16,9 +15,8 @@ const promises = [
 export default function Home() {
   return (
     <main className={`qard-site ${styles.site}`}>
-      <AnimatedGradient className={styles.background} config={{ color1: '#fbfcff', color2: '#e7edff', color3: '#eeeaff' }} noise={{ opacity: 0.018, scale: 1.4 }} />
       <MarketingNav />
-      <ContactConvergenceHero />
+      <PrismaQardHero />
       <section className={styles.process} id="fonctionnement">
         <header className={styles.sectionHeader}>
           <span>Comment ça fonctionne</span>
