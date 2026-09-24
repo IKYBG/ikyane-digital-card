@@ -943,3 +943,56 @@
     animation: none;
   }
 }
+
+/* Qard authentication — product-led, calm and consistent with the cards. */
+.auth-shell-v2 {
+  color: var(--brand-ink);
+  background: #f5f8ff;
+}
+.auth-shell-v2 > section {
+  grid-template-columns: minmax(360px, 0.9fr) minmax(380px, 460px);
+  gap: clamp(36px, 7vw, 104px);
+  width: min(1120px, 100%);
+  margin-inline: auto;
+}
+.auth-background-veil {
+  background: radial-gradient(circle at 18% 48%, rgb(255 255 255 / 0.18), transparent 38%);
+}
+.auth-product-panel {
+  position: relative;
+  display: grid !important;
+  min-height: 610px;
+  align-items: center;
+  grid-template-columns: minmax(0, 1fr) 250px;
+  gap: 24px;
+}
+.auth-product-copy { position: relative; z-index: 2; }
+.auth-product-copy > span { color: var(--brand-blue); font-size: 0.72rem; font-weight: 760; letter-spacing: 0.12em; text-transform: uppercase; }
+.auth-product-copy h1 { max-width: 520px; margin: 20px 0; color: var(--brand-ink); font-size: clamp(2.7rem, 4.7vw, 5rem); font-weight: 750; letter-spacing: -0.07em; line-height: 0.95; }
+.auth-product-copy p { max-width: 430px; margin: 0; color: var(--brand-copy); font-size: 0.94rem; line-height: 1.65; }
+.auth-mini-qard {
+  position: relative;
+  z-index: 1;
+  width: 230px;
+  aspect-ratio: 0.59;
+  overflow: hidden;
+  border: 1px solid rgb(66 101 207 / 0.28);
+  border-radius: 29px;
+  background: white;
+  box-shadow: 0 34px 82px rgb(38 51 111 / 0.16);
+  transform: rotate(3deg);
+}
+.auth-mini-banner { height: 38%; padding: 22px; color: white; background: linear-gradient(145deg, #1b3e86, #7699dd); }
+.auth-mini-banner b { font-size: 1.55rem; letter-spacing: -0.07em; }.auth-mini-banner small { display: block; margin-top: 18px; font-size: 0.42rem; font-weight: 700; letter-spacing: 0.16em; line-height: 1.55; text-transform: uppercase; }
+.auth-mini-body { display: flex; height: 62%; align-items: center; flex-direction: column; padding: 55px 18px 18px; color: var(--brand-ink); }
+.auth-mini-avatar { position: absolute; top: 31%; display: grid; width: 84px; height: 84px; place-items: center; border: 5px solid white; border-radius: 50%; color: var(--brand-blue); background: #e7eeff; }
+.auth-mini-body > strong { display: flex; align-items: center; gap: 6px; font-size: 1.05rem; }.auth-mini-body > strong i { display: grid; width: 18px; height: 18px; place-items: center; border-radius: 50%; color: white; background: var(--brand-blue); }
+.auth-mini-body > small { margin-top: 5px; color: var(--brand-copy); }.auth-mini-body > div { display: flex; align-items: center; gap: 8px; margin-top: 30px; font-size: 0.72rem; }.auth-mini-body button { width: 100%; min-height: 43px; margin-top: auto; border: 0; border-radius: 999px; color: var(--brand-ink); background: #dbe6ff; font-weight: 750; }
+.auth-mini-qr { position: absolute; right: -13px; bottom: 80px; display: grid; width: 58px; height: 58px; place-items: center; border: 1px solid var(--brand-line); border-radius: 15px; color: var(--brand-ink); background: white; box-shadow: 0 13px 30px rgb(38 51 111 / 0.15); }
+.auth-card-frame { border: 1px solid var(--brand-line); border-radius: 29px; background: rgb(255 255 255 / 0.7); box-shadow: 0 34px 90px rgb(38 51 111 / 0.13); }
+.auth-card-frame::before { background: linear-gradient(90deg, transparent, rgb(66 101 207 / 0.66), transparent); animation-duration: 8s; }
+.auth-form-card { border-radius: 28px; background: rgb(253 254 255 / 0.97); backdrop-filter: blur(22px); }
+@media (max-width: 900px) {
+  .auth-shell-v2 > section { grid-template-columns: 1fr; width: min(100%, 510px); }
+  .auth-product-panel { display: none !important; }
+}

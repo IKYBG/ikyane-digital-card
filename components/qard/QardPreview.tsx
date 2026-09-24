@@ -13,11 +13,12 @@ import { motion, useReducedMotion } from 'motion/react';
 import styles from './QardPreview.module.css';
 import {
   ArrowRight,
+  BriefcaseBusiness,
+  Building2,
   Check,
   ChevronLeft,
   ChevronRight,
   MapPin,
-  Monitor,
   UsersRound,
 } from 'lucide-react';
 import type { QardData, SocialLink } from '@/types/database';
@@ -308,12 +309,14 @@ export function QardPreview({
                 >
                   {visual ? (
                     <Image
+                      key={visual}
                       src={visual}
                       alt={`Bannière de ${profile.display_name}`}
                       fill
                       loading="eager"
                       fetchPriority="high"
                       sizes="(max-width: 640px) 94vw, 420px"
+                      unoptimized
                     />
                   ) : (
                     <div className={styles.bannerShape} aria-hidden="true" />
@@ -355,16 +358,30 @@ export function QardPreview({
                       <Check size={13} />
                     </span>
                   </div>
-                  {profile.headline && (
-                    <p className={styles.headline}>{profile.headline}</p>
-                  )}
                   <div className={styles.identityFacts}>
-                    {(profile.company || profile.job_title) && (
+                    {profile.headline && (
                       <p>
                         <span>
-                          <Monitor size={17} />
+                          <BriefcaseBusiness size={17} />
                         </span>
-                        {profile.company || profile.job_title}
+                        {profile.headline}
+                      </p>
+                    )}
+                    {profile.job_title &&
+                      profile.job_title !== profile.headline && (
+                        <p>
+                          <span>
+                            <BriefcaseBusiness size={17} />
+                          </span>
+                          {profile.job_title}
+                        </p>
+                      )}
+                    {profile.company && (
+                      <p>
+                        <span>
+                          <Building2 size={17} />
+                        </span>
+                        {profile.company}
                       </p>
                     )}
                     {profile.location && (
@@ -408,10 +425,12 @@ export function QardPreview({
                 <div className={styles.backBanner} aria-hidden="true">
                   {visual && (
                     <Image
+                      key={visual}
                       src={visual}
                       alt=""
                       fill
                       sizes="(max-width: 640px) 86vw, 380px"
+                      unoptimized
                     />
                   )}
                   <small>

@@ -131,10 +131,15 @@ function ContactParticle({
     [compact ? 0.84 : 1, compact ? 0.72 : 0.8],
   );
   const labelOpacity = useTransform(progress, [0, 0.34, 0.58], [1, 1, 0]);
+  const particleOpacity = useTransform(
+    progress,
+    [0, 0.68, 0.79, 0.88],
+    [1, 1, 0.72, 0],
+  );
   return (
     <motion.div
       className={styles.particle}
-      style={reduced ? undefined : { x, y, scale }}
+      style={reduced ? undefined : { x, y, scale, opacity: particleOpacity }}
       data-platform={contact.platform}
     >
       <span>

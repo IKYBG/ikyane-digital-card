@@ -204,11 +204,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
       if (!parsed.success) return;
       setStatus('saving');
       const revision = ++saveRevision.current;
-      const payload = {
-        ...parsed.data,
-        avatar_url: avatar,
-        banner_url: banner,
-      };
+      const payload = parsed.data;
       saveQueue.current = saveQueue.current
         .catch(() => undefined)
         .then(async () => {
@@ -224,7 +220,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
       await saveQueue.current;
     }, 750);
     return () => window.clearTimeout(timer);
-  }, [values, avatar, banner, data.profile.id]);
+  }, [values, data.profile.id]);
   const preview = useMemo<QardData>(
     () => ({
       ...data,
@@ -243,21 +239,46 @@ export function ProfileEditor({ data }: { data: QardData }) {
     [data, deferredValues, avatar, banner, deferredLinks, showBanner],
   );
 
-  function changeBanner(nextBanner: string | null) {
-    setBanner(nextBanner);
-    if (!nextBanner || showBanner) return;
+  async function persistMedia(
+    field: 'avatar_url' | 'banner_url',
+    nextValue: string | null,
+  ) {
+    const previousValue = field === 'avatar_url' ? avatar : banner;
+    const setValue = field === 'avatar_url' ? setAvatar : setBanner;
+    setValue(nextValue);
+    setStatus('saving');
 
-    setShowBanner(true);
-    void createClient()
-      .from('qard_appearance')
-      .update({ show_banner: true })
-      .eq('profile_id', data.profile.id)
-      .then(({ error }) => {
-        if (error) {
-          setShowBanner(false);
-          setStatus('error');
-        }
-      });
+    const supabase = createClient();
+    const payload =
+      field === 'avatar_url'
+        ? { avatar_url: nextValue }
+        : { banner_url: nextValue };
+    const { data: savedProfile, error: profileError } = await supabase
+      .from('qard_profiles')
+      .update(payload)
+      .eq('id', data.profile.id)
+      .select('id')
+      .single();
+
+    if (profileError || !savedProfile) {
+      setValue(previousValue);
+      setStatus('error');
+      throw new Error('L’image n’a pas pu être enregistrée. Réessayez.');
+    }
+
+    if (field === 'banner_url' && nextValue && !showBanner) {
+      const { error: appearanceError } = await supabase
+        .from('qard_appearance')
+        .update({ show_banner: true })
+        .eq('profile_id', data.profile.id);
+      if (appearanceError) {
+        setStatus('error');
+        throw new Error('La bannière est enregistrée mais ne peut pas être affichée.');
+      }
+      setShowBanner(true);
+    }
+
+    setStatus('saved');
   }
 
   function advanceGuide() {
@@ -408,14 +429,14 @@ export function ProfileEditor({ data }: { data: QardData }) {
               bucket="avatars"
               userId={data.profile.user_id}
               value={avatar}
-              onChange={setAvatar}
+              onChange={(nextAvatar) => persistMedia('avatar_url', nextAvatar)}
               label="Photo de profil"
             />
             <MediaUploader
               bucket="banners"
               userId={data.profile.user_id}
               value={banner}
-              onChange={changeBanner}
+              onChange={(nextBanner) => persistMedia('banner_url', nextBanner)}
               label="Bannière"
               maxMb={8}
             />

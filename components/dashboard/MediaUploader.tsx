@@ -23,7 +23,7 @@ export function MediaUploader({
   bucket: 'avatars' | 'banners';
   userId: string;
   value: string | null;
-  onChange: (url: string | null) => void;
+  onChange: (url: string | null) => void | Promise<void>;
   label: string;
   maxMb?: number;
 }) {
@@ -76,7 +76,12 @@ export function MediaUploader({
       const nextUrl = supabase.storage.from(bucket).getPublicUrl(path)
         .data.publicUrl;
       const previousPath = value ? objectPath(value) : null;
-      onChange(nextUrl);
+      try {
+        await onChange(nextUrl);
+      } catch (persistError) {
+        await supabase.storage.from(bucket).remove([path]);
+        throw persistError;
+      }
       closeCropper();
       if (previousPath)
         await supabase.storage.from(bucket).remove([previousPath]);
@@ -92,13 +97,13 @@ export function MediaUploader({
     setError('');
     try {
       const path = objectPath(value);
+      await onChange(null);
       if (path) {
         const { error: removeError } = await createClient()
           .storage.from(bucket)
           .remove([path]);
         if (removeError) throw removeError;
       }
-      onChange(null);
     } catch (caught) {
       setError(
         caught instanceof Error ? caught.message : 'Suppression impossible',

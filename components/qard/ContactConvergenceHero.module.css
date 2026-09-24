@@ -5,7 +5,8 @@
   height: 178vh;
   height: 178svh;
   min-width: 0;
-  border-bottom: 1px solid rgb(42 64 139 / 0.14);
+  border-bottom: 1px solid rgb(66 101 207 / 0.14);
+  color: #111a5b;
 }
 .stickyStage {
   position: sticky;
@@ -23,8 +24,9 @@
   z-index: -1;
   inset: 7% 12%;
   border: 1px solid rgb(66 101 207 / 0.12);
-  border-radius: 50%;
+  border-radius: 42%;
   content: '';
+  background: radial-gradient(circle at 50% 45%, rgb(255 255 255 / 0.8), transparent 66%);
   transform: scaleX(1.25);
 }
 .copyAnchor {
@@ -52,11 +54,11 @@
 .copy h1 {
   margin: 22px 0 24px;
   color: #111b4f;
-  font-family: 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   font-size: clamp(4.4rem, 8.2vw, 8rem);
-  font-weight: 400;
-  letter-spacing: -0.065em;
-  line-height: 0.86;
+  font-weight: 760;
+  letter-spacing: -0.072em;
+  line-height: 0.89;
 }
 .copy p {
   max-width: 570px;
@@ -78,15 +80,16 @@
   gap: 10px;
   padding: 0 22px;
   border: 1px solid #4265cf;
-  border-radius: 5px;
+  border-radius: 999px;
   color: #fff;
   background: #4265cf;
   font-size: 0.91rem;
   font-weight: 750;
 }
 .actions a:last-child {
-  padding-block: 8px 5px;
-  border-bottom: 1px solid #8d9aca;
+  padding: 8px 13px;
+  border: 0;
+  border-radius: 999px;
   color: #394775;
   font-size: 0.9rem;
 }
@@ -104,6 +107,7 @@
   width: min(360px, 100%);
   place-items: center;
   transform-origin: center;
+  filter: drop-shadow(0 42px 62px rgb(35 49 116 / 0.16));
 }
 .particles {
   position: absolute;
@@ -129,7 +133,7 @@
   flex: 0 0 auto;
   place-items: center;
   border: 1px solid rgb(55 78 158 / 0.18);
-  border-radius: 13px;
+  border-radius: 50%;
   color: #172258;
   background: rgb(250 252 255 / 0.94);
   box-shadow: 0 12px 35px rgb(42 58 120 / 0.1);
