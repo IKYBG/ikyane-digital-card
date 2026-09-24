@@ -5,10 +5,10 @@
 }
 .card,
 .sideCard {
-  border: 1px solid rgb(49 72 151 / 0.13);
+  border: 1px solid rgb(17 17 15 / 0.13);
   border-radius: 22px;
-  background: rgb(255 255 255 / 0.82);
-  box-shadow: 0 18px 55px rgb(43 58 121 / 0.08);
+  background: rgb(242 241 223 / 0.9);
+  box-shadow: 0 18px 55px rgb(35 35 30 / 0.1);
 }
 .card {
   position: relative;
@@ -21,14 +21,14 @@
   inset: auto -10% -50% 35%;
   height: 230px;
   content: '';
-  background: radial-gradient(circle, rgb(99 129 219 / 0.14), transparent 65%);
+  background: radial-gradient(circle, rgb(17 17 15 / 0.09), transparent 65%);
   pointer-events: none;
 }
 .status {
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  color: #5f6b94;
+  color: #68685f;
   font-size: 0.78rem;
 }
 .status::before {
@@ -49,7 +49,7 @@
 .avatarFallback {
   width: 72px;
   height: 72px;
-  border: 1px solid rgb(43 65 139 / 0.13);
+  border: 1px solid rgb(17 17 15 / 0.13);
   border-radius: 50%;
   object-fit: cover;
 }
@@ -57,20 +57,20 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: #4265cf;
+  background: #11110f;
   font-size: 1.6rem;
   font-weight: 760;
 }
 .identity h2 {
   margin: 0;
-  color: #131e53;
+  color: #11110f;
   font-size: clamp(1.45rem, 3vw, 2rem);
   letter-spacing: -0.04em;
 }
 .identity p,
 .url {
   margin: 5px 0 0;
-  color: #69749a;
+  color: #6b6b61;
 }
 .url {
   overflow: hidden;
@@ -101,13 +101,13 @@
 .primary {
   padding: 0 18px;
   color: #fff;
-  background: #4265cf;
+  background: #11110f;
 }
 .secondary {
   padding: 0 16px;
-  border: 1px solid rgb(48 71 148 / 0.15);
-  color: #2f407b;
-  background: #edf2ff;
+  border: 1px solid rgb(17 17 15 / 0.15);
+  color: #292925;
+  background: #d9d8c4;
 }
 .side {
   display: grid;
@@ -117,7 +117,7 @@
   padding: 22px;
 }
 .sideLabel {
-  color: #7b86aa;
+  color: #77776d;
   font-size: 0.74rem;
   font-weight: 700;
   letter-spacing: 0.09em;
@@ -132,22 +132,22 @@
 .nextAction svg {
   flex: none;
   margin-top: 2px;
-  color: #4265cf;
+  color: #11110f;
 }
 .nextAction strong,
 .metric strong {
   display: block;
-  color: #152054;
+  color: #11110f;
 }
 .nextAction p {
   margin: 4px 0 0;
-  color: #687397;
+  color: #68685f;
   font-size: 0.84rem;
   line-height: 1.5;
 }
 .textLink {
   justify-content: flex-start;
-  color: #3657bd;
+  color: #272724;
 }
 .metrics {
   display: grid;
@@ -158,15 +158,15 @@
 .metric {
   min-width: 0;
   padding: 12px;
-  border: 1px solid rgb(47 70 145 / 0.08);
+  border: 1px solid rgb(17 17 15 / 0.08);
   border-radius: 14px;
-  background: #f0f4ff;
+  background: #d9d8c4;
 }
 .metric strong {
   font-size: 1.25rem;
 }
 .metric span {
-  color: #7580a4;
+  color: #737369;
   font-size: 0.7rem;
 }
 @media (max-width: 800px) {

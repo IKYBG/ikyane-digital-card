@@ -13,9 +13,9 @@ export default function AuthLayout({
       <AnimatedGradient
         className="auth-animated-bg"
         config={{
-          color1: '#f8fbff',
-          color2: '#dce7ff',
-          color3: '#e9e0ff',
+          color1: '#ebeada',
+          color2: '#cccbba',
+          color3: '#f3f2e2',
           speed: 28,
           distortion: 3,
           swirl: 13,
@@ -40,7 +40,7 @@ export default function AuthLayout({
             <p>Créez, personnalisez et partagez votre Qard depuis un seul espace.</p>
           </div>
           <div className="auth-mini-qard" aria-hidden="true">
-            <div className="auth-mini-banner"><b>Qard</b><small>Des gens<br />Des projets<br />Un monde plus ouvert</small></div>
+            <div className="auth-mini-banner"><b>Qard</b></div>
             <div className="auth-mini-body">
               <span className="auth-mini-avatar"><UserRound size={34} /></span>
               <strong>Votre nom <i><Check size={11} /></i></strong>

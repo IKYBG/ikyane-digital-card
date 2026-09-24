@@ -13,9 +13,9 @@ export default async function DashboardLayout({
       <AnimatedGradient
         className="dashboard-animated-bg"
         config={{
-          color1: '#f8fbff',
-          color2: '#dce7ff',
-          color3: '#e9e0ff',
+          color1: '#ebeada',
+          color2: '#cccbba',
+          color3: '#f3f2e2',
           speed: 36,
           distortion: 2,
           swirl: 10,

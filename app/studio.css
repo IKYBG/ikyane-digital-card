@@ -1,23 +1,23 @@
 /* Qard design system — one visual language across every product surface. */
 :root {
-  --brand-canvas: #f4f7ff;
-  --brand-canvas-deep: #e9efff;
-  --brand-surface: #ffffff;
-  --brand-surface-soft: #eef3ff;
-  --brand-ink: #111a4f;
-  --brand-copy: #53608a;
-  --brand-muted: #7b86aa;
-  --brand-line: rgb(38 59 133 / 0.14);
-  --brand-line-strong: rgb(52 82 181 / 0.3);
-  --brand-blue: #4265cf;
-  --brand-blue-strong: #294bb2;
-  --brand-lilac: #786bc5;
-  --brand-success: #16996b;
-  --brand-danger: #c53d50;
+  --brand-canvas: #e1e0cc;
+  --brand-canvas-deep: #d3d2bd;
+  --brand-surface: #f2f1df;
+  --brand-surface-soft: #d9d8c4;
+  --brand-ink: #11110f;
+  --brand-copy: #5f5f56;
+  --brand-muted: #818176;
+  --brand-line: rgb(17 17 15 / 0.13);
+  --brand-line-strong: rgb(17 17 15 / 0.28);
+  --brand-blue: #181816;
+  --brand-blue-strong: #070706;
+  --brand-lilac: #747469;
+  --brand-success: #47705b;
+  --brand-danger: #a33e43;
   --brand-radius-sm: 12px;
   --brand-radius-md: 18px;
   --brand-radius-lg: 26px;
-  --brand-shadow: 0 18px 55px rgb(38 51 111 / 0.09);
+  --brand-shadow: 0 18px 55px rgb(35 35 30 / 0.1);
 }
 
 .dashboard-shell,
@@ -47,16 +47,16 @@
   background:
     radial-gradient(
       circle at 50% 18%,
-      rgb(255 255 255 / 0.98),
+      rgb(242 241 223 / 0.98),
       transparent 42%
     ),
-    radial-gradient(circle at 8% 86%, rgb(217 227 255 / 0.82), transparent 34%),
+    radial-gradient(circle at 8% 86%, rgb(198 197 177 / 0.7), transparent 34%),
     radial-gradient(
       circle at 92% 78%,
-      rgb(236 225 255 / 0.72),
+      rgb(223 222 201 / 0.72),
       transparent 34%
     ),
-    linear-gradient(145deg, #eef3ff, #fafbff 48%, #f2efff);
+    linear-gradient(145deg, #d5d4bf, #eeedda 48%, #dcdbc7);
 }
 
 .public-qard-shell .qard-premium + a,
@@ -995,4 +995,244 @@
 @media (max-width: 900px) {
   .auth-shell-v2 > section { grid-template-columns: 1fr; width: min(100%, 510px); }
   .auth-product-panel { display: none !important; }
+}
+
+/* Prisma identity — ink, warm ivory and one consistent product language. */
+.dashboard-shell,
+.auth-shell-v2,
+.legal-site,
+.onboarding-shell,
+.global-error {
+  --background: var(--brand-canvas);
+  --surface: rgb(242 241 223 / 0.94);
+  --surface-raised: var(--brand-surface-soft);
+  --text-primary: var(--brand-ink);
+  --text-secondary: var(--brand-copy);
+  --text-tertiary: var(--brand-muted);
+  --border: var(--brand-line);
+  --border-bright: var(--brand-line-strong);
+  --electric: var(--brand-blue);
+  --electric-bright: #3a3a34;
+  --cobalt: var(--brand-blue-strong);
+  --indigo: var(--brand-lilac);
+  --shadow-card: var(--brand-shadow);
+  color: var(--brand-ink);
+  background: var(--brand-canvas);
+}
+
+.dashboard-animated-bg,
+.auth-animated-bg {
+  opacity: 0.36;
+  filter: grayscale(0.4) saturate(0.42) contrast(0.96);
+}
+.dashboard-background-shade,
+.auth-background-veil {
+  background: linear-gradient(125deg, rgb(225 224 204 / 0.74), rgb(225 224 204 / 0.3) 54%, rgb(242 241 223 / 0.68));
+}
+
+.dashboard-sidebar {
+  border-color: rgb(225 224 204 / 0.13);
+  color: #e1e0cc;
+  background: rgb(10 10 9 / 0.96);
+  box-shadow: 18px 0 55px rgb(26 26 22 / 0.13);
+}
+.dashboard-sidebar .qard-logo,
+.dashboard-sidebar .sidebar-section-label,
+.dashboard-sidebar nav a,
+.dashboard-sidebar .sidebar-bottom a,
+.dashboard-sidebar .sidebar-bottom button { color: #aead9e; }
+.dashboard-sidebar .qard-logo > span { color: #e1e0cc; }
+.dashboard-sidebar .qard-logo img { filter: grayscale(1) brightness(1.7); }
+.dashboard-sidebar nav a:hover,
+.dashboard-sidebar .sidebar-bottom a:hover,
+.dashboard-sidebar .sidebar-bottom button:hover { color: #e1e0cc; background: rgb(225 224 204 / 0.08); }
+.dashboard-sidebar nav a.active {
+  border-color: rgb(225 224 204 / 0.15);
+  color: #0a0a09;
+  background: #e1e0cc;
+}
+.dashboard-sidebar nav a > i { background: #e1e0cc; }
+.sidebar-icon { color: #b6b5a5; background: rgb(225 224 204 / 0.08); }
+.dashboard-sidebar nav a.active .sidebar-icon { color: #e1e0cc; background: #121210; }
+.plan-badge { border-color: rgb(225 224 204 / 0.18); color: #e1e0cc; background: rgb(225 224 204 / 0.08); }
+
+.dashboard-shell .panel,
+.dashboard-shell .editor-section,
+.dashboard-shell .appearance-studio-v2,
+.dashboard-shell .sortable-link,
+.dashboard-shell .qr-canvas,
+.dashboard-shell .mobile-card-controls,
+.dashboard-shell [class*='sideCard'],
+.dashboard-shell .editor-form fieldset,
+.dashboard-shell .add-link-panel,
+.dashboard-shell .links-list,
+.dashboard-shell .settings-section,
+.dashboard-shell .chart-panel,
+.dashboard-shell .popular-panel,
+.dashboard-shell .qr-controls,
+.dashboard-shell .qr-preview {
+  border-color: var(--brand-line);
+  color: var(--brand-ink);
+  background: rgb(242 241 223 / 0.9);
+  box-shadow: var(--brand-shadow);
+}
+.dashboard-shell h1,
+.dashboard-shell h2,
+.dashboard-shell h3,
+.dashboard-shell h4,
+.dashboard-shell strong,
+.dashboard-shell .panel-title,
+.dashboard-shell .dashboard-header h1 { color: var(--brand-ink); }
+.dashboard-shell p,
+.dashboard-shell small,
+.dashboard-shell .helper-text,
+.dashboard-shell .field-help,
+.dashboard-shell .dashboard-header p { color: var(--brand-copy); }
+.dashboard-shell label { color: #4f4f47; }
+
+.dashboard-shell input:not([type='color']):not([type='range']):not([type='checkbox']):not([type='radio']),
+.dashboard-shell textarea,
+.dashboard-shell select,
+.dashboard-shell .copy-field,
+.dashboard-shell .appearance-value-field input,
+.auth-shell-v2 input,
+.onboarding-shell input,
+.onboarding-shell textarea,
+.onboarding-shell select {
+  border-color: rgb(17 17 15 / 0.16);
+  color: #11110f !important;
+  caret-color: #11110f;
+  background: #f8f7e9 !important;
+  -webkit-text-fill-color: #11110f !important;
+}
+.dashboard-shell input::placeholder,
+.dashboard-shell textarea::placeholder,
+.auth-shell-v2 input::placeholder,
+.onboarding-shell input::placeholder { color: #8b8b7f; }
+.dashboard-shell input:focus,
+.dashboard-shell textarea:focus,
+.dashboard-shell select:focus,
+.auth-shell-v2 input:focus,
+.onboarding-shell input:focus,
+.onboarding-shell textarea:focus,
+.onboarding-shell select:focus {
+  border-color: #11110f !important;
+  box-shadow: 0 0 0 4px rgb(17 17 15 / 0.1) !important;
+}
+
+.dashboard-shell .button:not(.button-ghost):not(.danger-button),
+.auth-form-card .button:not(.button-ghost),
+.onboarding-card .button:not(.button-ghost) {
+  border-color: #11110f;
+  color: #e1e0cc;
+  background: #11110f;
+  box-shadow: none;
+}
+.dashboard-shell .button:not(.button-ghost):not(.danger-button):hover,
+.auth-form-card .button:not(.button-ghost):hover,
+.onboarding-card .button:not(.button-ghost):hover { background: #2b2b27; }
+.dashboard-shell .button-ghost,
+.dashboard-shell .text-button,
+.dashboard-shell .mobile-preview-visibility {
+  border-color: var(--brand-line);
+  color: #363631;
+  background: #dad9c5;
+}
+
+.dashboard-shell .appearance-tabs,
+.dashboard-shell .appearance-theme-categories,
+.dashboard-shell .period-tabs { border-color: var(--brand-line); background: #d8d7c3; }
+.dashboard-shell .appearance-tabs button,
+.dashboard-shell .appearance-theme-categories button,
+.dashboard-shell .period-tabs a { color: #68685f; }
+.dashboard-shell .appearance-tabs button.active,
+.dashboard-shell .appearance-theme-categories button.active,
+.dashboard-shell .period-tabs a.active {
+  color: #e1e0cc;
+  background: #11110f;
+  box-shadow: none;
+}
+.dashboard-shell .appearance-tabs button.active svg { color: #e1e0cc; }
+.dashboard-shell .appearance-studio-v2 .visual-option-grid > button,
+.dashboard-shell .appearance-studio-v2 .appearance-color-grid label,
+.dashboard-shell .appearance-studio-v2 .visual-toggle,
+.dashboard-shell .appearance-studio-v2 .material-controls label,
+.dashboard-shell .appearance-theme-card,
+.dashboard-shell .stat-grid article,
+.dashboard-shell .popular-panel > div,
+.dashboard-shell .sortable-link { border-color: var(--brand-line); color: var(--brand-ink); background: #e9e8d5 !important; }
+.dashboard-shell .appearance-theme-card:hover,
+.dashboard-shell .appearance-studio-v2 .visual-option-grid > button:hover { background: #dedcc8 !important; }
+.dashboard-shell .appearance-theme-card.selected,
+.dashboard-shell .appearance-studio-v2 .visual-option-grid > button.selected {
+  border-color: #11110f !important;
+  background: #d5d4bf !important;
+  box-shadow: inset 0 0 0 1px #11110f;
+}
+.dashboard-shell .bar-chart { border-color: var(--brand-line); background: #d8d7c3; }
+.dashboard-shell .bar-chart span { background: #11110f; }
+.dashboard-shell .bar-chart i { background: #77766b; }
+
+.dashboard-shell .editor-section,
+.dashboard-shell .link-options,
+.dashboard-shell .settings-disclosure { border-color: var(--brand-line); background: rgb(242 241 223 / 0.94); box-shadow: 0 12px 34px rgb(35 35 30 / 0.07); }
+.dashboard-shell .editor-section[open],
+.dashboard-shell .link-options[open],
+.dashboard-shell .settings-disclosure[open] { border-color: var(--brand-line-strong); background: #f2f1df; box-shadow: 0 18px 46px rgb(35 35 30 / 0.1); }
+.dashboard-shell .editor-section[open] > summary,
+.dashboard-shell .link-options[open] > summary,
+.dashboard-shell .settings-disclosure[open] > summary { border-color: var(--brand-line); background: #e6e5d1; }
+.dashboard-shell .editor-section > summary::after,
+.dashboard-shell .link-options > summary::after,
+.dashboard-shell .settings-disclosure > summary::after { border-color: var(--brand-line); color: #e1e0cc; background: #11110f; }
+.dashboard-shell .platform-shortcuts button { border-color: var(--brand-line); color: var(--brand-copy); background: #e8e7d4; }
+.dashboard-shell .platform-shortcuts button:hover { color: var(--brand-ink); background: #dedcc8; }
+.dashboard-shell .platform-shortcuts button.selected,
+.dashboard-shell .platform-shortcuts button[aria-pressed='true'] { border-color: #11110f; color: #e1e0cc; background: #11110f; box-shadow: none; }
+
+.auth-shell-v2 { color: var(--brand-ink); background: var(--brand-canvas); }
+.auth-shell-v2 > header { color: var(--brand-ink); }
+.auth-shell-v2 .qard-logo img { filter: grayscale(1) contrast(1.08); }
+.auth-product-copy > span { color: #4f4f47; }
+.auth-product-copy h1 { color: #11110f; }
+.auth-product-copy p { color: #65655c; }
+.auth-mini-qard { border-color: rgb(17 17 15 / 0.2); background: #f2f1df; box-shadow: 0 34px 82px rgb(35 35 30 / 0.17); }
+.auth-mini-banner { color: #e1e0cc; background: #11110f; }
+.auth-mini-body { color: #11110f; }
+.auth-mini-avatar { border-color: #f2f1df; color: #11110f; background: #d9d8c4; }
+.auth-mini-body > strong i { color: #e1e0cc; background: #11110f; }
+.auth-mini-body button { color: #e1e0cc; background: #11110f; }
+.auth-mini-qr { border-color: var(--brand-line); color: #11110f; background: #f2f1df; box-shadow: 0 13px 30px rgb(35 35 30 / 0.15); }
+.auth-card-frame { border-color: var(--brand-line); background: rgb(17 17 15 / 0.14); box-shadow: 0 34px 90px rgb(35 35 30 / 0.14); }
+.auth-card-frame::before { background: linear-gradient(90deg, transparent, rgb(225 224 204 / 0.8), transparent); }
+.auth-form-card { color: #11110f; background: rgb(242 241 223 / 0.98); }
+.auth-form-card > div > p,
+.auth-form-card footer { color: #65655c; }
+.auth-form-card label { color: #45453f; }
+.auth-form-card footer a { color: #11110f; }
+
+.legal-site { min-height: 100svh; color: #11110f; background: #e1e0cc; }
+.legal-site .marketing-nav { color: #11110f; border-color: var(--brand-line); }
+.legal-site .pricing-grid article { border-color: var(--brand-line); background: #f2f1df; box-shadow: var(--brand-shadow); }
+.legal-site .pricing-grid article.featured { border-color: #11110f; background: #d7d6c1; }
+.legal-site .pricing-grid article > b { color: #e1e0cc; background: #11110f; }
+.legal-site .pricing-hero > span { color: #5f5f56; }
+.legal-site .pricing-grid li,
+.legal-site .legal-copy > p:first-of-type,
+.legal-site .legal-copy p { color: #5f5f56; }
+.legal-site .pricing-grid li svg { color: #11110f; }
+.legal-site .button { color: #e1e0cc; background: #11110f; box-shadow: none; }
+.legal-site .button-ghost { color: #11110f; border-color: var(--brand-line); background: #d9d8c4; }
+
+.onboarding-shell { background: #e1e0cc; }
+.onboarding-card { border-color: var(--brand-line); color: #11110f; background: #f2f1df; box-shadow: 0 30px 80px rgb(35 35 30 / 0.14); }
+.onboarding-progress { background: #cfceba; }
+.onboarding-progress i { background: #11110f; }
+.onboarding-card label { color: #4f4f47; }
+
+@media (max-width: 900px) {
+  .mobile-dashboard-nav { border-color: rgb(225 224 204 / 0.14); background: rgb(10 10 9 / 0.96); box-shadow: 0 15px 42px rgb(35 35 30 / 0.18); }
+  .mobile-dashboard-nav a { color: #9d9c8f; }
+  .mobile-dashboard-nav a.active { color: #e1e0cc; }
+  .mobile-dashboard-nav a.active .mobile-nav-icon { color: #11110f; background: #e1e0cc; box-shadow: none; }
 }
