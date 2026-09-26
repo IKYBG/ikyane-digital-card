@@ -8,6 +8,22 @@ import { createClient } from '@/lib/supabase/client';
 
 type Mode = 'login' | 'signup' | 'forgot';
 
+function authErrorMessage(error: unknown) {
+  const message = error instanceof Error ? error.message : '';
+  const normalized = message.toLowerCase();
+  if (normalized.includes('invalid login credentials'))
+    return 'Email ou mot de passe incorrect.';
+  if (normalized.includes('email not confirmed'))
+    return 'Confirme ton email avant de te connecter.';
+  if (normalized.includes('user already registered'))
+    return 'Un compte existe déjà avec cet email.';
+  if (normalized.includes('password should be'))
+    return 'Choisis un mot de passe d’au moins 8 caractères.';
+  if (normalized.includes('rate limit'))
+    return 'Trop de tentatives. Patiente un instant puis réessaie.';
+  return message || 'Une erreur est survenue. Réessaie dans un instant.';
+}
+
 export function AuthForm({ mode }: { mode: Mode }) {
   const search = useSearchParams();
   const [loading, setLoading] = useState(false);
@@ -93,9 +109,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
         setSuccess('Un lien de réinitialisation vient de t’être envoyé.');
       }
     } catch (caught) {
-      setError(
-        caught instanceof Error ? caught.message : 'Une erreur est survenue.',
-      );
+      setError(authErrorMessage(caught));
     } finally {
       setLoading(false);
     }

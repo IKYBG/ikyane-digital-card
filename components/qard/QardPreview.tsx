@@ -206,6 +206,7 @@ export function QardPreview({
   const frontTabIndex = side === 'front' && !isFlipping ? 0 : -1;
   const backTabIndex = side === 'back' && !isFlipping ? 0 : -1;
   const displayLinks = [...networkLinks, ...directLinks];
+  const denseContacts = displayLinks.length >= 6;
   const renderLink = (link: DisplayLink) => (
     <a
       tabIndex={backTabIndex}
@@ -241,18 +242,22 @@ export function QardPreview({
       }
       style={vars}
     >
-      <div
+      <button
+        type="button"
         className={`${styles.swipeCue} ${styles.swipeCueLeft}`}
-        aria-hidden="true"
+        aria-label="Afficher l’autre face de la Qard"
+        onClick={flip}
       >
         <ChevronLeft size={19} />
-      </div>
-      <div
+      </button>
+      <button
+        type="button"
         className={`${styles.swipeCue} ${styles.swipeCueRight}`}
-        aria-hidden="true"
+        aria-label="Afficher l’autre face de la Qard"
+        onClick={flip}
       >
         <ChevronRight size={19} />
-      </div>
+      </button>
       <div className={styles.breath}>
         <motion.div
           className={styles.shell}
@@ -323,7 +328,6 @@ export function QardPreview({
                       loading="eager"
                       fetchPriority="high"
                       sizes="(max-width: 640px) 94vw, 420px"
-                      unoptimized
                     />
                   ) : (
                     <div className={styles.bannerShape} aria-hidden="true" />
@@ -408,7 +412,7 @@ export function QardPreview({
               </div>
 
               <div
-                className={`${styles.face} ${styles.back}`}
+                className={`${styles.face} ${styles.back}${denseContacts ? ` ${styles.backDense}` : ''}`}
                 aria-hidden={side !== 'back'}
               >
                 <div className={styles.backBrand} aria-hidden="true">
@@ -423,7 +427,6 @@ export function QardPreview({
                       alt=""
                       fill
                       sizes="(max-width: 640px) 86vw, 380px"
-                      unoptimized
                     />
                   )}
                   <div className={styles.backAvatar}>
@@ -456,7 +459,14 @@ export function QardPreview({
                 <h3 className={styles.contactsTitle}>
                   Coordonnées &amp; réseaux
                 </h3>
-                <div className={styles.contactList}>
+                <div
+                  className={`${styles.contactList}${denseContacts ? ` ${styles.contactListDense}` : ''}`}
+                  style={
+                    {
+                      '--contact-count': Math.min(displayLinks.length, 7),
+                    } as React.CSSProperties
+                  }
+                >
                   {displayLinks.map(renderLink)}
                   {displayLinks.length === 0 && (
                     <p className={styles.emptyContact}>

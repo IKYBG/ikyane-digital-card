@@ -6,7 +6,7 @@ export function MarketingNav() {
     <header className="marketing-nav">
       <QardLogo />
       <nav aria-label="Navigation principale">
-        <Link href="/#fonctionnement">Fonctionnement</Link>
+        <Link href="/card" prefetch={false}>Exemple</Link>
         <Link href="/pricing" prefetch={false}>
           Tarifs
         </Link>

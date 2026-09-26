@@ -1,7 +1,8 @@
 'use client';
 
 import type { CSSProperties } from 'react';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
@@ -62,19 +63,54 @@ const navItems = [
 
 export function PrismaHero() {
   const reducedMotion = useReducedMotion();
+  const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    const connection = (
+      navigator as Navigator & { connection?: { saveData?: boolean } }
+    ).connection;
+    const canAnimate =
+      !reducedMotion &&
+      !connection?.saveData &&
+      window.matchMedia('(min-width: 768px)').matches;
+    if (!canAnimate) return;
+    const start = () => setVideoReady(true);
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
+      cancelIdleCallback?: (id: number) => void;
+    };
+    const id = idleWindow.requestIdleCallback
+      ? idleWindow.requestIdleCallback(start, { timeout: 900 })
+      : window.setTimeout(start, 500);
+    return () => {
+      if (idleWindow.cancelIdleCallback) idleWindow.cancelIdleCallback(id);
+      else window.clearTimeout(id);
+    };
+  }, [reducedMotion]);
 
   return (
     <main className="h-[100svh] w-full bg-black p-0 sm:p-2">
       <section className="relative h-full w-full overflow-hidden rounded-none bg-black sm:rounded-2xl md:rounded-[2rem]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/qard-prisma-campus.png"
-          className="absolute inset-0 h-full w-full object-cover"
-          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
+        <Image
+          src="/qard-prisma-campus.png"
+          alt="Une Qard partagée instantanément sur un campus"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover"
         />
+        {videoReady && (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="none"
+            poster="/qard-prisma-campus.png"
+            className="absolute inset-0 h-full w-full object-cover"
+            src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260405_170732_8a9ccda6-5cff-4628-b164-059c500a2b41.mp4"
+          />
+        )}
 
         <div className="qard-prisma-noise pointer-events-none absolute inset-0 opacity-70 mix-blend-overlay" />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/30 via-black/5 to-black/75" />
@@ -94,7 +130,7 @@ export function PrismaHero() {
           </div>
         </nav>
 
-        <div className="absolute inset-x-0 bottom-0 z-10 px-4 pb-[max(14px,env(safe-area-inset-bottom))] sm:px-6 md:px-10">
+        <div className="absolute inset-x-0 bottom-[clamp(10px,2vh,26px)] z-10 px-4 pb-[max(14px,env(safe-area-inset-bottom))] sm:px-6 md:px-10">
           <div className="grid grid-cols-12 items-end gap-x-4 gap-y-3">
             <div className="col-span-12 lg:col-span-8">
               <h1
@@ -133,7 +169,7 @@ export function PrismaHero() {
                 <Link
                   href="/signup"
                   prefetch={false}
-                  className="group inline-flex items-center gap-2 rounded-full bg-[#E1E0CC] py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
+                  className="qard-prisma-cta group inline-flex items-center gap-2 rounded-full bg-[#E1E0CC] py-1 pl-5 pr-1 text-sm font-medium text-black transition-all hover:gap-3 sm:text-base"
                 >
                   Créer ma Qard
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-black transition-transform group-hover:scale-110 sm:h-10 sm:w-10">

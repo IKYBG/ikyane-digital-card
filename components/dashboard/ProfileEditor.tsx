@@ -1,7 +1,14 @@
 'use client';
 import dynamic from 'next/dynamic';
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import {
+  useCallback,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   Check,
@@ -126,9 +133,10 @@ export function ProfileEditor({ data }: { data: QardData }) {
   const first = useRef(true);
   const saveQueue = useRef<Promise<void>>(Promise.resolve());
   const saveRevision = useRef(0);
+  const lastQueuedProfile = useRef('');
   const {
     register,
-    watch,
+    control,
     getValues,
     setValue,
     formState: { errors },
@@ -150,11 +158,56 @@ export function ProfileEditor({ data }: { data: QardData }) {
       show_branding: data.profile.show_branding,
     },
   });
-  const values = watch();
+  // `watch()` returns a new object during unrelated renders. That was restarting
+  // the autosave timer after every status change and could replay stale values.
+  // `useWatch` only publishes actual form changes, keeping saves deterministic.
+  const values = useWatch({ control }) as Values;
   const deferredValues = useDeferredValue(values);
   const deferredLinks = useDeferredValue(links);
   const hasConfiguredQard = guideCompleted;
   const currentQuestion = mobileQuestions[questionIndex];
+  const persistProfileValues = useCallback(
+    async (nextValues: Values) => {
+      const payload = Object.fromEntries(
+        (
+          Object.entries(profileSchema.shape) as Array<
+            [keyof Values, z.ZodType]
+          >
+        ).flatMap(([key, schema]) => {
+          const parsedField = schema.safeParse(nextValues[key]);
+          return parsedField.success ? [[key, parsedField.data]] : [];
+        }),
+      ) as Partial<Values>;
+      if (Object.keys(payload).length === 0) {
+        setStatus('error');
+        return;
+      }
+      const signature = JSON.stringify(payload);
+      if (signature === lastQueuedProfile.current) return;
+      lastQueuedProfile.current = signature;
+      setStatus('saving');
+      const revision = ++saveRevision.current;
+      saveQueue.current = saveQueue.current
+        .catch(() => undefined)
+        .then(async () => {
+          const { data: saved, error } = await createClient()
+            .from('qard_profiles')
+            .update(payload)
+            .eq('id', data.profile.id)
+            .select('id,bio,updated_at')
+            .single();
+          const bioWasSaved =
+            payload.bio === undefined || saved?.bio === payload.bio;
+          const failed = Boolean(error || !saved || !bioWasSaved);
+          if (failed && lastQueuedProfile.current === signature)
+            lastQueuedProfile.current = '';
+          if (revision === saveRevision.current)
+            setStatus(failed ? 'error' : 'saved');
+        });
+      await saveQueue.current;
+    },
+    [data.profile.id],
+  );
   useEffect(() => {
     if (!guideOpen || !guideRef.current) return;
     const dialog = guideRef.current;
@@ -180,58 +233,15 @@ export function ProfileEditor({ data }: { data: QardData }) {
     };
   }, [guideOpen]);
   useEffect(() => {
-    if (!guideOpen) return;
-    if (currentQuestion.kind === 'profile') {
-      setQuestionAnswer(
-        String(getValues(currentQuestion.field as keyof Values) ?? ''),
-      );
-      return;
-    }
-    const existing = links.find(
-      (link) => link.platform === currentQuestion.field,
-    );
-    setQuestionAnswer(existing?.username ?? '');
-  }, [guideOpen, questionIndex, currentQuestion, getValues, links]);
-
-  useEffect(() => {
     if (first.current) {
       first.current = false;
       return;
     }
-    setStatus('dirty');
-    const timer = window.setTimeout(async () => {
-      const payload = Object.fromEntries(
-        (
-          Object.entries(profileSchema.shape) as Array<
-            [keyof Values, z.ZodType]
-          >
-        ).flatMap(([key, schema]) => {
-          const parsedField = schema.safeParse(values[key]);
-          return parsedField.success ? [[key, parsedField.data]] : [];
-        }),
-      ) as Partial<Values>;
-      if (Object.keys(payload).length === 0) {
-        setStatus('error');
-        return;
-      }
-      setStatus('saving');
-      const revision = ++saveRevision.current;
-      saveQueue.current = saveQueue.current
-        .catch(() => undefined)
-        .then(async () => {
-          const { data: saved, error } = await createClient()
-            .from('qard_profiles')
-            .update(payload)
-            .eq('id', data.profile.id)
-            .select('id')
-            .single();
-          if (revision === saveRevision.current)
-            setStatus(error || !saved ? 'error' : 'saved');
-        });
-      await saveQueue.current;
-    }, 750);
+    const timer = window.setTimeout(() => {
+      void persistProfileValues(values);
+    }, 650);
     return () => window.clearTimeout(timer);
-  }, [values, data.profile.id]);
+  }, [values, persistProfileValues]);
   const preview = useMemo<QardData>(
     () => ({
       ...data,
@@ -307,7 +317,17 @@ export function ProfileEditor({ data }: { data: QardData }) {
       setQuestionIndex(0);
       return;
     }
-    setQuestionIndex((current) => current + 1);
+    const nextIndex = questionIndex + 1;
+    const nextQuestion = mobileQuestions[nextIndex];
+    setQuestionIndex(nextIndex);
+    if (nextQuestion.kind === 'profile') {
+      setQuestionAnswer(
+        String(getValues(nextQuestion.field as keyof Values) ?? ''),
+      );
+    } else {
+      const existing = links.find((link) => link.platform === nextQuestion.field);
+      setQuestionAnswer(existing?.username ?? '');
+    }
   }
 
   async function saveGuideAnswer() {
@@ -402,6 +422,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
               className="button mobile-configure-button"
               onClick={() => {
                 setQuestionIndex(0);
+                setQuestionAnswer(String(getValues('email_public') ?? ''));
                 setGuideOpen(true);
               }}
             >
@@ -417,8 +438,12 @@ export function ProfileEditor({ data }: { data: QardData }) {
             {previewVisible ? 'Masquer l’aperçu' : 'Afficher l’aperçu'}
           </button>
         </div>
-        <form className="editor-form" onSubmit={(e) => e.preventDefault()}>
-          <div className={`save-state ${status}`}>
+        <form
+          className="editor-form"
+          onSubmit={(e) => e.preventDefault()}
+          onBlurCapture={() => void persistProfileValues(getValues())}
+        >
+          <div className={`save-state ${status}`} aria-live="polite">
             <Save size={14} />
             {status === 'dirty' ? (
               'Modifications…'

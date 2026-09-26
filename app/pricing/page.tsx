@@ -5,7 +5,7 @@ import { QardLogo } from '@/components/qard/QardLogo';
 export const metadata = { title: 'Tarifs' };
 const plans = [
   {
-    name: 'Free',
+    name: 'Gratuit',
     price: '0 €',
     description: 'Pour créer et partager ta première identité.',
     features: [
@@ -32,22 +32,19 @@ const plans = [
       'Domaine personnalisé à venir',
       'Fonctions premium futures',
     ],
-    cta: 'Bientôt disponible',
-    href: '/signup',
+    cta: 'Disponible bientôt',
+    href: '',
     pro: true,
   },
 ];
 export default function PricingPage() {
   return (
-    <main className="qard-site legal-site">
+    <main className="qard-site legal-site pricing-page">
       <MarketingNav />
       <section className="pricing-hero qard-container">
         <span>Tarifs simples</span>
-        <h1>
-          Commence gratuitement.
-          <br />
-          Passe Pro quand Qard devient essentielle.
-        </h1>
+        <h1>Une Qard utile dès le premier partage.</h1>
+        <p>Commencez gratuitement. Passez à Pro uniquement lorsque vous en avez besoin.</p>
       </section>
       <section className="pricing-grid qard-container">
         {plans.map((plan) => (
@@ -67,18 +64,20 @@ export default function PricingPage() {
                 </li>
               ))}
             </ul>
-            <Link
-              className={`button${plan.pro ? '' : ' button-ghost'}`}
-              href={plan.href}
-            >
-              {plan.cta}
-            </Link>
+            {plan.href ? (
+              <Link className="button button-ghost" href={plan.href}>
+                {plan.cta}
+              </Link>
+            ) : (
+              <span className="button pricing-disabled" aria-disabled="true">
+                {plan.cta}
+              </span>
+            )}
           </article>
         ))}
       </section>
       <p className="pricing-note">
-        <Minus size={14} /> Aucun paiement n’est activé tant que Stripe n’est
-        pas configuré.
+        <Minus size={14} /> Aucun moyen de paiement demandé pour créer votre Qard.
       </p>
       <footer className="marketing-footer qard-container">
         <QardLogo />
