@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
       "style-src 'self' 'unsafe-inline'",
       `img-src 'self' blob: data: ${supabaseHost}`,
       `connect-src 'self' ${supabaseHost} ${supabaseHost.replace('https:', 'wss:')}`,
-      "media-src 'self' https://d8j0ntlcm91z4.cloudfront.net",
+      "media-src 'self'",
       "font-src 'self' data:",
       "object-src 'none'",
       "base-uri 'self'",

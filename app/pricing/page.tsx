@@ -1,5 +1,14 @@
 import Link from 'next/link';
-import { Check, Minus } from 'lucide-react';
+import {
+  ArrowRight,
+  Check,
+  Minus,
+  QrCode,
+  RefreshCcw,
+  ShieldCheck,
+  Sparkles,
+  Zap,
+} from 'lucide-react';
 import { MarketingNav } from '@/components/qard/MarketingNav';
 import { QardLogo } from '@/components/qard/QardLogo';
 export const metadata = { title: 'Tarifs' };
@@ -40,22 +49,43 @@ const plans = [
 export default function PricingPage() {
   return (
     <main className="qard-site legal-site pricing-page">
+      <div className="pricing-ambient" aria-hidden="true">
+        <i />
+        <i />
+        <i />
+      </div>
       <MarketingNav />
       <section className="pricing-hero qard-container">
-        <span>Tarifs simples</span>
+        <span>
+          <Sparkles size={13} /> Tarifs simples
+        </span>
         <h1>Une Qard utile dès le premier partage.</h1>
-        <p>Commencez gratuitement. Passez à Pro uniquement lorsque vous en avez besoin.</p>
+        <p>
+          Commencez gratuitement. Passez à Pro uniquement lorsque vous en avez
+          besoin.
+        </p>
+        <div className="pricing-promise" aria-label="Engagement tarifaire">
+          <span>Sans carte bancaire</span>
+          <i />
+          <span>Prête en quelques minutes</span>
+        </div>
       </section>
       <section className="pricing-grid qard-container">
         {plans.map((plan) => (
           <article key={plan.name} className={plan.pro ? 'featured' : ''}>
             {plan.pro && <b>Qard Pro</b>}
-            <h2>{plan.name}</h2>
+            <div className="pricing-plan-head">
+              <span>
+                {plan.pro ? <Sparkles size={18} /> : <Zap size={18} />}
+              </span>
+              <h2>{plan.name}</h2>
+            </div>
             <div>
               <strong>{plan.price}</strong>
               <span>{plan.price !== '0 €' && '/ mois'}</span>
             </div>
             <p>{plan.description}</p>
+            <small>Tout ce qu’il faut pour partager sans friction</small>
             <ul>
               {plan.features.map((feature) => (
                 <li key={feature}>
@@ -66,7 +96,7 @@ export default function PricingPage() {
             </ul>
             {plan.href ? (
               <Link className="button button-ghost" href={plan.href}>
-                {plan.cta}
+                {plan.cta} <ArrowRight size={16} />
               </Link>
             ) : (
               <span className="button pricing-disabled" aria-disabled="true">
@@ -76,8 +106,32 @@ export default function PricingPage() {
           </article>
         ))}
       </section>
+      <section
+        className="pricing-assurance qard-container"
+        aria-label="Avantages Qard"
+      >
+        <article>
+          <QrCode size={20} />
+          <span>
+            <b>QR permanent</b>Un seul code à partager.
+          </span>
+        </article>
+        <article>
+          <RefreshCcw size={20} />
+          <span>
+            <b>Modifiable à tout moment</b>Les changements sont immédiats.
+          </span>
+        </article>
+        <article>
+          <ShieldCheck size={20} />
+          <span>
+            <b>Vous gardez le contrôle</b>Publiez ou masquez votre Qard.
+          </span>
+        </article>
+      </section>
       <p className="pricing-note">
-        <Minus size={14} /> Aucun moyen de paiement demandé pour créer votre Qard.
+        <Minus size={14} /> Aucun moyen de paiement demandé pour créer votre
+        Qard.
       </p>
       <footer className="marketing-footer qard-container">
         <QardLogo />

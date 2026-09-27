@@ -71,7 +71,7 @@ export default async function DashboardPage() {
   const NextIcon = nextStep.icon;
 
   return (
-    <>
+    <div className={styles.overview}>
       <DashboardHeader
         eyebrow="Accueil"
         title={`Bonjour, ${profile.display_name.split(' ')[0]}.`}
@@ -104,7 +104,11 @@ export default async function DashboardPage() {
           </div>
           <p className={styles.url}>{url.replace(/^https?:\/\//, '')}</p>
           <div className={styles.actions}>
-            <Link className={styles.primary} href="/dashboard/editor" prefetch={false}>
+            <Link
+              className={styles.primary}
+              href="/dashboard/editor"
+              prefetch={false}
+            >
               <UserRoundPen size={17} /> Modifier
             </Link>
             <Link
@@ -129,7 +133,11 @@ export default async function DashboardPage() {
                 <p>{nextStep.text}</p>
               </div>
             </div>
-            <Link className={styles.textLink} href={nextStep.href} prefetch={false}>
+            <Link
+              className={styles.textLink}
+              href={nextStep.href}
+              prefetch={false}
+            >
               {nextStep.label} <ArrowRight size={15} />
             </Link>
           </article>
@@ -152,12 +160,16 @@ export default async function DashboardPage() {
                 <span>Taux</span>
               </div>
             </div>
-            <Link className={styles.textLink} href="/dashboard/analytics" prefetch={false}>
+            <Link
+              className={styles.textLink}
+              href="/dashboard/analytics"
+              prefetch={false}
+            >
               <BarChart3 size={15} /> Voir les statistiques
             </Link>
           </article>
         </div>
       </div>
-    </>
+    </div>
   );
 }

@@ -5,10 +5,14 @@
 }
 .card,
 .sideCard {
-  border: 1px solid rgb(17 17 15 / 0.13);
+  border: 1px solid var(--border, rgb(17 17 15 / 0.13));
   border-radius: 22px;
-  background: rgb(242 241 223 / 0.9);
-  box-shadow: 0 18px 55px rgb(35 35 30 / 0.1);
+  background: var(--surface, rgb(255 251 245 / 0.9));
+  box-shadow: var(--shadow-card, 0 18px 55px rgb(35 35 30 / 0.1));
+  transition:
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 420ms ease,
+    border-color 240ms ease;
 }
 .card {
   position: relative;
@@ -57,7 +61,7 @@
   display: grid;
   place-items: center;
   color: #fff;
-  background: #11110f;
+  background: #3b2920;
   font-size: 1.6rem;
   font-weight: 760;
 }
@@ -107,7 +111,7 @@
   padding: 0 16px;
   border: 1px solid rgb(17 17 15 / 0.15);
   color: #292925;
-  background: #d9d8c4;
+  background: #f5e8dc;
 }
 .side {
   display: grid;
@@ -160,7 +164,7 @@
   padding: 12px;
   border: 1px solid rgb(17 17 15 / 0.08);
   border-radius: 14px;
-  background: #d9d8c4;
+  background: #f5e8dc;
 }
 .metric strong {
   font-size: 1.25rem;
@@ -168,6 +172,26 @@
 .metric span {
   color: #737369;
   font-size: 0.7rem;
+}
+@media (hover: hover) {
+  .card:hover,
+  .sideCard:hover {
+    border-color: rgb(177 106 67 / 0.26);
+    box-shadow: 0 26px 70px rgb(103 64 41 / 0.14);
+    transform: translateY(-4px);
+  }
+  .primary:hover,
+  .secondary:hover,
+  .textLink:hover {
+    transform: translateY(-2px);
+  }
+}
+.primary,
+.secondary,
+.textLink {
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 180ms ease;
 }
 @media (max-width: 800px) {
   .grid {
@@ -193,5 +217,202 @@
   }
   .actions > :last-child {
     grid-column: 1 / -1;
+  }
+}
+
+/* Warm, dimensional overview matching the public Qard experience. */
+.overview {
+  position: relative;
+  animation: overviewIn 650ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.overview .grid {
+  grid-template-columns: minmax(0, 1.45fr) minmax(280px, 0.72fr);
+  gap: 16px;
+}
+.overview .card,
+.overview .sideCard {
+  border-radius: 28px;
+}
+.overview .card {
+  position: relative;
+  min-height: 420px;
+  overflow: hidden;
+  color: #fff8ee;
+  border-color: rgb(255 255 255 / 0.08);
+  background:
+    radial-gradient(circle at 92% 8%, rgb(239 145 92 / 0.3), transparent 30%),
+    radial-gradient(
+      circle at 20% 100%,
+      rgb(255 203 164 / 0.11),
+      transparent 36%
+    ),
+    #2b1e18;
+  box-shadow: 0 28px 78px rgb(70 41 28 / 0.2);
+}
+.overview .card::before {
+  position: absolute;
+  top: -84px;
+  right: -74px;
+  width: 270px;
+  aspect-ratio: 1;
+  border: 1px solid rgb(255 223 198 / 0.13);
+  border-radius: 43% 57% 62% 38% / 56% 42% 58% 44%;
+  content: '';
+  animation: dashboardShape 9s ease-in-out infinite alternate;
+}
+.overview .card::after {
+  inset: auto -10% -42% 28%;
+  height: 280px;
+  background: radial-gradient(circle, rgb(242 153 99 / 0.24), transparent 64%);
+}
+.overview .sideCard {
+  min-height: 202px;
+  padding: 24px;
+  background:
+    radial-gradient(
+      circle at 100% 0%,
+      rgb(239 157 105 / 0.11),
+      transparent 38%
+    ),
+    rgb(255 250 242 / 0.88);
+  backdrop-filter: blur(18px);
+}
+.overview .status {
+  color: rgb(255 241 225 / 0.68);
+}
+.overview .status::before {
+  animation: statusPulse 2.8s ease-in-out infinite;
+}
+.overview .identity {
+  margin: 66px 0 14px;
+}
+.overview .avatar,
+.overview .avatarFallback {
+  border-color: rgb(255 244 231 / 0.18);
+}
+.overview .avatarFallback {
+  background: rgb(255 255 255 / 0.09);
+}
+.overview .identity h2 {
+  color: #fff8ee;
+  font-size: clamp(1.7rem, 3.4vw, 2.65rem);
+  letter-spacing: -0.055em;
+}
+.overview .identity p,
+.overview .url {
+  color: rgb(255 239 220 / 0.57);
+}
+.overview .actions {
+  margin-top: 38px;
+}
+.overview .primary {
+  color: #362118;
+  background: #f2af84;
+  box-shadow: 0 14px 34px rgb(19 10 7 / 0.18);
+}
+.overview .secondary {
+  color: #fff3e3;
+  border-color: rgb(255 244 231 / 0.14);
+  background: rgb(255 255 255 / 0.07);
+  backdrop-filter: blur(12px);
+}
+.overview .sideLabel {
+  color: #8c7061;
+}
+.overview .nextAction svg {
+  width: 42px;
+  height: 42px;
+  margin-top: 0;
+  padding: 11px;
+  border-radius: 14px;
+  color: #9d4e2c;
+  background: #f8ddca;
+}
+.overview .nextAction strong,
+.overview .metric strong {
+  color: #2f2019;
+}
+.overview .nextAction p {
+  color: #7b665a;
+}
+.overview .textLink {
+  color: #6a4330;
+}
+.overview .metric {
+  border-color: rgb(100 60 39 / 0.09);
+  background: #f6e7da;
+  animation: metricBreathe 5.5s ease-in-out infinite;
+}
+.overview .metric:nth-child(2) {
+  animation-delay: -1.8s;
+}
+.overview .metric:nth-child(3) {
+  animation-delay: -3.6s;
+}
+@keyframes overviewIn {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+}
+@keyframes dashboardShape {
+  from {
+    transform: rotate(-5deg) scale(0.94);
+  }
+  to {
+    transform: rotate(9deg) scale(1.08);
+  }
+}
+@keyframes statusPulse {
+  50% {
+    box-shadow: 0 0 0 8px rgba(85, 220, 165, 0);
+  }
+}
+@keyframes metricBreathe {
+  50% {
+    transform: translateY(-3px);
+  }
+}
+@media (hover: hover) {
+  .overview .card:hover {
+    border-color: rgb(255 218 190 / 0.16);
+    box-shadow: 0 34px 90px rgb(67 38 25 / 0.26);
+  }
+}
+@media (max-width: 800px) {
+  .overview .grid {
+    grid-template-columns: 1fr;
+  }
+  .overview .card {
+    min-height: 0;
+    border-radius: 24px;
+  }
+  .overview .identity {
+    margin-top: 42px;
+  }
+  .overview .sideCard {
+    min-height: 0;
+  }
+}
+@media (max-width: 480px) {
+  .overview .actions {
+    grid-template-columns: 1fr;
+  }
+  .overview .actions > :last-child {
+    grid-column: auto;
+  }
+  .overview .metrics {
+    gap: 6px;
+  }
+  .overview .metric {
+    padding: 10px 8px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .overview,
+  .overview .card::before,
+  .overview .status::before,
+  .overview .metric {
+    animation: none !important;
   }
 }

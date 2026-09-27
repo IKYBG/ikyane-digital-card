@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   BarChart3,
   ExternalLink,
+  Home,
   LayoutDashboard,
   Link2,
   LogOut,
@@ -73,6 +74,12 @@ export function DashboardNav({
 
   return (
     <>
+      <div className="dashboard-mobile-topbar">
+        <QardLogo />
+        <Link href={`/u/${slug}`} target="_blank" prefetch={false}>
+          Aperçu <ExternalLink size={15} />
+        </Link>
+      </div>
       <aside className="dashboard-sidebar">
         <div className="sidebar-brand">
           <QardLogo />
@@ -96,6 +103,9 @@ export function DashboardNav({
           ))}
         </nav>
         <div className="sidebar-bottom">
+          <Link href="/" prefetch={false}>
+            <Home size={17} /> Accueil Qard
+          </Link>
           <Link href="/dashboard/qr" prefetch={false}>
             <QrCode size={17} /> Mon QR code
           </Link>
