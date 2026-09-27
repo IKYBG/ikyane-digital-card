@@ -27,6 +27,12 @@ export function SettingsForm({
   const [email, setEmail] = useState(accountEmail);
   const [password, setPassword] = useState('');
   const [status, setStatus] = useState('');
+  const [statusTone, setStatusTone] = useState<'success' | 'error' | 'loading'>(
+    'success',
+  );
+  const [busy, setBusy] = useState<'profile' | 'account' | 'delete' | null>(
+    null,
+  );
   const [slugState, setSlugState] = useState('');
   const [deleteText, setDeleteText] = useState('');
   const slugRequest = useRef(0);
@@ -64,11 +70,19 @@ export function SettingsForm({
     };
   }, [slug, profile.slug]);
   async function saveProfile() {
+    if (!name.trim()) {
+      setStatusTone('error');
+      return setStatus('Ajoute un nom affiché.');
+    }
     const parsed = slugSchema.safeParse(slug);
-    if (!parsed.success || slugState !== 'Disponible')
+    if (!parsed.success || slugState !== 'Disponible') {
+      setStatusTone('error');
       return setStatus(
         parsed.success ? slugState : parsed.error.issues[0].message,
       );
+    }
+    setBusy('profile');
+    setStatusTone('loading');
     setStatus('Enregistrement…');
     if (parsed.data !== profile.slug) {
       const response = await fetch('/api/profile/slug', {
@@ -76,21 +90,34 @@ export function SettingsForm({
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ slug: parsed.data }),
       });
-      if (!response.ok) return setStatus((await response.json()).error);
+      if (!response.ok) {
+        setBusy(null);
+        setStatusTone('error');
+        return setStatus((await response.json()).error);
+      }
     }
     const { error } = await createClient()
       .from('qard_profiles')
       .update({ display_name: name.trim() })
       .eq('id', profile.id);
-    setStatus(error ? error.message : 'Qard enregistrée');
+    setStatusTone(error ? 'error' : 'success');
+    setStatus(error ? error.message : 'Profil enregistré');
+    setBusy(null);
     router.refresh();
   }
   async function saveAccount() {
+    if (!email.trim()) {
+      setStatusTone('error');
+      return setStatus('Ajoute une adresse email valide.');
+    }
+    setBusy('account');
+    setStatusTone('loading');
     setStatus('Enregistrement…');
     const changes: { email?: string; password?: string } = {};
     if (email !== accountEmail) changes.email = email;
     if (password) changes.password = password;
     const { error } = await createClient().auth.updateUser(changes);
+    setStatusTone(error ? 'error' : 'success');
     setStatus(
       error
         ? error.message
@@ -99,17 +126,23 @@ export function SettingsForm({
           : 'Compte mis à jour',
     );
     setPassword('');
+    setBusy(null);
   }
   async function removeAccount() {
     if (deleteText !== 'SUPPRIMER') return;
+    setBusy('delete');
+    setStatusTone('loading');
     setStatus('Suppression…');
     const response = await fetch('/api/account', {
       method: 'DELETE',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ confirmation: deleteText }),
     });
-    if (!response.ok)
+    if (!response.ok) {
+      setBusy(null);
+      setStatusTone('error');
       return setStatus('Suppression impossible. Reconnecte-toi puis réessaie.');
+    }
     router.push('/');
     router.refresh();
   }
@@ -119,7 +152,12 @@ export function SettingsForm({
         <h2>Profil public</h2>
         <label>
           Nom affiché
-          <input value={name} onChange={(e) => setName(e.target.value)} />
+          <input
+            value={name}
+            autoComplete="name"
+            maxLength={80}
+            onChange={(e) => setName(e.target.value)}
+          />
         </label>
         <label>
           Identifiant
@@ -127,6 +165,9 @@ export function SettingsForm({
             <em>@</em>
             <input
               value={slug}
+              autoCapitalize="none"
+              autoCorrect="off"
+              spellCheck={false}
               onChange={(e) => setSlug(e.target.value.toLowerCase())}
             />
           </div>
@@ -144,8 +185,17 @@ export function SettingsForm({
             </p>
           </div>
         )}
-        <button className="button" onClick={saveProfile}>
-          <Save size={17} /> Enregistrer le profil
+        <button
+          className="button"
+          onClick={() => void saveProfile()}
+          disabled={busy !== null}
+        >
+          {busy === 'profile' ? (
+            <Loader2 className="spin" size={17} />
+          ) : (
+            <Save size={17} />
+          )}
+          Enregistrer le profil
         </button>
       </section>
       <details className="panel settings-section settings-disclosure">
@@ -159,6 +209,7 @@ export function SettingsForm({
           Email de connexion
           <input
             type="email"
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -167,13 +218,18 @@ export function SettingsForm({
           Nouveau mot de passe
           <input
             type="password"
+            autoComplete="new-password"
             minLength={8}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Laisser vide pour ne pas changer"
           />
         </label>
-        <button className="button button-ghost" onClick={saveAccount}>
+        <button
+          className="button button-ghost"
+          onClick={() => void saveAccount()}
+          disabled={busy !== null}
+        >
           Mettre à jour le compte
         </button>
         <a className="button button-ghost" href="/api/account/export" download>
@@ -200,16 +256,21 @@ export function SettingsForm({
         </label>
         <button
           className="danger-button"
-          onClick={removeAccount}
-          disabled={deleteText !== 'SUPPRIMER'}
+          onClick={() => void removeAccount()}
+          disabled={deleteText !== 'SUPPRIMER' || busy !== null}
         >
           <Trash2 size={17} /> Supprimer mon compte
         </button>
       </details>
       {status && (
-        <output className="qard-toast" aria-live="polite">
-          {status.includes('…') ? (
+        <output
+          className={`qard-toast ${statusTone === 'error' ? 'is-error' : ''}`}
+          aria-live="polite"
+        >
+          {statusTone === 'loading' ? (
             <Loader2 className="spin" size={15} />
+          ) : statusTone === 'error' ? (
+            <AlertTriangle size={15} />
           ) : (
             <Check size={15} />
           )}

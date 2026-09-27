@@ -22,6 +22,8 @@ export default function AuthLayout({
             src="/qard-prisma-campus.png"
             alt=""
             fill
+            loading="eager"
+            fetchPriority="high"
             sizes="(max-width: 900px) 100vw, 52vw"
           />
           <div className="auth-product-overlay" aria-hidden="true" />

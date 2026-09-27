@@ -164,7 +164,7 @@ export function OnboardingFlow({ profile }: { profile: Profile }) {
           <span>Ton adresse</span>
           <h1>Choisis ton identifiant public.</h1>
           <label>
-            Username
+            Identifiant public
             <div className="slug-input">
               <em>@</em>
               <input

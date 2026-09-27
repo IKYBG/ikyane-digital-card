@@ -43,24 +43,49 @@ const demoQard: QardData = {
   },
   links: [
     {
-      id: 'demo-instagram', profile_id: 'demo-profile', platform: 'instagram',
-      label: 'Instagram', url: 'https://instagram.com/camille.design',
-      username: '@camille.design', position: 0, enabled: true, created_at: '', updated_at: '',
+      id: 'demo-instagram',
+      profile_id: 'demo-profile',
+      platform: 'instagram',
+      label: 'Instagram',
+      url: 'https://instagram.com/camille.design',
+      username: '@camille.design',
+      position: 0,
+      enabled: true,
+      created_at: '',
+      updated_at: '',
     },
     {
-      id: 'demo-linkedin', profile_id: 'demo-profile', platform: 'linkedin',
-      label: 'LinkedIn', url: 'https://linkedin.com', username: 'Camille Morel',
-      position: 1, enabled: true, created_at: '', updated_at: '',
+      id: 'demo-linkedin',
+      profile_id: 'demo-profile',
+      platform: 'linkedin',
+      label: 'LinkedIn',
+      url: 'https://linkedin.com',
+      username: 'Camille Morel',
+      position: 1,
+      enabled: true,
+      created_at: '',
+      updated_at: '',
     },
   ],
   appearance: {
-    id: 'demo-appearance', profile_id: 'demo-profile', theme: 'frost',
+    id: 'demo-appearance',
+    profile_id: 'demo-profile',
+    theme: 'frost',
     background_type: 'gradient',
     background_value: 'linear-gradient(145deg, #fafdff, #dfe9ff 54%, #eee7ff)',
-    accent_color: '#4265cf', text_color: '#111a5b', card_opacity: 0.96,
-    card_blur: 0, card_radius: 38, button_style: 'solid',
-    avatar_shape: 'circle', font_family: 'geist', animation_style: 'fade',
-    animation_enabled: true, show_banner: true, created_at: '', updated_at: '',
+    accent_color: '#4265cf',
+    text_color: '#111a5b',
+    card_opacity: 0.96,
+    card_blur: 0,
+    card_radius: 38,
+    button_style: 'solid',
+    avatar_shape: 'circle',
+    font_family: 'geist',
+    animation_style: 'fade',
+    animation_enabled: true,
+    show_banner: true,
+    created_at: '',
+    updated_at: '',
   },
 };
 
@@ -205,12 +230,10 @@ export function ContactConvergenceHero() {
               partagez-les en un geste.
             </p>
             <div className={styles.actions}>
-              <Link href="/signup" prefetch={false}>
+              <Link href="/signup">
                 Créer ma Qard <ArrowUpRight size={17} />
               </Link>
-              <Link href="/card" prefetch={false}>
-                Voir un exemple
-              </Link>
+              <Link href="/card">Voir un exemple</Link>
             </div>
           </motion.div>
         </div>

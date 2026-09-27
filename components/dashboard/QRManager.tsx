@@ -79,8 +79,8 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
         <h2>Votre QR permanent</h2>
         {!profile.published && (
           <div className="qr-publish-warning">
-            Votre Qard est masquée. Publiez-la dans « Modifier ma Qard » avant
-            de partager ce QR code.
+            Votre Qard est masquée. Publiez-la dans « Ma Qard » avant de
+            partager ce QR code.
           </div>
         )}
         <p>
@@ -93,9 +93,12 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
             <input value={url} readOnly />
             <button
               disabled={!profile.published}
+              aria-label="Copier l’URL publique"
               onClick={() => {
-                void navigator.clipboard.writeText(url);
-                flash('Lien copié');
+                void navigator.clipboard
+                  .writeText(url)
+                  .then(() => flash('Lien copié'))
+                  .catch(() => flash('Copie impossible'));
               }}
             >
               <Copy size={17} />
@@ -104,6 +107,11 @@ export function QRManager({ profile, url }: { profile: Profile; url: string }) {
               href={profile.published ? url : '/dashboard/editor'}
               target={profile.published ? '_blank' : undefined}
               rel="noreferrer"
+              aria-label={
+                profile.published
+                  ? 'Ouvrir la Qard publique'
+                  : 'Publier la Qard'
+              }
             >
               <ExternalLink size={17} />
             </a>

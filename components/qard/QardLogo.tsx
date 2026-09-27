@@ -23,7 +23,7 @@ export function QardLogo({
     </span>
   );
   return linked ? (
-    <Link href="/" aria-label="Qard, accueil" prefetch={false}>
+    <Link href="/" aria-label="Qard, accueil">
       {wordmark}
     </Link>
   ) : (

@@ -137,7 +137,10 @@ export default async function AnalyticsPage({
           <BarChart3 />
         </div>
         {events.length ? (
-          <div className="bar-chart">
+          <figure
+            className="bar-chart"
+            aria-label={`Évolution des vues et clics sur ${period} jours`}
+          >
             {days.map((day) => (
               <div
                 key={day.key}
@@ -153,7 +156,7 @@ export default async function AnalyticsPage({
                 />
               </div>
             ))}
-          </div>
+          </figure>
         ) : (
           <div className="empty-chart">
             <BarChart3 />
@@ -174,7 +177,15 @@ export default async function AnalyticsPage({
             </div>
           ))
         ) : (
-          <p>Aucun lien à analyser pour le moment.</p>
+          <div className="analytics-empty-links">
+            <p>
+              Ajoutez un contact puis partagez votre Qard pour voir les clics
+              ici.
+            </p>
+            <Link className="button button-ghost" href="/dashboard/links">
+              Ajouter un contact
+            </Link>
+          </div>
         )}
       </section>
     </>

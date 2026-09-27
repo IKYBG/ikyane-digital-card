@@ -27,7 +27,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr" data-scroll-behavior="smooth">
-      <body>{children}</body>
+      <body>
+        <a className="skip-link" href="#main-content">
+          Aller au contenu
+        </a>
+        <div id="main-content">{children}</div>
+      </body>
     </html>
   );
 }

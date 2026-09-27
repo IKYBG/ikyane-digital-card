@@ -89,12 +89,12 @@ export function PrismaHero() {
           </Link>
           <nav aria-label="Navigation principale">
             {navItems.map((item) => (
-              <Link key={item.label} href={item.href} prefetch={false}>
+              <Link key={item.label} href={item.href}>
                 {item.label}
               </Link>
             ))}
           </nav>
-          <Link className="prisma-top-cta" href="/signup" prefetch={false}>
+          <Link className="prisma-top-cta" href="/signup">
             Créer ma Qard <ArrowUpRight size={15} />
           </Link>
         </header>
@@ -133,21 +133,13 @@ export function PrismaHero() {
                 }}
               >
                 <div className="prisma-actions">
-                  <Link
-                    href="/signup"
-                    prefetch={false}
-                    className="qard-prisma-cta group"
-                  >
+                  <Link href="/signup" className="qard-prisma-cta group">
                     Créer ma Qard
                     <span>
                       <ArrowRight size={17} />
                     </span>
                   </Link>
-                  <Link
-                    href="/card"
-                    prefetch={false}
-                    className="prisma-example-link"
-                  >
+                  <Link href="/card" className="prisma-example-link">
                     Voir un exemple <ArrowUpRight size={15} />
                   </Link>
                 </div>

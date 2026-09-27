@@ -47,7 +47,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
       },
     });
     if (authError) {
-      setError(authError.message);
+      setError(authErrorMessage(authError));
       setLoading(false);
     }
   }
@@ -122,7 +122,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
         ? 'Crée ton identité Qard.'
         : 'Retrouve ton accès.';
   return (
-    <form className="auth-form auth-form-card" onSubmit={submit}>
+    <form
+      className="auth-form auth-form-card"
+      onSubmit={submit}
+      aria-busy={loading}
+    >
       <div>
         <span className="auth-lock-mark">
           <LockKeyhole size={18} />
@@ -151,6 +155,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
             autoComplete="name"
             required
             maxLength={80}
+            disabled={loading}
             placeholder="Lucas Martin"
           />
         </label>
@@ -162,6 +167,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           type="email"
           autoComplete="email"
           required
+          disabled={loading}
           placeholder="toi@exemple.fr"
         />
       </label>
@@ -176,11 +182,10 @@ export function AuthForm({ mode }: { mode: Mode }) {
                 mode === 'login' ? 'current-password' : 'new-password'
               }
               required
+              disabled={loading}
               minLength={mode === 'signup' ? 8 : undefined}
               placeholder={
-                mode === 'signup'
-                  ? '8 caractères minimum'
-                  : 'Votre mot de passe'
+                mode === 'signup' ? '8 caractères minimum' : 'Ton mot de passe'
               }
             />
             <button
@@ -202,7 +207,11 @@ export function AuthForm({ mode }: { mode: Mode }) {
           {error}
         </p>
       )}
-      {success && <output className="form-message success">{success}</output>}
+      {success && (
+        <output className="form-message success" aria-live="polite">
+          {success}
+        </output>
+      )}
       {mode !== 'forgot' &&
         process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true' && (
           <button
@@ -228,6 +237,13 @@ export function AuthForm({ mode }: { mode: Mode }) {
           </>
         )}
       </button>
+      {mode === 'signup' && (
+        <p className="auth-legal-note">
+          En créant ton compte, tu acceptes les{' '}
+          <Link href="/terms">conditions d’utilisation</Link> et la{' '}
+          <Link href="/privacy">politique de confidentialité</Link>.
+        </p>
+      )}
       <footer>
         {mode === 'login' ? (
           <>

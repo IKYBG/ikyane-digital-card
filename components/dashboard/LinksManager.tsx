@@ -24,17 +24,32 @@ import { socialLinkSchema } from '@/lib/qard/validation';
 import type { Profile, SocialLink } from '@/types/database';
 
 const platforms = Object.keys(platformLabels);
-const commonPlatforms = ['instagram', 'linkedin', 'tiktok', 'email', 'phone', 'website'];
+const commonPlatforms = [
+  'instagram',
+  'linkedin',
+  'tiktok',
+  'email',
+  'phone',
+  'website',
+];
+function contactInputType(platform: string) {
+  if (platform === 'email') return 'email';
+  if (platform === 'phone' || platform === 'whatsapp') return 'tel';
+  if (platform === 'website' || platform === 'custom') return 'url';
+  return 'text';
+}
 function SortableLink({
   link,
   onDelete,
   onToggle,
   onEdit,
+  confirmingDelete,
 }: {
   link: SocialLink;
   onDelete: (id: string) => void;
   onToggle: (link: SocialLink) => void;
   onEdit: (link: SocialLink) => void;
+  confirmingDelete: boolean;
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id: link.id });
@@ -76,11 +91,11 @@ function SortableLink({
         <Pencil size={16} />
       </button>
       <button
-        className="icon-danger"
+        className={`icon-danger${confirmingDelete ? ' confirming' : ''}`}
         onClick={() => onDelete(link.id)}
-        aria-label="Supprimer"
+        aria-label={confirmingDelete ? 'Confirmer la suppression' : 'Supprimer'}
       >
-        <Trash2 size={17} />
+        {confirmingDelete ? <Check size={17} /> : <Trash2 size={17} />}
       </button>
     </article>
   );
@@ -98,6 +113,7 @@ export function LinksManager({
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [pendingDeleteId, setPendingDeleteId] = useState<string | null>(null);
   const [toast, setToast] = useState('');
   const flash = (text: string) => {
     setToast(text);
@@ -153,6 +169,7 @@ export function LinksManager({
     setBusy(false);
   }
   function edit(link: SocialLink) {
+    setPendingDeleteId(null);
     setEditingId(link.id);
     setPlatform(link.platform);
     setLabel(link.label ?? '');
@@ -160,14 +177,20 @@ export function LinksManager({
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   async function remove(id: string) {
+    if (pendingDeleteId !== id) {
+      setPendingDeleteId(id);
+      flash('Appuyez à nouveau pour confirmer la suppression');
+      return;
+    }
     const { error } = await createClient()
       .from('qard_social_links')
       .delete()
       .eq('id', id);
     if (!error) {
       setLinks(links.filter((item) => item.id !== id));
+      setPendingDeleteId(null);
       flash('Lien supprimé');
-    }
+    } else flash('Suppression impossible');
   }
   async function toggle(link: SocialLink) {
     const enabled = !link.enabled;
@@ -208,11 +231,18 @@ export function LinksManager({
   }
   return (
     <div className="links-layout">
-      <section className="panel add-link-panel">
+      <form
+        className="panel add-link-panel"
+        onSubmit={(event) => {
+          event.preventDefault();
+          void saveLink();
+        }}
+      >
         <div className="control-heading">
           <h2>{editingId ? 'Modifier le contact' : 'Ajouter un contact'}</h2>
           {editingId && (
             <button
+              type="button"
               className="text-button"
               onClick={() => {
                 setEditingId(null);
@@ -241,38 +271,52 @@ export function LinksManager({
         <label>
           {platformLabels[platform]} — identifiant, numéro ou URL
           <input
+            type={contactInputType(platform)}
             value={value}
             onChange={(e) => setValue(e.target.value)}
             placeholder="Saisissez votre information"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+            inputMode={
+              platform === 'phone' || platform === 'whatsapp'
+                ? 'tel'
+                : platform === 'email'
+                  ? 'email'
+                  : platform === 'website'
+                    ? 'url'
+                    : 'text'
+            }
           />
         </label>
         <details className="link-options">
           <summary>Autres plateformes et options</summary>
           <div className="field-row two">
-          <label>
-            Plateforme
-            <select
-              value={platform}
-              onChange={(e) => setPlatform(e.target.value)}
-            >
-              {platforms.map((item) => (
-                <option key={item} value={item}>
-                  {platformLabels[item]}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label>
-            Libellé optionnel
-            <input
-              value={label}
-              onChange={(e) => setLabel(e.target.value)}
-              placeholder={platformLabels[platform]}
-            />
-          </label>
+            <label>
+              Plateforme
+              <select
+                value={platform}
+                onChange={(e) => setPlatform(e.target.value)}
+              >
+                {platforms.map((item) => (
+                  <option key={item} value={item}>
+                    {platformLabels[item]}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label>
+              Libellé optionnel
+              <input
+                value={label}
+                onChange={(e) => setLabel(e.target.value)}
+                placeholder={platformLabels[platform]}
+              />
+            </label>
           </div>
         </details>
-        <button className="button" onClick={saveLink} disabled={busy}>
+        <button className="button" disabled={busy || !value.trim()}>
           {busy ? (
             <Loader2 className="spin" size={17} />
           ) : editingId ? (
@@ -282,7 +326,7 @@ export function LinksManager({
           )}{' '}
           {editingId ? 'Enregistrer' : 'Ajouter'}
         </button>
-      </section>
+      </form>
       <section>
         <div className="list-heading">
           <div>
@@ -305,6 +349,7 @@ export function LinksManager({
                     onDelete={remove}
                     onToggle={toggle}
                     onEdit={edit}
+                    confirmingDelete={pendingDeleteId === link.id}
                   />
                 ))}
               </div>

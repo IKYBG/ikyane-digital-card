@@ -104,17 +104,14 @@ export default async function DashboardPage() {
           </div>
           <p className={styles.url}>{url.replace(/^https?:\/\//, '')}</p>
           <div className={styles.actions}>
-            <Link
-              className={styles.primary}
-              href="/dashboard/editor"
-              prefetch={false}
-            >
+            <Link className={styles.primary} href="/dashboard/editor">
               <UserRoundPen size={17} /> Modifier
             </Link>
             <Link
               className={styles.secondary}
               href={`/u/${profile.slug}`}
               target="_blank"
+              rel="noreferrer"
               prefetch={false}
             >
               Voir <ExternalLink size={16} />
@@ -133,11 +130,7 @@ export default async function DashboardPage() {
                 <p>{nextStep.text}</p>
               </div>
             </div>
-            <Link
-              className={styles.textLink}
-              href={nextStep.href}
-              prefetch={false}
-            >
+            <Link className={styles.textLink} href={nextStep.href}>
               {nextStep.label} <ArrowRight size={15} />
             </Link>
           </article>
@@ -160,11 +153,7 @@ export default async function DashboardPage() {
                 <span>Taux</span>
               </div>
             </div>
-            <Link
-              className={styles.textLink}
-              href="/dashboard/analytics"
-              prefetch={false}
-            >
+            <Link className={styles.textLink} href="/dashboard/analytics">
               <BarChart3 size={15} /> Voir les statistiques
             </Link>
           </article>

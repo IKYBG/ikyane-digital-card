@@ -237,6 +237,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
       first.current = false;
       return;
     }
+    setStatus('dirty');
     const timer = window.setTimeout(() => {
       void persistProfileValues(values);
     }, 650);
@@ -294,7 +295,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
         .eq('profile_id', data.profile.id);
       if (appearanceError) {
         setStatus('error');
-        throw new Error('La bannière est enregistrée mais ne peut pas être affichée.');
+        throw new Error(
+          'La bannière est enregistrée mais ne peut pas être affichée.',
+        );
       }
       setShowBanner(true);
     }
@@ -325,7 +328,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
         String(getValues(nextQuestion.field as keyof Values) ?? ''),
       );
     } else {
-      const existing = links.find((link) => link.platform === nextQuestion.field);
+      const existing = links.find(
+        (link) => link.platform === nextQuestion.field,
+      );
       setQuestionAnswer(existing?.username ?? '');
     }
   }
@@ -454,9 +459,17 @@ export function ProfileEditor({ data }: { data: QardData }) {
                 <Check size={14} /> Enregistré
               </>
             ) : status === 'error' ? (
-              'Erreur d’enregistrement'
+              <>
+                Erreur d’enregistrement
+                <button
+                  type="button"
+                  onClick={() => void persistProfileValues(getValues())}
+                >
+                  Réessayer
+                </button>
+              </>
             ) : (
-              'Autosave actif'
+              'Enregistrement automatique'
             )}
           </div>
           <fieldset>
@@ -481,7 +494,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
                 Nom affiché
                 <input {...register('display_name')} />
                 {errors.display_name && (
-                  <small>{errors.display_name.message}</small>
+                  <small role="alert">{errors.display_name.message}</small>
                 )}
               </label>
             </div>
@@ -493,8 +506,13 @@ export function ProfileEditor({ data }: { data: QardData }) {
               />
             </label>
           </fieldset>
-          <details className="editor-section">
-            <summary>Informations complémentaires</summary>
+          <details className="editor-section" open>
+            <summary aria-label="Afficher ou masquer les informations à propos de vous">
+              <span>
+                <b>À propos de vous</b>
+                <small>Métier, lieu et courte présentation</small>
+              </span>
+            </summary>
             <div className="editor-section-body">
               <div className="field-row two">
                 <label>
@@ -509,20 +527,30 @@ export function ProfileEditor({ data }: { data: QardData }) {
               <div className="field-row two">
                 <label>
                   Métier
-                  <input {...register('job_title')} />
+                  <input
+                    {...register('job_title')}
+                    autoComplete="organization-title"
+                  />
                 </label>
                 <label>
                   Entreprise / école
-                  <input {...register('company')} />
+                  <input {...register('company')} autoComplete="organization" />
                 </label>
               </div>
               <label>
                 Localisation
-                <input {...register('location')} />
+                <input
+                  {...register('location')}
+                  autoComplete="address-level2"
+                />
               </label>
               <label>
                 Bio
-                <textarea {...register('bio')} rows={4} />
+                <textarea
+                  {...register('bio')}
+                  rows={4}
+                  placeholder="Présentez-vous en quelques lignes. Les retours à la ligne seront conservés."
+                />
               </label>
             </div>
           </details>
@@ -532,7 +560,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
               Email public
               <input type="email" {...register('email_public')} />
               {errors.email_public && (
-                <small>{errors.email_public.message}</small>
+                <small role="alert">{errors.email_public.message}</small>
               )}
             </label>
             <label>
@@ -546,7 +574,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
                 {...register('website')}
                 placeholder="https://…"
               />
-              {errors.website && <small>{errors.website.message}</small>}
+              {errors.website && (
+                <small role="alert">{errors.website.message}</small>
+              )}
             </label>
           </fieldset>
           <details className="editor-section">
@@ -566,7 +596,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
               <label className="toggle-row">
                 <span>
                   <b>Branding Qard</b>
-                  <small>Inclus avec le plan Free.</small>
+                  <small>Inclus avec le plan Gratuit.</small>
                 </span>
                 <input
                   aria-label="Afficher le branding Qard"
