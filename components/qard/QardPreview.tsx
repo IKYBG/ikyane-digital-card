@@ -237,8 +237,7 @@ export function QardPreview({
 
   return (
     <article
-      className={`${styles.root} qard-premium theme-${appearance.theme} buttons-${appearance.button_style} avatar-${appearance.avatar_shape} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ` ${styles.compact}` : ''}`}
-      data-theme-layout={theme.layout}
+      className={`${styles.root} qard-premium theme-${appearance.theme} buttons-${theme.buttonStyle} avatar-${theme.avatarShape} font-${theme.fontFamily}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ` ${styles.compact}` : ''}`}
       data-entry-animation={
         appearance.animation_enabled ? appearance.animation_style : 'none'
       }

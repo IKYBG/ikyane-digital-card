@@ -7,6 +7,7 @@ import {
   useMemo,
   useRef,
   useState,
+  useSyncExternalStore,
 } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -111,6 +112,16 @@ const mobileQuestions = [
   },
 ] as const;
 
+function subscribeToMobileViewport(onChange: () => void) {
+  const query = window.matchMedia('(max-width: 640px)');
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+}
+
+function getMobileViewport() {
+  return window.matchMedia('(max-width: 640px)').matches;
+}
+
 export function ProfileEditor({ data }: { data: QardData }) {
   const [avatar, setAvatar] = useState(data.profile.avatar_url);
   const [banner, setBanner] = useState(data.profile.banner_url);
@@ -119,7 +130,15 @@ export function ProfileEditor({ data }: { data: QardData }) {
     'idle' | 'dirty' | 'saving' | 'saved' | 'error'
   >('idle');
   const [links, setLinks] = useState(data.links);
-  const [previewVisible, setPreviewVisible] = useState(true);
+  const isMobile = useSyncExternalStore(
+    subscribeToMobileViewport,
+    getMobileViewport,
+    () => false,
+  );
+  const [previewPreference, setPreviewPreference] = useState<boolean | null>(
+    null,
+  );
+  const previewVisible = previewPreference ?? !isMobile;
   const [guideOpen, setGuideOpen] = useState(false);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [questionAnswer, setQuestionAnswer] = useState('');
@@ -441,7 +460,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
           <button
             type="button"
             className="mobile-preview-visibility"
-            onClick={() => setPreviewVisible((current) => !current)}
+            onClick={() => setPreviewPreference(!previewVisible)}
           >
             {previewVisible ? <EyeOff size={16} /> : <Eye size={16} />}
             {previewVisible ? 'Masquer l’aperçu' : 'Afficher l’aperçu'}
@@ -452,32 +471,43 @@ export function ProfileEditor({ data }: { data: QardData }) {
           onSubmit={(e) => e.preventDefault()}
           onBlurCapture={() => void persistProfileValues(getValues())}
         >
-          <div className={`save-state ${status}`} aria-live="polite">
-            <Save size={14} />
-            {status === 'dirty' ? (
-              'Modifications…'
-            ) : status === 'saving' ? (
-              'Enregistrement…'
-            ) : status === 'saved' ? (
-              <>
-                <Check size={14} /> Enregistré
-              </>
-            ) : status === 'error' ? (
-              <>
-                Erreur d’enregistrement
-                <button
-                  type="button"
-                  onClick={() => void persistProfileValues(getValues())}
-                >
-                  Réessayer
-                </button>
-              </>
-            ) : (
-              'Enregistrement automatique'
-            )}
-          </div>
-          <fieldset>
+          <header className="profile-editor-head">
+            <div>
+              <span>Profil public</span>
+              <h2>Présentez l’essentiel.</h2>
+              <p>
+                Complétez uniquement ce qui aide vraiment une personne à vous
+                reconnaître et à vous contacter.
+              </p>
+            </div>
+            <div className={`save-state ${status}`} aria-live="polite">
+              <Save size={14} />
+              {status === 'dirty' ? (
+                'Modifications…'
+              ) : status === 'saving' ? (
+                'Enregistrement…'
+              ) : status === 'saved' ? (
+                <>
+                  <Check size={14} /> Enregistré
+                </>
+              ) : status === 'error' ? (
+                <>
+                  Erreur d’enregistrement
+                  <button
+                    type="button"
+                    onClick={() => void persistProfileValues(getValues())}
+                  >
+                    Réessayer
+                  </button>
+                </>
+              ) : (
+                'Enregistrement automatique'
+              )}
+            </div>
+          </header>
+          <fieldset className="profile-form-section identity-visual-section">
             <legend>
+              <span>01</span>
               <Camera size={17} /> Identité visuelle
             </legend>
             <p className="section-intro">
@@ -522,8 +552,12 @@ export function ProfileEditor({ data }: { data: QardData }) {
               />
             </label>
           </fieldset>
-          <details className="editor-section" open>
+          <details
+            className="editor-section profile-form-section profile-public-section"
+            open
+          >
             <summary aria-label="Afficher ou masquer les informations à propos de vous">
+              <span className="section-number">02</span>
               <span className="section-icon">
                 <IdCard size={17} />
               </span>
@@ -573,8 +607,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
               </label>
             </div>
           </details>
-          <fieldset>
+          <fieldset className="profile-form-section contact-direct-section">
             <legend>
+              <span>03</span>
               <ContactRound size={17} /> Contact direct
             </legend>
             <p className="section-intro">
@@ -603,8 +638,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
               )}
             </label>
           </fieldset>
-          <details className="editor-section">
+          <details className="editor-section profile-form-section publication-section">
             <summary>
+              <span className="section-number">04</span>
               <span className="section-icon">
                 <Globe2 size={17} />
               </span>

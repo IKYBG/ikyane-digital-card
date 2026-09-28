@@ -26,7 +26,7 @@ export const appearanceThemeCategories = [
   { id: 'minimal', label: 'Épurés' },
 ] as const;
 
-export const appearanceThemes = [
+const themePalettes = [
   {
     id: 'midnight-glass',
     name: 'Studio Bleu',
@@ -333,7 +333,30 @@ export const appearanceThemes = [
     cardRadius: 4,
     layout: 'minimal',
   },
-] as const satisfies readonly AppearanceTheme[];
+] as const;
+
+const uniformCardStyle = {
+  buttonStyle: 'solid',
+  fontFamily: 'inter',
+  avatarShape: 'circle',
+  cardOpacity: 0.92,
+  cardBlur: 12,
+  cardRadius: 30,
+  layout: 'studio',
+} as const satisfies Pick<
+  AppearanceTheme,
+  | 'buttonStyle'
+  | 'fontFamily'
+  | 'avatarShape'
+  | 'cardOpacity'
+  | 'cardBlur'
+  | 'cardRadius'
+  | 'layout'
+>;
+
+export const appearanceThemes: readonly AppearanceTheme[] = themePalettes.map(
+  (theme) => ({ ...theme, ...uniformCardStyle }),
+);
 
 export function appearanceThemeFor(themeId: string) {
   return (
@@ -424,8 +447,8 @@ export function resolveAppearance(appearance: Appearance) {
     background,
     onAccent: relativeLuminance(accent) > 0.48 ? '#07111c' : '#ffffff',
     surfaceRgb: darkText ? '242 245 247' : '3 10 23',
-    radius: Math.min(48, Math.max(0, appearance.card_radius)),
-    opacity: Math.min(1, Math.max(0.35, appearance.card_opacity)),
-    blur: Math.min(32, Math.max(0, appearance.card_blur)),
+    radius: theme.cardRadius,
+    opacity: theme.cardOpacity,
+    blur: theme.cardBlur,
   };
 }

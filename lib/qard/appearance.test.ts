@@ -41,9 +41,11 @@ describe('appearance rendering', () => {
     expect(isValidBackground('color', appearance.background_value)).toBe(false);
   });
 
-  it('uses exact finishing values instead of silently clamping corners', () => {
-    expect(resolveAppearance({ ...appearance, card_radius: 0 }).radius).toBe(0);
-    expect(resolveAppearance({ ...appearance, card_blur: 32 }).blur).toBe(32);
+  it('keeps the same finishing values across every palette', () => {
+    expect(resolveAppearance({ ...appearance, card_radius: 0 }).radius).toBe(
+      30,
+    );
+    expect(resolveAppearance({ ...appearance, card_blur: 32 }).blur).toBe(12);
   });
 
   it('selects a readable foreground for the accent color', () => {
@@ -68,6 +70,10 @@ describe('appearance rendering', () => {
         expect(theme.cardRadius).toBeGreaterThanOrEqual(0);
         expect(theme.buttonStyle).toBeTruthy();
         expect(theme.fontFamily).toBeTruthy();
+        expect(theme.fontFamily).toBe('inter');
+        expect(theme.avatarShape).toBe('circle');
+        expect(theme.buttonStyle).toBe('solid');
+        expect(theme.cardRadius).toBe(30);
       }
     }
   });

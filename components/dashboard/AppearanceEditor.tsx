@@ -132,8 +132,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <span>Studio Qard</span>
               <h2>Apparence</h2>
               <p>
-                Choisissez une direction visuelle complète. Les couleurs, la
-                typographie et la composition évoluent ensemble.
+                Choisissez votre palette. La structure et la lisibilité de votre
+                Qard restent toujours identiques.
               </p>
             </div>
             <output
@@ -167,8 +167,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                 <div className="appearance-stage-heading">
                   <h3>Ambiance</h3>
                   <p>
-                    {appearanceThemes.length} créations, de l’éditorial sobre à
-                    l’affiche expressive.
+                    {appearanceThemes.length} palettes, une même expérience
+                    claire pour tous vos contacts.
                   </p>
                 </div>
                 <div
@@ -200,7 +200,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                         onClick={() => pickTheme(theme)}
                       >
                         <span
-                          className={`appearance-theme-visual layout-${theme.layout}`}
+                          className="appearance-theme-visual"
                           style={{ background: theme.bg, color: theme.text }}
                         >
                           <span className="appearance-theme-visual-head">

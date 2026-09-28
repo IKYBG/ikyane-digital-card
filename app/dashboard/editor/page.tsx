@@ -6,9 +6,9 @@ export default async function EditorPage() {
   return (
     <>
       <DashboardHeader
-        eyebrow="Ma Qard"
+        eyebrow="Studio Qard"
         title="Votre carte"
-        description="Les modifications sont enregistrées automatiquement."
+        description="Construisez votre profil à votre rythme. Chaque modification apparaît immédiatement dans l’aperçu."
       />
       <ProfileEditor data={data} />
     </>

@@ -680,17 +680,6 @@
   }
 }
 
-.root:global(.avatar-rounded) .avatar,
-.root:global(.avatar-rounded) .backAvatar {
-  border-radius: 28%;
-}
-.root:global(.avatar-square) .avatar,
-.root:global(.avatar-square) .backAvatar {
-  border-radius: 8%;
-}
-.root:global(.font-serif) .face {
-  font-family: Georgia, 'Times New Roman', serif;
-}
 .root:global(.font-inter) .face {
   font-family: Inter, ui-sans-serif, system-ui, sans-serif;
 }
@@ -698,114 +687,6 @@
 .root:global(.buttons-solid) .contactButton {
   border-color: transparent;
   background: color-mix(in srgb, var(--qref-accent) 24%, var(--qref-panel));
-}
-.root:global(.buttons-outline) .contactItem,
-.root:global(.buttons-outline) .contactButton {
-  border-color: color-mix(in srgb, var(--qref-accent) 58%, var(--qref-panel));
-  background: color-mix(in srgb, var(--qref-panel) 82%, transparent);
-  box-shadow: none;
-}
-.root:global(.buttons-minimal) .contactItem,
-.root:global(.buttons-minimal) .contactButton {
-  border-color: transparent;
-  border-bottom-color: color-mix(in srgb, var(--qref-accent) 34%, transparent);
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-/* Themes change composition as well as color, while keeping every profile field readable. */
-.root[data-theme-layout='editorial'] .frontPanel {
-  border-radius: 3% 3% 0 0;
-  background: var(--qref-panel);
-}
-.root[data-theme-layout='editorial'] .nameRow h1,
-.root[data-theme-layout='editorial'] .backName h2 {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 650;
-  letter-spacing: -0.045em;
-}
-.root[data-theme-layout='editorial'] .identityFacts p > span,
-.root[data-theme-layout='editorial'] .contactIcon,
-.root[data-theme-layout='editorial'] .contactButtonIcon {
-  border-radius: 28%;
-}
-.root[data-theme-layout='editorial'] .contactItem,
-.root[data-theme-layout='editorial'] .contactButton {
-  border-radius: 14px;
-}
-
-.root[data-theme-layout='poster'] .banner {
-  bottom: 60%;
-}
-.root[data-theme-layout='poster'] .frontPanel {
-  top: 40%;
-  padding-top: 15.5%;
-  border-radius: 0;
-  background: color-mix(in srgb, var(--qref-panel) 93%, var(--qref-accent));
-}
-.root[data-theme-layout='poster'] .nameRow h1,
-.root[data-theme-layout='poster'] .backName h2 {
-  font-weight: 900;
-  letter-spacing: -0.075em;
-  text-transform: uppercase;
-}
-.root[data-theme-layout='poster'] .contactButton,
-.root[data-theme-layout='poster'] .contactItem {
-  border-width: 2px;
-  border-radius: 10px;
-  box-shadow: 5px 5px 0 color-mix(in srgb, var(--qref-accent) 42%, transparent);
-}
-
-.root[data-theme-layout='minimal'] .banner {
-  bottom: 69%;
-}
-.root[data-theme-layout='minimal'] .frontPanel {
-  top: 31%;
-  padding-top: 16%;
-  border-radius: 0;
-  background: var(--qref-panel);
-}
-.root[data-theme-layout='minimal'] .avatar {
-  width: 31%;
-  left: 8%;
-  border-radius: 12%;
-  transform: translate(0, -50%);
-}
-.root[data-theme-layout='minimal'] .nameRow {
-  justify-content: flex-start;
-  padding-left: 1%;
-}
-.root[data-theme-layout='minimal'] .nameRow h1 {
-  text-align: left;
-}
-.root[data-theme-layout='minimal'] .contactButton,
-.root[data-theme-layout='minimal'] .contactItem {
-  border-radius: 2px;
-  box-shadow: none;
-}
-
-.root[data-theme-layout='organic'] .frontPanel {
-  border-radius: 18% 18% 0 0;
-}
-.root[data-theme-layout='organic'] .bannerShape {
-  border-radius: 0 0 50% 50%;
-}
-.root[data-theme-layout='organic'] .contactItem,
-.root[data-theme-layout='organic'] .contactButton {
-  border-radius: 999px;
-}
-
-.root[data-theme-layout='mono'] .frontPanel,
-.root[data-theme-layout='mono'] .back {
-  background: color-mix(in srgb, var(--qref-panel) 96%, #000);
-}
-.root[data-theme-layout='mono'] .banner::after {
-  background: linear-gradient(180deg, rgb(0 0 0 / 0.48), transparent 68%);
-}
-.root[data-theme-layout='mono'] .contactItem,
-.root[data-theme-layout='mono'] .contactButton {
-  box-shadow: none;
 }
 @keyframes flipShadow {
   0%,
