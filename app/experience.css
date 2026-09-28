@@ -230,6 +230,18 @@
   color: #a45532;
   background: #f8dfcc;
 }
+.pricing-plan-head > div {
+  display: grid;
+  gap: 3px;
+}
+.pricing-plan-head > div > small {
+  color: #8a6c5c;
+  font-size: 0.62rem;
+  font-weight: 680;
+}
+.pricing-grid .featured .pricing-plan-head > div > small {
+  color: rgb(255 239 220 / 0.56);
+}
 .pricing-grid .featured .pricing-plan-head > span {
   color: #fff4e7;
   background: rgb(255 255 255 / 0.1);
@@ -299,6 +311,11 @@
   color: rgb(255 247 236 / 0.56);
   border: 1px solid rgb(255 255 255 / 0.12);
   background: rgb(255 255 255 / 0.065);
+}
+.pricing-page .pricing-grid .featured .button {
+  border-color: #fff4e6;
+  color: #2e2019;
+  background: #fff4e6;
 }
 .pricing-page .pricing-grid article > b {
   top: 26px;
@@ -1190,10 +1207,16 @@
     display: none;
   }
   .pricing-page .pricing-hero {
-    padding: 72px 14px 34px;
+    padding: 64px 14px 30px;
   }
   .pricing-page .pricing-hero h1 {
-    font-size: clamp(3rem, 15vw, 4.6rem);
+    margin-top: 18px;
+    font-size: clamp(2.55rem, 12.8vw, 4rem);
+    line-height: 0.94;
+  }
+  .pricing-page .pricing-hero p {
+    margin-top: 18px;
+    font-size: 0.86rem;
   }
   .pricing-promise {
     align-items: flex-start;
@@ -1206,13 +1229,14 @@
     border-radius: 24px;
   }
   .pricing-page .pricing-grid article > div:nth-of-type(2) {
-    margin-top: 42px;
+    margin-top: 34px;
   }
   .pricing-page .pricing-grid article > b {
     top: 20px;
     right: 20px;
   }
   .pricing-assurance {
+    grid-template-columns: 1fr;
     padding-bottom: 56px;
   }
   .auth-shell-v2 > header > a:last-child {
@@ -1273,6 +1297,152 @@
   }
   .analytics-empty-links .button {
     width: 100%;
+  }
+}
+
+/* The profile studio becomes a focused mobile editor instead of a stack of
+   competing titles, cards and explanatory paragraphs. */
+@media (max-width: 640px) {
+  .profile-studio-page .dashboard-header {
+    margin: 0 2px 14px;
+  }
+  .profile-studio-page .dashboard-header span {
+    display: none;
+  }
+  .profile-studio-page .dashboard-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: -0.055em;
+  }
+  .profile-studio-page .dashboard-header p {
+    max-width: 34ch;
+    margin-top: 5px;
+    font-size: 0.72rem;
+    line-height: 1.4;
+  }
+  .profile-studio-page .mobile-card-controls {
+    top: calc(72px + env(safe-area-inset-top));
+    margin-bottom: 10px;
+    border-radius: 14px;
+    background: rgb(255 250 243 / 0.94);
+    box-shadow: 0 12px 34px rgb(72 43 27 / 0.12);
+  }
+  .profile-studio-page .mobile-preview-visibility {
+    width: 100%;
+    min-height: 44px;
+    color: #4d352a;
+    border-color: rgb(91 56 38 / 0.12);
+    background: #f4dfd0;
+    font-size: 0.74rem;
+    font-weight: 730;
+  }
+  .profile-studio-page .profile-editor-premium {
+    border-radius: 20px;
+    box-shadow: 0 18px 48px rgb(72 43 27 / 0.09);
+  }
+  .profile-studio-page .profile-editor-head {
+    min-height: 0;
+    justify-content: flex-end;
+    padding: 9px 12px;
+    border-bottom-color: rgb(91 56 38 / 0.08);
+    background: #fffaf4;
+  }
+  .profile-studio-page .profile-editor-head::after,
+  .profile-studio-page .profile-editor-head > div:first-child {
+    display: none;
+  }
+  .profile-studio-page .profile-editor-head .save-state {
+    width: auto;
+    min-height: 32px;
+    padding-inline: 10px;
+    border: 0;
+    color: #775d4f;
+    background: transparent;
+    box-shadow: none;
+    font-size: 0.66rem;
+  }
+  .profile-studio-page .profile-editor-premium .profile-form-section,
+  .profile-studio-page .profile-editor-premium fieldset.profile-form-section {
+    padding: 18px 15px;
+  }
+  .profile-studio-page .profile-editor-premium .section-intro {
+    margin: -4px 0 2px 42px;
+    font-size: 0.64rem;
+  }
+  .profile-studio-page .profile-editor-premium .media-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .profile-studio-page .profile-editor-premium .media-uploader {
+    min-height: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    justify-items: center;
+    gap: 8px;
+    padding: 13px 10px;
+    border-radius: 16px;
+    text-align: center;
+  }
+  .profile-studio-page .profile-editor-premium .media-uploader-preview {
+    width: 58px;
+    height: 58px;
+    grid-row: auto;
+  }
+  .profile-studio-page
+    .profile-editor-premium
+    .media-uploader
+    > div:nth-child(2) {
+    align-self: auto;
+  }
+  .profile-studio-page
+    .profile-editor-premium
+    .media-uploader
+    > div:nth-child(2)
+    small {
+    display: none;
+  }
+  .profile-studio-page .profile-editor-premium .media-uploader button {
+    width: 100%;
+    min-height: 36px;
+    grid-column: auto;
+    justify-content: center;
+  }
+  .profile-studio-page
+    .profile-editor-premium
+    .media-uploader
+    button[aria-label^='Supprimer'] {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 32px;
+    min-height: 32px;
+    padding: 0;
+    border-radius: 50%;
+  }
+  .profile-studio-page .profile-editor-premium .editor-section > summary {
+    min-height: 64px;
+    padding-right: 50px;
+    padding-left: 15px;
+  }
+  .profile-studio-page
+    .profile-editor-premium
+    .editor-section
+    > summary::after {
+    right: 14px;
+  }
+  .profile-studio-page .profile-editor-premium .editor-section-body {
+    padding: 16px 15px 19px;
+  }
+  .profile-studio-page .profile-editor-premium input,
+  .profile-studio-page .profile-editor-premium textarea {
+    min-height: 48px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 360px) {
+  .profile-studio-page .profile-editor-premium .media-grid {
+    grid-template-columns: 1fr;
   }
 }
 

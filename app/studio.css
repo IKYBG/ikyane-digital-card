@@ -410,7 +410,7 @@
   border-radius: 50%;
 }
 .cropper-stage.banner {
-  aspect-ratio: 780 / 474;
+  aspect-ratio: 780 / 538;
   border-radius: 20px;
 }
 .cropper-stage img {

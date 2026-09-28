@@ -76,6 +76,7 @@ export function PrismaHero() {
           alt="Une Qard partagée instantanément sur un campus"
           fill
           priority
+          quality={90}
           sizes="100vw"
           className="prisma-background"
         />

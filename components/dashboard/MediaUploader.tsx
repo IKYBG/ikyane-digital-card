@@ -134,7 +134,7 @@ export function MediaUploader({
         <small>
           {bucket === 'avatars'
             ? 'Recadrée et optimisée automatiquement'
-            : 'Optimisée automatiquement'}
+            : 'Recadrée au format exact de votre Qard'}
         </small>
       </div>
       <input
@@ -171,7 +171,7 @@ export function MediaUploader({
                 <small>
                   {bucket === 'avatars'
                     ? 'Placez votre visage au centre du cercle.'
-                    : 'Cadrez la zone qui apparaîtra derrière votre profil.'}
+                    : 'Tout ce cadre sera visible, jusque dans les coins arrondis.'}
                 </small>
               </div>
               <button type="button" onClick={closeCropper} aria-label="Fermer">
@@ -188,7 +188,9 @@ export function MediaUploader({
                 unoptimized
                 sizes="520px"
                 style={{
-                  transform: `translate(${crop.x * 0.22}%, ${crop.y * 0.22}%) scale(${crop.zoom})`,
+                  objectPosition: `${(crop.x + 100) / 2}% ${(crop.y + 100) / 2}%`,
+                  transformOrigin: `${(crop.x + 100) / 2}% ${(crop.y + 100) / 2}%`,
+                  transform: `scale(${crop.zoom})`,
                 }}
               />
               <i aria-hidden="true" />
@@ -282,7 +284,9 @@ async function prepareImage(
   crop: { zoom: number; x: number; y: number },
 ) {
   const targetWidth = bucket === 'avatars' ? 1200 : 1560;
-  const targetHeight = bucket === 'avatars' ? 1200 : 948;
+  // The banner extends below the front panel so its image remains visible in
+  // the rounded shoulders. This output ratio mirrors that exact CSS surface.
+  const targetHeight = bucket === 'avatars' ? 1200 : 1076;
   const bitmap = await createImageBitmap(file, {
     imageOrientation: 'from-image',
   });
