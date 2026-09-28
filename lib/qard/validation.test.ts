@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { appearanceThemes } from './appearance';
 import { appearanceSchema, slugSchema, socialLinkSchema } from './validation';
 describe('slugSchema', () => {
   it('normalise un slug valide', () =>
@@ -10,6 +11,29 @@ describe('slugSchema', () => {
 });
 
 describe('validation des contenus publics', () => {
+  it('accepte chaque palette proposée dans le studio', () => {
+    for (const theme of appearanceThemes) {
+      expect(
+        appearanceSchema.safeParse({
+          theme: theme.id,
+          background_type: theme.bg.startsWith('#') ? 'color' : 'gradient',
+          background_value: theme.bg,
+          accent_color: theme.accent,
+          text_color: theme.text,
+          card_opacity: theme.cardOpacity,
+          card_blur: theme.cardBlur,
+          card_radius: theme.cardRadius,
+          button_style: theme.buttonStyle,
+          avatar_shape: theme.avatarShape,
+          font_family: theme.fontFamily,
+          animation_style: 'none',
+          animation_enabled: false,
+          show_banner: true,
+        }).success,
+      ).toBe(true);
+    }
+  });
+
   it('refuse un protocole de lien exécutable', () => {
     expect(() =>
       socialLinkSchema.parse({

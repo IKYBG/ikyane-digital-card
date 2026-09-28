@@ -1682,23 +1682,23 @@
 .dashboard-shell .profile-editor-head {
   position: relative;
   display: flex;
-  min-height: 150px;
-  align-items: flex-start;
+  min-height: 106px;
+  align-items: center;
   justify-content: space-between;
   gap: 24px;
-  padding: 30px;
+  padding: 24px 28px;
   overflow: hidden;
   border-bottom: 1px solid rgb(91 56 38 / 0.1);
   background:
-    radial-gradient(circle at 92% 0%, rgb(233 140 88 / 0.2), transparent 38%),
-    linear-gradient(145deg, #fffaf3, #f4e1d2);
+    radial-gradient(circle at 94% 0%, rgb(233 140 88 / 0.14), transparent 34%),
+    linear-gradient(145deg, #fffaf4, #f6e8dc);
 }
 .dashboard-shell .profile-editor-head::after {
   position: absolute;
   right: -38px;
   bottom: -66px;
-  width: 180px;
-  height: 180px;
+  width: 140px;
+  height: 140px;
   border: 1px solid rgb(165 89 52 / 0.14);
   border-radius: 50%;
   content: '';
@@ -1716,9 +1716,9 @@
   text-transform: uppercase;
 }
 .dashboard-shell .profile-editor-head h2 {
-  margin: 9px 0 8px;
+  margin: 6px 0 5px;
   color: #33231c;
-  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
   font-weight: 670;
   letter-spacing: -0.055em;
   line-height: 1;
@@ -1727,8 +1727,8 @@
   max-width: 50ch;
   margin: 0;
   color: #786052;
-  font-size: 0.76rem;
-  line-height: 1.55;
+  font-size: 0.72rem;
+  line-height: 1.45;
 }
 .dashboard-shell .profile-editor-head .save-state {
   position: relative;
@@ -1745,7 +1745,7 @@
 .dashboard-shell .profile-editor-premium .profile-form-section,
 .dashboard-shell .profile-editor-premium fieldset.profile-form-section {
   margin: 0;
-  padding: 30px;
+  padding: 24px 28px;
   border: 0 !important;
   border-bottom: 1px solid rgb(91 56 38 / 0.1) !important;
   border-radius: 0 !important;
@@ -1771,7 +1771,6 @@
   + * {
   clear: both;
 }
-.dashboard-shell .profile-editor-premium legend > span:first-child,
 .dashboard-shell .profile-editor-premium .section-number {
   display: grid;
   width: 30px;
@@ -1787,10 +1786,12 @@
   letter-spacing: 0.05em;
 }
 .dashboard-shell .profile-editor-premium legend svg {
-  margin-left: 3px;
+  margin: 0;
 }
 .dashboard-shell .profile-editor-premium .section-intro {
-  margin: -5px 0 4px 42px;
+  margin: -6px 0 2px 43px;
+  color: #80685a;
+  font-size: 0.68rem;
 }
 .dashboard-shell .profile-editor-premium .media-grid {
   margin-top: 4px;
@@ -1798,12 +1799,12 @@
 .dashboard-shell .profile-editor-premium .media-uploader {
   position: relative;
   display: grid;
-  min-height: 150px;
-  grid-template-columns: 78px minmax(0, 1fr);
+  min-height: 124px;
+  grid-template-columns: 66px minmax(0, 1fr);
   grid-template-rows: auto auto;
   align-content: center;
   gap: 10px 14px;
-  padding: 18px;
+  padding: 15px;
   overflow: hidden;
   border: 1px solid rgb(91 56 38 / 0.11);
   border-radius: 20px;
@@ -1819,8 +1820,8 @@
   transform: translateY(-2px);
 }
 .dashboard-shell .profile-editor-premium .media-uploader-preview {
-  width: 78px;
-  height: 78px;
+  width: 66px;
+  height: 66px;
   grid-row: 1 / 3;
   border: 1px solid rgb(91 56 38 / 0.12);
   border-radius: 50%;
@@ -1869,13 +1870,13 @@
   margin-top: 2px;
 }
 .dashboard-shell .profile-editor-premium .editor-section > summary {
-  min-height: 78px;
-  padding: 0 62px 0 30px;
+  min-height: 68px;
+  padding: 0 58px 0 28px;
   border: 0;
   background: transparent !important;
 }
 .dashboard-shell .profile-editor-premium .editor-section > summary::after {
-  right: 30px;
+  right: 28px;
   border-color: rgb(91 56 38 / 0.12);
   color: #9b4e2f;
   background: #f6e4d6;
@@ -1884,7 +1885,7 @@
   border-bottom: 1px solid rgb(91 56 38 / 0.08);
 }
 .dashboard-shell .profile-editor-premium .editor-section-body {
-  padding: 24px 30px 30px;
+  padding: 20px 28px 26px;
 }
 .dashboard-shell .profile-editor-premium .section-number {
   margin-right: 1px;
@@ -1894,15 +1895,33 @@
   height: 34px;
   border-radius: 10px;
 }
-.dashboard-shell .profile-editor-premium .contact-direct-section {
+.dashboard-shell .profile-editor-premium .contact-direct-fields {
+  display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
-.dashboard-shell .profile-editor-premium .contact-direct-section legend,
-.dashboard-shell
-  .profile-editor-premium
-  .contact-direct-section
-  .section-intro {
-  grid-column: 1 / -1;
+.dashboard-shell .profile-editor-premium label {
+  color: #4b352a;
+  font-size: 0.69rem;
+  font-weight: 720;
+  letter-spacing: 0;
+}
+.dashboard-shell .profile-editor-premium input,
+.dashboard-shell .profile-editor-premium textarea {
+  min-height: 46px;
+  border-color: rgb(91 56 38 / 0.14);
+  border-radius: 12px;
+  color: #2f211b;
+  background: #fffdf9;
+  box-shadow: inset 0 1px 2px rgb(91 56 38 / 0.035);
+  font-size: 0.84rem;
+}
+.dashboard-shell .profile-editor-premium textarea {
+  min-height: 112px;
+}
+.dashboard-shell .profile-editor-premium input:focus,
+.dashboard-shell .profile-editor-premium textarea:focus {
+  border-color: #c16d46;
+  outline: 3px solid rgb(193 109 70 / 0.12);
 }
 .dashboard-shell .profile-editor-premium .toggle-row {
   padding: 14px 0;
@@ -1928,7 +1947,7 @@
     grid-template-columns: minmax(0, 1fr) minmax(290px, 340px);
     gap: 24px;
   }
-  .dashboard-shell .profile-editor-premium .contact-direct-section {
+  .dashboard-shell .profile-editor-premium .contact-direct-fields {
     grid-template-columns: 1fr;
   }
 }

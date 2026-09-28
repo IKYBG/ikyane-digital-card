@@ -473,12 +473,9 @@ export function ProfileEditor({ data }: { data: QardData }) {
         >
           <header className="profile-editor-head">
             <div>
-              <span>Profil public</span>
-              <h2>Présentez l’essentiel.</h2>
-              <p>
-                Complétez uniquement ce qui aide vraiment une personne à vous
-                reconnaître et à vous contacter.
-              </p>
+              <span>Ma Qard</span>
+              <h2>Votre profil</h2>
+              <p>Ajoutez les informations visibles sur votre carte.</p>
             </div>
             <div className={`save-state ${status}`} aria-live="polite">
               <Save size={14} />
@@ -507,12 +504,13 @@ export function ProfileEditor({ data }: { data: QardData }) {
           </header>
           <fieldset className="profile-form-section identity-visual-section">
             <legend>
-              <span>01</span>
-              <Camera size={17} /> Identité visuelle
+              <span className="section-icon">
+                <Camera size={17} />
+              </span>
+              Photo et bannière
             </legend>
             <p className="section-intro">
-              Les deux images les plus vues de votre Qard. Cadrez-les une fois,
-              elles s’adaptent partout.
+              Ajustez les deux images visibles sur votre carte.
             </p>
             <div className="media-grid">
               <MediaUploader
@@ -554,16 +552,14 @@ export function ProfileEditor({ data }: { data: QardData }) {
           </fieldset>
           <details
             className="editor-section profile-form-section profile-public-section"
-            open
           >
             <summary aria-label="Afficher ou masquer les informations à propos de vous">
-              <span className="section-number">02</span>
               <span className="section-icon">
                 <IdCard size={17} />
               </span>
               <span>
-                <b>Profil public</b>
-                <small>Nom, activité, lieu et présentation</small>
+                <b>Informations</b>
+                <small>Nom, métier, lieu et bio</small>
               </span>
             </summary>
             <div className="editor-section-body">
@@ -607,46 +603,49 @@ export function ProfileEditor({ data }: { data: QardData }) {
               </label>
             </div>
           </details>
-          <fieldset className="profile-form-section contact-direct-section">
-            <legend>
-              <span>03</span>
-              <ContactRound size={17} /> Contact direct
-            </legend>
-            <p className="section-intro">
-              Ces coordonnées complètent vos réseaux et restent facultatives.
-            </p>
-            <label>
-              Email public
-              <input type="email" {...register('email_public')} />
-              {errors.email_public && (
-                <small role="alert">{errors.email_public.message}</small>
-              )}
-            </label>
-            <label>
-              Téléphone
-              <input type="tel" {...register('phone_public')} />
-            </label>
-            <label>
-              Site web
-              <input
-                type="url"
-                {...register('website')}
-                placeholder="https://…"
-              />
-              {errors.website && (
-                <small role="alert">{errors.website.message}</small>
-              )}
-            </label>
-          </fieldset>
+          <details className="editor-section profile-form-section contact-direct-section">
+            <summary>
+              <span className="section-icon">
+                <ContactRound size={17} />
+              </span>
+              <span>
+                <b>Coordonnées</b>
+                <small>Email, téléphone et site</small>
+              </span>
+            </summary>
+            <div className="editor-section-body contact-direct-fields">
+              <label>
+                Email public
+                <input type="email" {...register('email_public')} />
+                {errors.email_public && (
+                  <small role="alert">{errors.email_public.message}</small>
+                )}
+              </label>
+              <label>
+                Téléphone
+                <input type="tel" {...register('phone_public')} />
+              </label>
+              <label>
+                Site web
+                <input
+                  type="url"
+                  {...register('website')}
+                  placeholder="https://…"
+                />
+                {errors.website && (
+                  <small role="alert">{errors.website.message}</small>
+                )}
+              </label>
+            </div>
+          </details>
           <details className="editor-section profile-form-section publication-section">
             <summary>
-              <span className="section-number">04</span>
               <span className="section-icon">
                 <Globe2 size={17} />
               </span>
               <span>
-                <b>Publication</b>
-                <small>Visibilité de la Qard et signature</small>
+                <b>Visibilité</b>
+                <small>Publication et signature Qard</small>
               </span>
             </summary>
             <div className="editor-section-body">
