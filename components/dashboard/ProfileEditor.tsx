@@ -11,10 +11,14 @@ import {
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  Camera,
   Check,
   ChevronRight,
+  ContactRound,
   Eye,
   EyeOff,
+  Globe2,
+  IdCard,
   Save,
   SlidersHorizontal,
   X,
@@ -444,7 +448,7 @@ export function ProfileEditor({ data }: { data: QardData }) {
           </button>
         </div>
         <form
-          className="editor-form"
+          className="editor-form profile-editor-premium"
           onSubmit={(e) => e.preventDefault()}
           onBlurCapture={() => void persistProfileValues(getValues())}
         >
@@ -473,22 +477,34 @@ export function ProfileEditor({ data }: { data: QardData }) {
             )}
           </div>
           <fieldset>
-            <legend>Essentiel</legend>
-            <MediaUploader
-              bucket="avatars"
-              userId={data.profile.user_id}
-              value={avatar}
-              onChange={(nextAvatar) => persistMedia('avatar_url', nextAvatar)}
-              label="Photo de profil"
-            />
-            <MediaUploader
-              bucket="banners"
-              userId={data.profile.user_id}
-              value={banner}
-              onChange={(nextBanner) => persistMedia('banner_url', nextBanner)}
-              label="Bannière"
-              maxMb={8}
-            />
+            <legend>
+              <Camera size={17} /> Identité visuelle
+            </legend>
+            <p className="section-intro">
+              Les deux images les plus vues de votre Qard. Cadrez-les une fois,
+              elles s’adaptent partout.
+            </p>
+            <div className="media-grid">
+              <MediaUploader
+                bucket="avatars"
+                userId={data.profile.user_id}
+                value={avatar}
+                onChange={(nextAvatar) =>
+                  persistMedia('avatar_url', nextAvatar)
+                }
+                label="Photo de profil"
+              />
+              <MediaUploader
+                bucket="banners"
+                userId={data.profile.user_id}
+                value={banner}
+                onChange={(nextBanner) =>
+                  persistMedia('banner_url', nextBanner)
+                }
+                label="Bannière"
+                maxMb={8}
+              />
+            </div>
             <div className="field-row">
               <label>
                 Nom affiché
@@ -508,9 +524,12 @@ export function ProfileEditor({ data }: { data: QardData }) {
           </fieldset>
           <details className="editor-section" open>
             <summary aria-label="Afficher ou masquer les informations à propos de vous">
+              <span className="section-icon">
+                <IdCard size={17} />
+              </span>
               <span>
-                <b>À propos de vous</b>
-                <small>Métier, lieu et courte présentation</small>
+                <b>Profil public</b>
+                <small>Nom, activité, lieu et présentation</small>
               </span>
             </summary>
             <div className="editor-section-body">
@@ -555,7 +574,12 @@ export function ProfileEditor({ data }: { data: QardData }) {
             </div>
           </details>
           <fieldset>
-            <legend>Contact</legend>
+            <legend>
+              <ContactRound size={17} /> Contact direct
+            </legend>
+            <p className="section-intro">
+              Ces coordonnées complètent vos réseaux et restent facultatives.
+            </p>
             <label>
               Email public
               <input type="email" {...register('email_public')} />
@@ -580,7 +604,15 @@ export function ProfileEditor({ data }: { data: QardData }) {
             </label>
           </fieldset>
           <details className="editor-section">
-            <summary>Publication</summary>
+            <summary>
+              <span className="section-icon">
+                <Globe2 size={17} />
+              </span>
+              <span>
+                <b>Publication</b>
+                <small>Visibilité de la Qard et signature</small>
+              </span>
+            </summary>
             <div className="editor-section-body">
               <label className="toggle-row">
                 <span>

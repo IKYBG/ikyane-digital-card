@@ -9,6 +9,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
+  ArrowRight,
   Check,
   GripVertical,
   Loader2,
@@ -239,7 +240,14 @@ export function LinksManager({
         }}
       >
         <div className="control-heading">
-          <h2>{editingId ? 'Modifier le contact' : 'Ajouter un contact'}</h2>
+          <div>
+            <span className="panel-kicker">Carnet public</span>
+            <h2>{editingId ? 'Modifier le contact' : 'Ajouter un contact'}</h2>
+            <p>
+              Choisissez un service, puis saisissez simplement votre
+              identifiant.
+            </p>
+          </div>
           {editingId && (
             <button
               type="button"
@@ -267,6 +275,16 @@ export function LinksManager({
               <span>{platformLabels[item]}</span>
             </button>
           ))}
+        </div>
+        <div className="selected-platform-card" aria-live="polite">
+          <span>
+            <SocialIcon platform={platform} />
+          </span>
+          <div>
+            <small>Contact sélectionné</small>
+            <strong>{platformLabels[platform]}</strong>
+          </div>
+          <ArrowRight size={19} aria-hidden="true" />
         </div>
         <label>
           {platformLabels[platform]} — identifiant, numéro ou URL
@@ -330,8 +348,9 @@ export function LinksManager({
       <section>
         <div className="list-heading">
           <div>
+            <span className="panel-kicker">Visible sur votre Qard</span>
             <h2>Mes contacts</h2>
-            <p>Glissez les lignes pour modifier l’ordre public.</p>
+            <p>Activez, modifiez ou réordonnez sans quitter cette page.</p>
           </div>
           <span>{links.length}</span>
         </div>

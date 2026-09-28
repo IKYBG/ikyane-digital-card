@@ -17,6 +17,7 @@ type AppearanceTheme = {
   cardOpacity: number;
   cardBlur: number;
   cardRadius: number;
+  layout: 'studio' | 'editorial' | 'poster' | 'minimal' | 'organic' | 'mono';
 };
 
 export const appearanceThemeCategories = [
@@ -41,6 +42,7 @@ export const appearanceThemes = [
     cardOpacity: 0.78,
     cardBlur: 18,
     cardRadius: 28,
+    layout: 'studio',
   },
   {
     id: 'frost',
@@ -57,6 +59,7 @@ export const appearanceThemes = [
     cardOpacity: 0.9,
     cardBlur: 14,
     cardRadius: 24,
+    layout: 'organic',
   },
   {
     id: 'graphite',
@@ -73,6 +76,7 @@ export const appearanceThemes = [
     cardOpacity: 0.9,
     cardBlur: 8,
     cardRadius: 22,
+    layout: 'mono',
   },
   {
     id: 'cobalt',
@@ -89,6 +93,7 @@ export const appearanceThemes = [
     cardOpacity: 0.84,
     cardBlur: 12,
     cardRadius: 32,
+    layout: 'poster',
   },
   {
     id: 'sakura',
@@ -105,6 +110,7 @@ export const appearanceThemes = [
     cardOpacity: 0.91,
     cardBlur: 16,
     cardRadius: 34,
+    layout: 'organic',
   },
   {
     id: 'terracotta',
@@ -121,6 +127,7 @@ export const appearanceThemes = [
     cardOpacity: 0.86,
     cardBlur: 10,
     cardRadius: 18,
+    layout: 'editorial',
   },
   {
     id: 'pearl',
@@ -137,6 +144,7 @@ export const appearanceThemes = [
     cardOpacity: 0.92,
     cardBlur: 10,
     cardRadius: 30,
+    layout: 'studio',
   },
   {
     id: 'aurora',
@@ -153,6 +161,7 @@ export const appearanceThemes = [
     cardOpacity: 0.72,
     cardBlur: 24,
     cardRadius: 36,
+    layout: 'organic',
   },
   {
     id: 'sage',
@@ -169,6 +178,7 @@ export const appearanceThemes = [
     cardOpacity: 0.9,
     cardBlur: 14,
     cardRadius: 26,
+    layout: 'organic',
   },
   {
     id: 'minimal-dark',
@@ -185,6 +195,7 @@ export const appearanceThemes = [
     cardOpacity: 0.96,
     cardBlur: 0,
     cardRadius: 12,
+    layout: 'mono',
   },
   {
     id: 'minimal-light',
@@ -201,6 +212,7 @@ export const appearanceThemes = [
     cardOpacity: 0.96,
     cardBlur: 0,
     cardRadius: 12,
+    layout: 'minimal',
   },
   {
     id: 'editorial-ink',
@@ -217,8 +229,118 @@ export const appearanceThemes = [
     cardOpacity: 0.94,
     cardBlur: 2,
     cardRadius: 8,
+    layout: 'editorial',
+  },
+  {
+    id: 'apricot-paper',
+    name: 'Abricot Papier',
+    description: 'Chaleureux, tactile et accueillant',
+    category: 'essential',
+    bg: 'linear-gradient(150deg, #d86f3e, #f0a46f 52%, #f7d7b8)',
+    accent: '#7b321f',
+    text: '#351a12',
+    pro: false,
+    buttonStyle: 'solid',
+    fontFamily: 'serif',
+    avatarShape: 'rounded',
+    cardOpacity: 0.93,
+    cardBlur: 4,
+    cardRadius: 30,
+    layout: 'editorial',
+  },
+  {
+    id: 'signal-red',
+    name: 'Affiche Signal',
+    description: 'Franc, graphique et mémorable',
+    category: 'expressive',
+    bg: 'linear-gradient(150deg, #b92327, #e34c35 62%, #f1a05e)',
+    accent: '#ffe4a6',
+    text: '#fffaf0',
+    pro: true,
+    buttonStyle: 'solid',
+    fontFamily: 'geist',
+    avatarShape: 'square',
+    cardOpacity: 0.97,
+    cardBlur: 0,
+    cardRadius: 16,
+    layout: 'poster',
+  },
+  {
+    id: 'forest-club',
+    name: 'Club Forêt',
+    description: 'Vert profond et papier naturel',
+    category: 'expressive',
+    bg: 'linear-gradient(145deg, #173b31, #2f6950 58%, #9eb890)',
+    accent: '#f0c982',
+    text: '#fff9e9',
+    pro: true,
+    buttonStyle: 'outline',
+    fontFamily: 'serif',
+    avatarShape: 'circle',
+    cardOpacity: 0.9,
+    cardBlur: 8,
+    cardRadius: 40,
+    layout: 'organic',
+  },
+  {
+    id: 'lemon-index',
+    name: 'Index Citron',
+    description: 'Éditorial, vif et sans détour',
+    category: 'expressive',
+    bg: 'linear-gradient(150deg, #efe44e, #f6d85d 62%, #f2a65a)',
+    accent: '#151515',
+    text: '#171712',
+    pro: true,
+    buttonStyle: 'minimal',
+    fontFamily: 'geist',
+    avatarShape: 'square',
+    cardOpacity: 0.96,
+    cardBlur: 0,
+    cardRadius: 10,
+    layout: 'poster',
+  },
+  {
+    id: 'chalk-mono',
+    name: 'Craie',
+    description: 'Monochrome calme et intemporel',
+    category: 'minimal',
+    bg: 'linear-gradient(145deg, #2a2927, #55514c)',
+    accent: '#f3eee5',
+    text: '#fffdf8',
+    pro: false,
+    buttonStyle: 'outline',
+    fontFamily: 'serif',
+    avatarShape: 'circle',
+    cardOpacity: 0.96,
+    cardBlur: 0,
+    cardRadius: 22,
+    layout: 'mono',
+  },
+  {
+    id: 'swiss-white',
+    name: 'Grille Suisse',
+    description: 'Typographie nette et espace libre',
+    category: 'minimal',
+    bg: '#eceae4',
+    accent: '#d1422f',
+    text: '#151515',
+    pro: true,
+    buttonStyle: 'minimal',
+    fontFamily: 'inter',
+    avatarShape: 'square',
+    cardOpacity: 0.98,
+    cardBlur: 0,
+    cardRadius: 4,
+    layout: 'minimal',
   },
 ] as const satisfies readonly AppearanceTheme[];
+
+export function appearanceThemeFor(themeId: string) {
+  return (
+    appearanceThemes.find((theme) => theme.id === themeId) ??
+    appearanceThemes[0]
+  );
+}
 
 export const appearanceGradients = [
   ['Opaline', 'linear-gradient(145deg, #edf2f7, #cbd7ec 54%, #ddd6ed)'],
@@ -232,10 +354,7 @@ const gradientPattern = /^linear-gradient\([^;{}]+\)$/i;
 const imagePattern = /^https:\/\/[\w.-]+(?:\/[^\s]*)?$/i;
 
 function themeFor(themeId: string) {
-  return (
-    appearanceThemes.find((theme) => theme.id === themeId) ??
-    appearanceThemes[0]
-  );
+  return appearanceThemeFor(themeId);
 }
 
 export function isValidBackground(

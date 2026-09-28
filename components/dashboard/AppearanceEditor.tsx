@@ -129,11 +129,11 @@ export function AppearanceEditor({ data }: { data: QardData }) {
         <section className="panel appearance-studio appearance-studio-v2">
           <header className="appearance-studio-head">
             <div>
-              <span>Studio</span>
+              <span>Studio Qard</span>
               <h2>Apparence</h2>
               <p>
-                Modifiez un aspect à la fois. L’aperçu se met à jour
-                immédiatement.
+                Choisissez une direction visuelle complète. Les couleurs, la
+                typographie et la composition évoluent ensemble.
               </p>
             </div>
             <output
@@ -166,7 +166,10 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <section className="appearance-stage-section">
                 <div className="appearance-stage-heading">
                   <h3>Ambiance</h3>
-                  <p>Choisissez une base, puis ajustez ses couleurs.</p>
+                  <p>
+                    {appearanceThemes.length} créations, de l’éditorial sobre à
+                    l’affiche expressive.
+                  </p>
                 </div>
                 <div
                   className="appearance-theme-categories"
@@ -197,7 +200,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                         onClick={() => pickTheme(theme)}
                       >
                         <span
-                          className="appearance-theme-visual"
+                          className={`appearance-theme-visual layout-${theme.layout}`}
                           style={{ background: theme.bg, color: theme.text }}
                         >
                           <span className="appearance-theme-visual-head">
@@ -243,7 +246,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                     <b>Afficher ma photo</b>
                     <small>
                       {data.profile.avatar_url || data.profile.banner_url
-                        ? 'Utilise votre portrait sur la face avant'
+                        ? 'Votre portrait devient le point focal de la face avant'
                         : 'Ajoutez d’abord une photo dans Profil'}
                     </small>
                   </span>

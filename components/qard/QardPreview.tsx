@@ -22,7 +22,7 @@ import {
   UsersRound,
 } from 'lucide-react';
 import type { QardData, SocialLink } from '@/types/database';
-import { resolveAppearance } from '@/lib/qard/appearance';
+import { appearanceThemeFor, resolveAppearance } from '@/lib/qard/appearance';
 import { isSafePublicUrl, platformLabels } from '@/lib/qard/social';
 import { SocialIcon } from './SocialIcon';
 
@@ -116,6 +116,7 @@ export function QardPreview({
   const visual = appearance.show_banner ? profile.banner_url : null;
   const avatarVisual = profile.avatar_url;
   const presentation = resolveAppearance(appearance);
+  const theme = appearanceThemeFor(appearance.theme);
   const vars = {
     '--preview-accent': presentation.accent,
     '--preview-text': presentation.text,
@@ -236,7 +237,8 @@ export function QardPreview({
 
   return (
     <article
-      className={`${styles.root} qard-premium theme-${appearance.theme}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ` ${styles.compact}` : ''}`}
+      className={`${styles.root} qard-premium theme-${appearance.theme} buttons-${appearance.button_style} avatar-${appearance.avatar_shape} font-${appearance.font_family}${appearance.animation_enabled ? ` animation-${appearance.animation_style}` : ''}${compact ? ` ${styles.compact}` : ''}`}
+      data-theme-layout={theme.layout}
       data-entry-animation={
         appearance.animation_enabled ? appearance.animation_style : 'none'
       }
@@ -339,11 +341,15 @@ export function QardPreview({
                 <div className={styles.frontPanel}>
                   <div className={styles.avatar} aria-hidden="true">
                     {avatarVisual ? (
-                      <Image src={avatarVisual} alt="" fill sizes="170px" />
+                      <Image
+                        src={avatarVisual}
+                        alt=""
+                        fill
+                        loading="eager"
+                        sizes="170px"
+                      />
                     ) : (
-                      <span>
-                        {fullName.slice(0, 1).toUpperCase()}
-                      </span>
+                      <span>{fullName.slice(0, 1).toUpperCase()}</span>
                     )}
                   </div>
                   <div className={styles.nameRow}>
@@ -426,16 +432,21 @@ export function QardPreview({
                       src={visual}
                       alt=""
                       fill
+                      loading="eager"
                       sizes="(max-width: 640px) 86vw, 380px"
                     />
                   )}
                   <div className={styles.backAvatar}>
                     {avatarVisual ? (
-                      <Image src={avatarVisual} alt="" fill sizes="132px" />
+                      <Image
+                        src={avatarVisual}
+                        alt=""
+                        fill
+                        loading="eager"
+                        sizes="132px"
+                      />
                     ) : (
-                      <span>
-                        {fullName.slice(0, 1).toUpperCase()}
-                      </span>
+                      <span>{fullName.slice(0, 1).toUpperCase()}</span>
                     )}
                   </div>
                 </div>
