@@ -2,7 +2,6 @@
 
 import type { CSSProperties } from 'react';
 import { useRef } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import { motion, useInView, useReducedMotion } from 'motion/react';
@@ -71,18 +70,20 @@ export function PrismaHero() {
   return (
     <main className="prisma-shell">
       <section className="prisma-scene">
-        <Image
-          src="/qard-prisma-campus.png"
-          alt="Une Qard partagée instantanément sur un campus"
-          fill
-          priority
-          quality={90}
-          sizes="100vw"
-          className="prisma-background"
-        />
-        <div className="qard-prisma-noise pointer-events-none absolute inset-0 opacity-70 mix-blend-overlay" />
-        <div className="prisma-vignette" aria-hidden="true" />
-        <div className="prisma-light" aria-hidden="true" />
+        <div className="prisma-video-stage" aria-hidden="true">
+          <video
+            className="prisma-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            disablePictureInPicture
+            tabIndex={-1}
+          >
+            <source src="/qard-hero-character.mp4" type="video/mp4" />
+          </video>
+        </div>
 
         <header className="prisma-topbar">
           <Link className="prisma-wordmark" href="/" aria-label="Qard, accueil">
@@ -101,14 +102,15 @@ export function PrismaHero() {
         </header>
 
         <div className="prisma-content">
-          <div className="grid grid-cols-12 items-end gap-x-4 gap-y-3">
-            <div className="col-span-12 lg:col-span-8">
+          <div className="prisma-copy-grid">
+            <div className="prisma-heading-block">
+              <span className="prisma-kicker">Une identité. Un geste.</span>
               <h1 className="prisma-title" aria-label="Qard">
                 <WordsPullUp text="Qard" showAsterisk />
               </h1>
             </div>
 
-            <div className="col-span-12 flex flex-col gap-5 pb-3 lg:col-span-4 lg:pb-10">
+            <div className="prisma-message-block">
               <motion.p
                 initial={reducedMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
