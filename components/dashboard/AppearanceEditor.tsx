@@ -1,5 +1,6 @@
 'use client';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useMemo, useRef, useState } from 'react';
 import {
   Check,
@@ -41,6 +42,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
       ?.category ?? 'essential';
   const [themeCategory, setThemeCategory] =
     useState<AppearanceThemeCategory>(initialThemeCategory);
+  const [allThemes, setAllThemes] = useState(false);
   const [activeSection, setActiveSection] = useState<'ambiance' | 'mouvement'>(
     'ambiance',
   );
@@ -97,7 +99,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
   }
   function pickTheme(theme: (typeof appearanceThemes)[number]) {
     if (theme.pro && data.profile.plan !== 'pro') {
-      setStatus('Réservé au plan Premium');
+      setStatus('Réservé au plan Pro');
       return;
     }
     void save({
@@ -132,8 +134,8 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               <span>Studio Qard</span>
               <h2>Apparence</h2>
               <p>
-                Choisissez votre palette. La structure et la lisibilité de votre
-                Qard restent toujours identiques.
+                Trois styles gratuits pour commencer. Votre carte est déjà prête
+                à être partagée.
               </p>
             </div>
             <output
@@ -143,55 +145,80 @@ export function AppearanceEditor({ data }: { data: QardData }) {
               {status}
             </output>
           </header>
-          <nav className="appearance-tabs" aria-label="Catégories d’apparence">
-            {[
-              ['ambiance', 'Ambiance', Palette],
-              ['mouvement', 'Mouvement', Waves],
-            ].map(([id, label, Icon]) => (
-              <button
-                key={id as string}
-                type="button"
-                className={activeSection === id ? 'active' : ''}
-                onClick={() => setActiveSection(id as typeof activeSection)}
-                aria-pressed={activeSection === id}
-              >
-                <Icon size={17} />
-                <span>{label as string}</span>
-              </button>
-            ))}
-          </nav>
+          <Link className="button button-ghost" href="/dashboard/qr">
+            Garder ce style et montrer mon QR →
+          </Link>
+          <details className="product-advanced">
+            <summary>Options d’animation</summary>
+            <nav
+              className="appearance-tabs"
+              aria-label="Catégories d’apparence"
+            >
+              {[
+                ['ambiance', 'Ambiance', Palette],
+                ['mouvement', 'Mouvement', Waves],
+              ].map(([id, label, Icon]) => (
+                <button
+                  key={id as string}
+                  type="button"
+                  className={activeSection === id ? 'active' : ''}
+                  onClick={() => setActiveSection(id as typeof activeSection)}
+                  aria-pressed={activeSection === id}
+                >
+                  <Icon size={17} />
+                  <span>{label as string}</span>
+                </button>
+              ))}
+            </nav>
+          </details>
 
           <div className="appearance-stage">
             {activeSection === 'ambiance' && (
               <section className="appearance-stage-section">
                 <div className="appearance-stage-heading">
                   <h3>Ambiance</h3>
-                  <p>
-                    {appearanceThemes.length} palettes, une même expérience
-                    claire pour tous vos contacts.
-                  </p>
+                  <p>Choisissez un style, le reste s’adapte automatiquement.</p>
                 </div>
-                <div
-                  className="appearance-theme-categories"
-                  role="tablist"
-                  aria-label="Familles de styles"
+                <button
+                  type="button"
+                  className="button button-ghost"
+                  onClick={() => setAllThemes(!allThemes)}
                 >
-                  {appearanceThemeCategories.map((category) => (
-                    <button
-                      key={category.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={themeCategory === category.id}
-                      className={themeCategory === category.id ? 'active' : ''}
-                      onClick={() => setThemeCategory(category.id)}
-                    >
-                      {category.label}
-                    </button>
-                  ))}
-                </div>
+                  {allThemes
+                    ? 'Revenir aux 3 essentiels'
+                    : 'Voir tous les styles'}
+                </button>
+                {allThemes && (
+                  <div
+                    className="appearance-theme-categories"
+                    role="tablist"
+                    aria-label="Familles de styles"
+                  >
+                    {appearanceThemeCategories.map((category) => (
+                      <button
+                        key={category.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={themeCategory === category.id}
+                        className={
+                          themeCategory === category.id ? 'active' : ''
+                        }
+                        onClick={() => setThemeCategory(category.id)}
+                      >
+                        {category.label}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div className="theme-grid appearance-theme-grid">
                   {appearanceThemes
-                    .filter((theme) => theme.category === themeCategory)
+                    .filter((theme) =>
+                      allThemes
+                        ? theme.category === themeCategory
+                        : ['midnight-glass', 'frost', 'graphite'].includes(
+                            theme.id,
+                          ),
+                    )
                     .map((theme) => (
                       <button
                         key={theme.id}
@@ -229,7 +256,7 @@ export function AppearanceEditor({ data }: { data: QardData }) {
                         </span>
                         <span className="appearance-theme-state">
                           {theme.pro && data.profile.plan !== 'pro' && (
-                            <Lock size={13} aria-label="Premium" />
+                            <Lock size={13} aria-label="Pro" />
                           )}
                           {appearance.theme === theme.id && (
                             <Check size={15} aria-label="Sélectionné" />

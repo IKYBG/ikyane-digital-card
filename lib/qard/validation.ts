@@ -141,4 +141,30 @@ export const analyticsSchema = z.object({
   slug: slugSchema,
   socialLinkId: z.uuid().nullable().optional(),
   eventType: z.enum(['profile_view', 'link_click', 'contact_download']),
+  source: z.enum(['qr']).optional(),
 });
+
+export const onboardingSchema = z
+  .object({
+    display_name: z.string().trim().min(1, 'Votre nom est requis.').max(80),
+    job_title: z.string().trim().max(100),
+    contact_type: z.enum(['email', 'phone']),
+    contact: z.string().trim().min(1, 'Ajoutez un moyen de contact public.'),
+  })
+  .superRefine((value, ctx) => {
+    const valid =
+      value.contact_type === 'email'
+        ? z.email().safeParse(value.contact).success
+        : /^[+\d\s().-]+$/.test(value.contact) &&
+          value.contact.replace(/\D/g, '').length >= 6 &&
+          value.contact.replace(/\D/g, '').length <= 15;
+    if (!valid)
+      ctx.addIssue({
+        code: 'custom',
+        path: ['contact'],
+        message:
+          value.contact_type === 'email'
+            ? 'Entrez une adresse email valide.'
+            : 'Entrez un numéro valide, avec son indicatif si nécessaire.',
+      });
+  });

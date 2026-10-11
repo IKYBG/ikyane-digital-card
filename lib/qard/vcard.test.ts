@@ -35,3 +35,50 @@ describe('createVCard', () => {
     expect(card).toContain('END:VCARD\r\n');
   });
 });
+
+it('includes enabled link contacts and the permanent Qard URL', () => {
+  const base = {
+    id: 'a',
+    profile_id: '1',
+    label: null,
+    username: null,
+    position: 0,
+    created_at: '',
+    updated_at: '',
+  };
+  const card = createVCard(
+    { ...profile, phone_public: null },
+    [
+      { ...base, platform: 'phone', url: 'tel:+33612345678', enabled: true },
+      {
+        ...base,
+        id: 'b',
+        platform: 'email',
+        url: 'mailto:hidden@example.com',
+        enabled: false,
+      },
+      {
+        ...base,
+        id: 'c',
+        platform: 'website',
+        url: 'javascript:alert(1)',
+        enabled: true,
+      },
+    ],
+    'https://qard.example/u/lucas',
+  );
+  expect(card).toContain('TEL;TYPE=CELL:+33612345678');
+  expect(card).toContain('URL:https://qard.example/u/lucas');
+  expect(card).not.toContain('hidden@example.com');
+  expect(card).not.toContain('javascript:');
+});
+it('prevents line injection and folds long Unicode values at 75 octets', () => {
+  const card = createVCard({
+    ...profile,
+    display_name: 'é'.repeat(80) + '\r\nTEL:fake',
+  });
+  expect(card).not.toContain('\r\nTEL:fake');
+  expect(card).toContain('\\nTEL:fake');
+  for (const line of card.split('\r\n'))
+    expect(new TextEncoder().encode(line).length).toBeLessThanOrEqual(75);
+});

@@ -1,4 +1,5 @@
 import { getPublicQard } from '@/lib/qard/data';
+import { getPublicProfileUrl } from '@/lib/qard/url';
 import { createVCard } from '@/lib/qard/vcard';
 export async function GET(
   _: Request,
@@ -7,11 +8,18 @@ export async function GET(
   const { slug } = await params;
   const data = await getPublicQard(slug);
   if (!data) return new Response('Qard introuvable', { status: 404 });
-  return new Response(createVCard(data.profile), {
-    headers: {
-      'content-type': 'text/vcard; charset=utf-8',
-      'content-disposition': `attachment; filename="${slug}-qard-contact.vcf"`,
-      'cache-control': 'no-store',
+  return new Response(
+    createVCard(
+      data.profile,
+      data.links,
+      getPublicProfileUrl(data.profile.slug),
+    ),
+    {
+      headers: {
+        'content-type': 'text/vcard; charset=utf-8',
+        'content-disposition': `attachment; filename="${slug}-qard-contact.vcf"`,
+        'cache-control': 'no-store',
+      },
     },
-  });
+  );
 }

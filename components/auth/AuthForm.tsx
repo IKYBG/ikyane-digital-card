@@ -64,7 +64,6 @@ export function AuthForm({ mode }: { mode: Mode }) {
     };
     const email = field('email').trim();
     const password = field('password');
-    const displayName = field('displayName').trim();
     try {
       const supabase = createClient();
       if (mode === 'signup') {
@@ -72,7 +71,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
           email,
           password,
           options: {
-            data: { display_name: displayName },
+            data: { display_name: 'Ma Qard' },
             emailRedirectTo: `${window.location.origin}/auth/callback?next=/onboarding`,
           },
         });
@@ -119,7 +118,7 @@ export function AuthForm({ mode }: { mode: Mode }) {
     mode === 'login'
       ? 'Ravi de te revoir.'
       : mode === 'signup'
-        ? 'Crée ton identité Qard.'
+        ? 'Votre prochaine rencontre commence ici.'
         : 'Retrouve ton accès.';
   return (
     <form
@@ -141,25 +140,12 @@ export function AuthForm({ mode }: { mode: Mode }) {
         <h1>{title}</h1>
         <p>
           {mode === 'signup'
-            ? 'Ta carte, ton QR et tous tes contacts dans un seul profil.'
+            ? 'Créez votre compte, puis ajoutez un nom et un contact pour afficher votre QR.'
             : mode === 'forgot'
               ? 'Entre ton email et nous t’enverrons un lien sécurisé.'
               : 'Continue là où tu t’étais arrêté.'}
         </p>
       </div>
-      {mode === 'signup' && (
-        <label>
-          Nom affiché
-          <input
-            name="displayName"
-            autoComplete="name"
-            required
-            maxLength={80}
-            disabled={loading}
-            placeholder="Lucas Martin"
-          />
-        </label>
-      )}
       <label>
         Email
         <input

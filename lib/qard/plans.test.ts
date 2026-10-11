@@ -6,3 +6,6 @@ describe('hasFeature', () => {
   it('active les fonctions Pro', () =>
     expect(hasFeature('pro', 'extended_analytics')).toBe(true));
 });
+
+it('does not advertise an unavailable custom domain', () =>
+  expect(hasFeature('pro', 'custom_domain')).toBe(false));

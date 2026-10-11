@@ -5,7 +5,6 @@ import {
   BarChart3,
   ExternalLink,
   Link2,
-  Palette,
   QrCode,
   UserRoundPen,
 } from 'lucide-react';
@@ -13,61 +12,61 @@ import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { ShareActions } from '@/components/dashboard/ShareActions';
 import { getCurrentQard, requireUser } from '@/lib/qard/data';
 import { getPublicProfileUrl } from '@/lib/qard/url';
+import { getContactLinks } from '@/lib/qard/contacts';
 import styles from './dashboard.module.css';
 
 export default async function DashboardPage() {
   const data = await getCurrentQard();
-  const { profile, links, appearance } = data;
+  const { profile } = data;
   const { supabase } = await requireUser();
   const sinceDate = new Date();
   sinceDate.setUTCDate(sinceDate.getUTCDate() - 7);
   const since = sinceDate.toISOString();
-  const [{ count: views }, { count: clicks }] = await Promise.all([
-    supabase
-      .from('qard_analytics_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('profile_id', profile.id)
-      .eq('event_type', 'profile_view')
-      .gte('created_at', since),
-    supabase
-      .from('qard_analytics_events')
-      .select('*', { count: 'exact', head: true })
-      .eq('profile_id', profile.id)
-      .eq('event_type', 'link_click')
-      .gte('created_at', since),
-  ]);
+  const [{ count: views }, { count: clicks }, { count: contacts }] =
+    await Promise.all([
+      supabase
+        .from('qard_analytics_events')
+        .select('*', { count: 'exact', head: true })
+        .eq('profile_id', profile.id)
+        .eq('event_type', 'profile_view')
+        .gte('created_at', since),
+      supabase
+        .from('qard_analytics_events')
+        .select('*', { count: 'exact', head: true })
+        .eq('profile_id', profile.id)
+        .eq('event_type', 'link_click')
+        .gte('created_at', since),
+      supabase
+        .from('qard_analytics_events')
+        .select('*', { count: 'exact', head: true })
+        .eq('profile_id', profile.id)
+        .eq('event_type', 'contact_download')
+        .gte('created_at', since),
+    ]);
   const url = getPublicProfileUrl(profile.slug);
-  const nextStep = !profile.avatar_url
+  const nextStep = !profile.published
     ? {
-        title: 'Ajoutez votre photo',
-        text: 'Une Qard avec un visage inspire davantage confiance.',
+        title: 'Votre carte est masquée',
+        text: 'Publiez-la avant votre prochaine rencontre.',
         href: '/dashboard/editor',
-        label: 'Ajouter ma photo',
+        label: 'Publier ma carte',
         icon: UserRoundPen,
       }
-    : links.length < 2
+    : getContactLinks(profile, data.links).length === 0
       ? {
-          title: 'Ajoutez vos contacts',
-          text: 'Rendez vos moyens de contact accessibles en un geste.',
+          title: 'Ajoutez un moyen de contact',
+          text: 'Une carte utile permet de vous joindre.',
           href: '/dashboard/links',
-          label: 'Ajouter un contact',
+          label: 'Ajouter mes coordonnées',
           icon: Link2,
         }
-      : appearance.theme === 'midnight-glass'
-        ? {
-            title: 'Choisissez votre style',
-            text: 'Adaptez la Qard à votre identité en quelques secondes.',
-            href: '/dashboard/appearance',
-            label: 'Choisir un style',
-            icon: Palette,
-          }
-        : {
-            title: 'Votre Qard est prête',
-            text: 'Téléchargez son QR code pour la partager partout.',
-            href: '/dashboard/qr',
-            label: 'Voir mon QR code',
-            icon: QrCode,
-          };
+      : {
+          title: 'Prêt pour votre prochain échange',
+          text: 'Montrez votre QR. La personne peut enregistrer votre contact sans compte.',
+          href: '/dashboard/qr',
+          label: 'Montrer mon QR',
+          icon: QrCode,
+        };
   const NextIcon = nextStep.icon;
 
   return (
@@ -104,8 +103,8 @@ export default async function DashboardPage() {
           </div>
           <p className={styles.url}>{url.replace(/^https?:\/\//, '')}</p>
           <div className={styles.actions}>
-            <Link className={styles.primary} href="/dashboard/editor">
-              <UserRoundPen size={17} /> Modifier
+            <Link className={styles.primary} href="/dashboard/qr">
+              <QrCode size={17} /> Montrer mon QR
             </Link>
             <Link
               className={styles.secondary}
@@ -115,6 +114,9 @@ export default async function DashboardPage() {
               prefetch={false}
             >
               Voir <ExternalLink size={16} />
+            </Link>
+            <Link className={styles.secondary} href="/dashboard/editor">
+              Modifier ma carte
             </Link>
             <ShareActions url={url} published={profile.published} />
           </div>
@@ -144,15 +146,17 @@ export default async function DashboardPage() {
               </div>
               <div className={styles.metric}>
                 <strong>{clicks ?? 0}</strong>
-                <span>Actions</span>
+                <span>Clics sur les liens</span>
               </div>
               <div className={styles.metric}>
-                <strong>
-                  {views ? Math.round(((clicks ?? 0) / views) * 100) : 0}%
-                </strong>
-                <span>Taux</span>
+                <strong>{contacts ?? 0}</strong>
+                <span>Demandes de contact</span>
               </div>
             </div>
+            <p className="activation-note">
+              Les demandes indiquent des clics sur « Enregistrer ». L’ajout au
+              téléphone n’est pas confirmé.
+            </p>
             <Link className={styles.textLink} href="/dashboard/analytics">
               <BarChart3 size={15} /> Voir les statistiques
             </Link>

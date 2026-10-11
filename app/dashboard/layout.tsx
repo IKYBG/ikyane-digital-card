@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation';
 import { DashboardNav } from '@/components/dashboard/DashboardNav';
 import { getCurrentQard } from '@/lib/qard/data';
 export const dynamic = 'force-dynamic';
@@ -7,6 +8,7 @@ export default async function DashboardLayout({
   children: React.ReactNode;
 }) {
   const { profile } = await getCurrentQard();
+  if (!profile.onboarding_completed) redirect('/onboarding');
   return (
     <main className="qard-site dashboard-shell">
       <div className="dashboard-background-shade" aria-hidden="true" />
