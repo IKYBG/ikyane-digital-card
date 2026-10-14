@@ -7,13 +7,14 @@ export type Feature =
 
 const features: Record<Plan, ReadonlySet<Feature>> = {
   free: new Set(),
-  pro: new Set(['advanced_themes', 'remove_branding', 'extended_analytics']),
+  pro: new Set([
+    'advanced_themes',
+    'remove_branding',
+    'extended_analytics',
+    'custom_domain',
+  ]),
 };
 
 export function hasFeature(plan: Plan, feature: Feature) {
   return features[plan].has(feature);
-}
-
-export function analyticsPeriod(plan: Plan, requested = 7): number {
-  return plan === 'pro' && [7, 30, 90].includes(requested) ? requested : 7;
 }

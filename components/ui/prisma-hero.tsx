@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import { motion, useInView } from 'motion/react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 
 interface WordsPullUpProps {
   text: string;
@@ -22,6 +22,7 @@ export function WordsPullUp({
 }: WordsPullUpProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true });
+  const reducedMotion = useReducedMotion();
   const words = text.split(' ');
 
   return (
@@ -35,7 +36,7 @@ export function WordsPullUp({
         return (
           <motion.span
             key={`${word}-${index}`}
-            initial={false}
+            initial={reducedMotion ? false : { y: 20, opacity: 0 }}
             animate={isInView ? { y: 0, opacity: 1 } : {}}
             transition={{
               duration: 0.6,
@@ -59,14 +60,16 @@ export function WordsPullUp({
 }
 
 const navItems = [
-  { label: 'Démo', href: '#demonstration' },
+  { label: 'Exemple', href: '/card' },
   { label: 'Tarifs', href: '/pricing' },
   { label: 'Connexion', href: '/login' },
 ];
 
 export function PrismaHero() {
+  const reducedMotion = useReducedMotion();
+
   return (
-    <div className="prisma-shell product-hero">
+    <main className="prisma-shell">
       <section className="prisma-scene">
         <Image
           src="/qard-prisma-campus.png"
@@ -100,21 +103,14 @@ export function PrismaHero() {
         <div className="prisma-content">
           <div className="grid grid-cols-12 items-end gap-x-4 gap-y-3">
             <div className="col-span-12 lg:col-span-8">
-              <p className="hero-signature">
-                Scanne. Une nouvelle façon de se présenter.
-              </p>
-              <h1 className="prisma-title">
-                Une rencontre.
-                <br />
-                Un scan.
-                <br />
-                On garde le contact.
+              <h1 className="prisma-title" aria-label="Qard">
+                <WordsPullUp text="Qard" showAsterisk />
               </h1>
             </div>
 
             <div className="col-span-12 flex flex-col gap-5 pb-3 lg:col-span-4 lg:pb-10">
               <motion.p
-                initial={false}
+                initial={reducedMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{
                   duration: 0.8,
@@ -124,13 +120,12 @@ export function PrismaHero() {
                 className="prisma-lead"
                 style={{ lineHeight: 1.3 }}
               >
-                Montrez votre QR. L’autre personne retrouve vos coordonnées, vos
-                réseaux et votre travail — et enregistre votre contact. Sans
-                compte ni application.
+                Votre identité, vos contacts et vos réseaux réunis dans une
+                seule Qard. Un lien permanent à partager en un geste.
               </motion.p>
 
               <motion.div
-                initial={false}
+                initial={reducedMotion ? false : { y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{
                   duration: 0.8,
@@ -140,23 +135,20 @@ export function PrismaHero() {
               >
                 <div className="prisma-actions">
                   <Link href="/signup" className="qard-prisma-cta group">
-                    Créer gratuitement
+                    Créer ma Qard
                     <span>
                       <ArrowRight size={17} />
                     </span>
                   </Link>
-                  <Link href="#demonstration" className="prisma-example-link">
-                    Essayer une Qard <ArrowUpRight size={15} />
+                  <Link href="/card" className="prisma-example-link">
+                    Voir un exemple <ArrowUpRight size={15} />
                   </Link>
                 </div>
               </motion.div>
-              <p className="hero-reassurance">
-                Sans carte bancaire · Partage gratuit
-              </p>
             </div>
           </div>
         </div>
       </section>
-    </div>
+    </main>
   );
 }

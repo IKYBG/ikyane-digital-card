@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next';
 import './globals.css';
 import './studio.css';
 import './experience.css';
-import './product.css';
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -18,8 +17,7 @@ export const metadata: Metadata = {
     default: 'Qard — Une nouvelle façon de se présenter',
     template: '%s | Qard',
   },
-  description:
-    'Vos coordonnées, vos réseaux et votre travail. Un scan pour vous retrouver et enregistrer votre contact.',
+  description: 'Crée ta carte de contact numérique et partage-la en un scan.',
 };
 
 export default function RootLayout({

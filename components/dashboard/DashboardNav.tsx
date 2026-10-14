@@ -22,24 +22,37 @@ import { QardLogo } from '@/components/qard/QardLogo';
 const items = [
   {
     href: '/dashboard',
-    label: 'Ma Qard',
-    shortLabel: 'Ma Qard',
+    label: 'Vue d’ensemble',
+    shortLabel: 'Accueil',
     icon: LayoutDashboard,
   },
   {
-    href: '/dashboard/qr',
-    label: 'Montrer mon QR',
-    shortLabel: 'Montrer',
-    icon: QrCode,
+    href: '/dashboard/editor',
+    label: 'Ma Qard',
+    shortLabel: 'Qard',
+    icon: UserRoundPen,
+  },
+  {
+    href: '/dashboard/links',
+    label: 'Liens',
+    shortLabel: 'Liens',
+    icon: Link2,
+  },
+  {
+    href: '/dashboard/appearance',
+    label: 'Style',
+    shortLabel: 'Style',
+    icon: Palette,
   },
   {
     href: '/dashboard/analytics',
-    label: 'Résultats',
-    shortLabel: 'Résultats',
+    label: 'Statistiques',
+    shortLabel: 'Stats',
     icon: BarChart3,
   },
 ];
-const mobileItems = items;
+
+const mobileItems = items.filter(({ href }) => href !== '/dashboard/analytics');
 
 function isActive(path: string, href: string) {
   return href === '/dashboard' ? path === href : path.startsWith(href);
@@ -110,14 +123,8 @@ export function DashboardNav({
           <Link href="/">
             <Home size={17} /> Accueil Qard
           </Link>
-          <Link href="/dashboard/editor">
-            <UserRoundPen size={17} /> Modifier ma carte
-          </Link>
-          <Link href="/dashboard/links">
-            <Link2 size={17} /> Coordonnées et réseaux
-          </Link>
-          <Link href="/dashboard/appearance">
-            <Palette size={17} /> Apparence
+          <Link href="/dashboard/qr">
+            <QrCode size={17} /> Mon QR code
           </Link>
           <Link href="/dashboard/settings">
             <Settings size={17} /> Réglages
@@ -161,9 +168,8 @@ export function DashboardNav({
             moreOpen ||
             [
               '/dashboard/settings',
-              '/dashboard/editor',
-              '/dashboard/links',
-              '/dashboard/appearance',
+              '/dashboard/qr',
+              '/dashboard/analytics',
             ].some((href) => isActive(path, href))
               ? 'active'
               : ''
@@ -209,18 +215,25 @@ export function DashboardNav({
               </button>
             </header>
             <nav aria-label="Navigation secondaire">
-              {[
-                ['/dashboard/editor', 'Modifier ma carte'],
-                ['/dashboard/links', 'Coordonnées et réseaux'],
-                ['/dashboard/appearance', 'Apparence'],
-              ].map(([href, label]) => (
-                <Link key={href} href={href} onClick={() => setMoreOpen(false)}>
-                  <span>
-                    <b>{label}</b>
-                  </span>
-                  <Chevron />
-                </Link>
-              ))}
+              <Link
+                href="/dashboard/analytics"
+                onClick={() => setMoreOpen(false)}
+              >
+                <BarChart3 size={19} />
+                <span>
+                  <b>Statistiques</b>
+                  <small>Suivre les vues et les clics</small>
+                </span>
+                <Chevron />
+              </Link>
+              <Link href="/dashboard/qr" onClick={() => setMoreOpen(false)}>
+                <QrCode size={19} />
+                <span>
+                  <b>Mon QR code</b>
+                  <small>Télécharger et partager</small>
+                </span>
+                <Chevron />
+              </Link>
               <Link
                 href="/dashboard/settings"
                 onClick={() => setMoreOpen(false)}

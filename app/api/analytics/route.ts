@@ -1,7 +1,6 @@
 import { createHash } from 'node:crypto';
 import { analyticsSchema } from '@/lib/qard/validation';
 import { reportServerError } from '@/lib/server/observability';
-import { createClient } from '@/lib/supabase/server';
 import { createAdminClient } from '@/lib/supabase/admin';
 
 export async function POST(request: Request) {
@@ -19,17 +18,6 @@ export async function POST(request: Request) {
     .digest('hex');
 
   try {
-    const viewer = await createClient();
-    const { data: identity } = await viewer.auth.getClaims();
-    if (identity?.claims?.sub) {
-      const { data: ownProfile } = await viewer
-        .from('qard_profiles')
-        .select('slug')
-        .eq('user_id', identity.claims.sub)
-        .maybeSingle();
-      if (ownProfile?.slug === parsed.data.slug)
-        return new Response(null, { status: 204 });
-    }
     const ua = request.headers.get('user-agent') ?? '';
     const device = /Mobile|Android|iPhone/i.test(ua) ? 'mobile' : 'desktop';
     const browser = /Firefox/i.test(ua)
@@ -56,7 +44,7 @@ export async function POST(request: Request) {
         p_slug: parsed.data.slug,
         p_event_type: parsed.data.eventType,
         p_social_link_id: parsed.data.socialLinkId ?? null,
-        p_referrer: parsed.data.source === 'qr' ? 'qard:qr' : referrer,
+        p_referrer: referrer,
         p_device_type: device,
         p_browser: browser,
         p_country: request.headers.get('x-vercel-ip-country'),

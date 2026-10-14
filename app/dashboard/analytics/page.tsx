@@ -1,8 +1,13 @@
 import Link from 'next/link';
-import { BarChart3, Download, Eye, MousePointerClick } from 'lucide-react';
+import {
+  BarChart3,
+  Download,
+  Eye,
+  MousePointerClick,
+  TrendingUp,
+} from 'lucide-react';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { getCurrentQard, requireUser } from '@/lib/qard/data';
-import { analyticsPeriod } from '@/lib/qard/plans';
 import { platformLabels } from '@/lib/qard/social';
 
 type Rollup = {
@@ -20,11 +25,9 @@ export default async function AnalyticsPage({
 }: {
   searchParams: Promise<{ period?: string }>;
 }) {
+  const rawPeriod = Number((await searchParams).period ?? 30);
+  const period = [7, 30, 90].includes(rawPeriod) ? rawPeriod : 30;
   const { profile, links } = await getCurrentQard();
-  const period = analyticsPeriod(
-    profile.plan,
-    Number((await searchParams).period ?? 7),
-  );
   const { supabase } = await requireUser();
   const since = new Date();
   since.setUTCDate(since.getUTCDate() - period);
@@ -82,11 +85,11 @@ export default async function AnalyticsPage({
     <>
       <DashboardHeader
         eyebrow="Activité"
-        title="Après vos rencontres"
-        description="Vues, clics et demandes d’enregistrement. Ces compteurs ne confirment ni un contact ajouté ni un prospect."
+        title="Vos statistiques"
+        description="Les vues et les actions sur votre carte."
         action={
           <div className="period-tabs">
-            {(profile.plan === 'pro' ? [7, 30, 90] : [7]).map((days) => (
+            {[7, 30, 90].map((days) => (
               <Link
                 className={days === period ? 'active' : ''}
                 href={`/dashboard/analytics?period=${days}`}
@@ -98,14 +101,6 @@ export default async function AnalyticsPage({
           </div>
         }
       />
-      <p className="activation-note">
-        Une demande correspond au clic sur « Enregistrer le contact ». La
-        confirmation dans le téléphone reste privée. Plusieurs clics peuvent
-        venir d’une même visite.
-      </p>
-      <Link className="button button-ghost" href="/dashboard/qr">
-        Montrer mon QR pour ma prochaine rencontre →
-      </Link>
       <div className="stat-grid">
         <article>
           <Eye />
@@ -119,13 +114,18 @@ export default async function AnalyticsPage({
         </article>
         <article>
           <Download />
-          <span>Demandes de contact</span>
+          <span>Contacts</span>
           <strong>{downloads}</strong>
         </article>
         <article>
           <Download />
-          <span>Demandes de QR</span>
+          <span>QR téléchargés</span>
           <strong>{qrDownloads}</strong>
+        </article>
+        <article>
+          <TrendingUp />
+          <span>CTR</span>
+          <strong>{views ? Math.round((clicks / views) * 100) : 0}%</strong>
         </article>
       </div>
       <section className="panel chart-panel">
