@@ -5,9 +5,11 @@ import { cn } from '@/lib/utils';
 export function QardLogo({
   className,
   linked = true,
+  href = '/',
 }: {
   className?: string;
   linked?: boolean;
+  href?: string;
 }) {
   const wordmark = (
     <span className={cn('qard-logo', className)}>
@@ -23,7 +25,7 @@ export function QardLogo({
     </span>
   );
   return linked ? (
-    <Link href="/" aria-label="Qard, accueil">
+    <Link href={href} aria-label={href === '/dashboard' ? 'Qard, mon espace' : 'Qard, accueil'}>
       {wordmark}
     </Link>
   ) : (

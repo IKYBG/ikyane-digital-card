@@ -54,7 +54,11 @@ export async function updateSession(request: NextRequest) {
     login.searchParams.set('next', path);
     return NextResponse.redirect(login);
   }
-  if (signedIn && ['/login', '/signup', '/forgot-password'].includes(path))
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  if (signedIn && ['/', '/login', '/signup', '/forgot-password'].includes(path)) {
+    const redirect = NextResponse.redirect(new URL('/dashboard', request.url));
+    response.cookies.getAll().forEach((cookie) => redirect.cookies.set(cookie));
+    redirect.headers.set('Cache-Control', 'private, no-store');
+    return redirect;
+  }
   return response;
 }

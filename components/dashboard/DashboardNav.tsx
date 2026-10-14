@@ -85,7 +85,7 @@ export function DashboardNav({
   return (
     <>
       <div className="dashboard-mobile-topbar">
-        <QardLogo />
+        <QardLogo href="/dashboard" />
         <Link
           href={`/u/${slug}`}
           target="_blank"
@@ -97,7 +97,7 @@ export function DashboardNav({
       </div>
       <aside className="dashboard-sidebar">
         <div className="sidebar-brand">
-          <QardLogo />
+          <QardLogo href="/dashboard" />
           <span className="plan-badge">
             {plan === 'free' ? 'Gratuit' : 'Pro'}
           </span>
@@ -120,8 +120,8 @@ export function DashboardNav({
           ))}
         </nav>
         <div className="sidebar-bottom">
-          <Link href="/">
-            <Home size={17} /> Accueil Qard
+          <Link href="/dashboard">
+            <Home size={17} /> Mon espace
           </Link>
           <Link href="/dashboard/qr">
             <QrCode size={17} /> Mon QR code
@@ -261,8 +261,8 @@ export function DashboardNav({
               </Link>
             </nav>
             <div className="mobile-more-footer">
-              <Link href="/" onClick={() => setMoreOpen(false)}>
-                <Home size={17} /> Accueil Qard
+              <Link href="/dashboard" onClick={() => setMoreOpen(false)}>
+                <Home size={17} /> Mon espace
               </Link>
               <button
                 type="button"
